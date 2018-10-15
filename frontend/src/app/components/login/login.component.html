@@ -1,0 +1,18 @@
+<div *ngIf="showPart">
+  <div [style.font-size]="showPart === 'join'? 'large': 'small'" class="join">
+    <label>Username</label>
+    <input type="text" required #username>
+    <label>Email</label>
+    <input type="text" required #email>
+    <label>Password</label>
+    <input type="password" required #password>
+    <label>Confirm Password</label>
+    <input type="password" required #confirmPassword>
+  </div>
+  <div [style.font-size]="showPart === 'login'? 'large': 'small'" class="login">
+    <label>Username</label>
+    <input type="text" required #username>
+    <label>Password</label>
+    <input type="password" required #password>
+  </div>
+</div>

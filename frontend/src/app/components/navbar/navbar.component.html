@@ -1,0 +1,7 @@
+<div>
+  <input #searchInput *ngIf="searchToggle" (keyup.enter)="search(searchInput.value)">
+  <button (click)="showSearchField()"><i class="fas fa-search"></i></button>
+  <button *ngIf="!isLoggedIn" (click)="join()">Join</button>
+  <button *ngIf="!isLoggedIn" (click)="login()">Login</button>
+  <button *ngIf="isLoggedIn" (click)="logout()">Logout</button>
+</div>
