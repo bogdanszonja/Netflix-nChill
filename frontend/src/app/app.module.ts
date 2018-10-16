@@ -9,7 +9,7 @@ import { FavouritesComponent } from './components/user-page/favourites/favourite
 import { WatchlistComponent } from './components/user-page/watchlist/watchlist.component';
 import { WatchedComponent } from './components/user-page/watched/watched.component';
 import { SearchComponent } from './components/search/search.component';
-import { SeriesDetailComponent } from './components/series-detail/series-detail.component';
+import { SeriesDetailComponent } from './components/search/series-detail/series-detail.component';
 import { TrendingComponent } from './components/trending/trending.component';
 import { AppRoutingModule } from './modules/app-routing/app-routing.module';
 
