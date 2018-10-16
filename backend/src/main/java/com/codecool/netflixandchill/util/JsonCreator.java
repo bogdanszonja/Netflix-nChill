@@ -16,14 +16,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JsonUtil {
+public class JsonCreator {
 
-    private static JsonUtil instance = null;
+    private static JsonCreator instance = null;
     private static Gson gson = new Gson();
 
-    public static JsonUtil getInstance() {
+    public static JsonCreator getInstance() {
         if (instance == null) {
-            instance = new JsonUtil();
+            instance = new JsonCreator();
         }
         return instance;
     }
@@ -54,12 +54,24 @@ public class JsonUtil {
     }
 
     public String getSeriesById(long seriesId) {
+        Map<String, Object> showJson = new HashMap<>();
+
         Series show = SeriesDaoDB.getInstance().find(seriesId);
-        return gson.toJson(show);
+
+        showJson.put("id", show.getId());
+        showJson.put("title", show.getTitle());
+        showJson.put("description", show.getDescription());
+        showJson.put("status", show.getStatus());
+        showJson.put("airDate", show.getAirDate());
+        showJson.put("seasons", new ArrayList<>());
+        showJson.put("genres", new ArrayList<>());
+
+        return gson.toJson(showJson);
     }
 
     public String getAllShows() {
         List<Map<String, Object>> showsJson = new ArrayList<>();
+
         List<Series> shows = SeriesDaoDB.getInstance().getAll();
 
         for (Series show: shows) {
