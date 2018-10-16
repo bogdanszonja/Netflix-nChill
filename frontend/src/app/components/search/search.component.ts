@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Series } from '../../models/Series';
+import { SeriesService } from '../../services/series/series.service';
 
 @Component({
   selector: 'app-search',
@@ -11,12 +12,16 @@ export class SearchComponent implements OnInit {
   searchResult: Series[];
   selectedShow: Series;
 
-  constructor() {}
+  constructor(private seriesService: SeriesService) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.seriesService.getAllSeries()
+      .subscribe(series => this.searchResult = series);
+  }
 
   selectShow(show: Series) {
     this.selectedShow = show;
   }
+
 }
 
