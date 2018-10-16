@@ -39,12 +39,12 @@ public class SeriesDaoDB implements SeriesDao {
     }
 
     @Override
-    public List<Series> getAll() {
+    public List<String> getAll() {
         EntityManager em = emfManager.createEntityManager();
 
-        List<Series> result = em.createQuery(
-                "SELECT s " +
-                        "FROM Series s ", Series.class)
+        List<String> result = em.createQuery(
+                "SELECT s.title " +
+                        "FROM Series s ")
                 .getResultList();
         em.close();
         return result;

@@ -16,7 +16,7 @@ import java.util.List;
 public class JsonUtil {
 
     private static JsonUtil instance = null;
-    private static Gson gson;
+    private static Gson gson = new Gson();
 
     public static JsonUtil getInstance() {
         if (instance == null) {
@@ -58,8 +58,10 @@ public class JsonUtil {
     }
 
     public String getAllShows() {
-        List<Series> shows = SeriesDaoDB.getInstance().getAll();
+        List<String> shows = SeriesDaoDB.getInstance().getAll();
+        System.out.println(shows);
         return gson.toJson(shows);
+
     }
 
     public String findSeriesBySubstring(String subString) {
