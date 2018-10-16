@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Series } from "../../models/Series";
+import { Series } from '../../models/Series';
 
 @Component({
   selector: 'app-search',

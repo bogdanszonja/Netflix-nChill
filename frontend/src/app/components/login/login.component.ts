@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { DataService } from '../../services/data.service';
+import { UserService } from '../../services/user/user.service';
 
 @Component({
   selector: 'app-login',
@@ -11,11 +11,11 @@ export class LoginComponent implements OnInit {
 
   showPart;
 
-  constructor(private dataService: DataService) {
+  constructor(private userService: UserService) {
   }
 
   ngOnInit() {
-    this.dataService.loginStatus.subscribe(type => {
+    this.userService.loginStatus.subscribe(type => {
       this.showPart = type;
       console.log(type);
     });
