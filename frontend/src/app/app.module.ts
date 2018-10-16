@@ -12,6 +12,7 @@ import { SearchComponent } from './components/search/search.component';
 import { SeriesDetailComponent } from './components/search/series-detail/series-detail.component';
 import { TrendingComponent } from './components/trending/trending.component';
 import { AppRoutingModule } from './modules/app-routing/app-routing.module';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { AppRoutingModule } from './modules/app-routing/app-routing.module';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
