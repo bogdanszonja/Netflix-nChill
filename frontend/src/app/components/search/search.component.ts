@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Series } from '../../models/Series';
 
 @Component({
   selector: 'app-search',
@@ -7,9 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SearchComponent implements OnInit {
 
-  constructor() { }
+  searchResult: Series[];
+  selectedShow: Series;
 
-  ngOnInit() {
+  constructor() {}
+
+  ngOnInit() {}
+
+  selectShow(show: Series) {
+    this.selectedShow = show;
   }
-
 }
+

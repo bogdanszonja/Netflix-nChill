@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 
-import { DataService } from '../../services/data.service';
+import { UserService } from '../../services/user/user.service';
 
 @Component({
   selector: 'app-navbar',
@@ -12,7 +13,8 @@ export class NavbarComponent implements OnInit {
   isLoggedIn = false;
   searchToggle = false;
 
-  constructor(private dataService: DataService) {
+  constructor(private userService: UserService,
+              private location: Location) {
   }
 
   ngOnInit() {
@@ -28,12 +30,13 @@ export class NavbarComponent implements OnInit {
   }
 
   join(): void {
-    this.dataService.handleLogin('join');
+    this.userService.handleLogin('join');
+    this.location
   }
 
   login(): void {
     this.isLoggedIn = true;
-    this.dataService.handleLogin('login');
+    this.userService.handleLogin('login');
   }
 
   logout(): void {

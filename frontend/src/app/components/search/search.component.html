@@ -1,3 +1,6 @@
-<p>
-  search works!
-</p>
+<div>
+  <div *ngFor="let show of searchResult" (click)="selectShow(show)">
+    {{ show.title }}
+  </div>
+  <app-series-detail [series]="selectedShow"></app-series-detail>
+</div>
