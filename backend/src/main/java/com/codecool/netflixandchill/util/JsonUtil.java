@@ -11,7 +11,10 @@ import com.codecool.netflixandchill.model.Series;
 import com.codecool.netflixandchill.model.User;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class JsonUtil {
 
@@ -24,8 +27,6 @@ public class JsonUtil {
         }
         return instance;
     }
-
-
 
     public String getEpisodeById(long episodeId) {
         Episode episode = EpisodeDaoDB.getInstance().find(episodeId);
@@ -58,9 +59,22 @@ public class JsonUtil {
     }
 
     public String getAllShows() {
-        List<String> shows = SeriesDaoDB.getInstance().getAll();
-        System.out.println(shows);
-        return gson.toJson(shows);
+        List<Map<String, Object>> showsJson = new ArrayList<>();
+        List<Series> shows = SeriesDaoDB.getInstance().getAll();
+
+        for (Series show: shows) {
+            Map<String, Object> showDetails = new HashMap<>();
+            showDetails.put("id", show.getId());
+            showDetails.put("title", show.getTitle());
+            showDetails.put("description", show.getDescription());
+            showDetails.put("status", show.getStatus());
+            showDetails.put("airDate", show.getAirDate());
+            showDetails.put("seasons", new ArrayList<>());
+            showDetails.put("genres", new ArrayList<>());
+            showsJson.add(showDetails);
+        }
+
+        return gson.toJson(showsJson);
 
     }
 
