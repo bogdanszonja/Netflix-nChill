@@ -6,6 +6,7 @@ import com.codecool.netflixandchill.dao.implementation.EpisodeDaoDB;
 import com.codecool.netflixandchill.dao.implementation.UserDaoDB;
 import com.codecool.netflixandchill.model.*;
 import com.codecool.netflixandchill.util.EMFManager;
+import com.codecool.netflixandchill.util.JsonUtil;
 import com.codecool.netflixandchill.util.SessionManager;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
@@ -46,6 +47,7 @@ public class MainPageController extends HttpServlet {
 //        context.setVariable("episodes", episodeDao.getAll());
 //
 //        engine.process("index.html", context, response.getWriter());
+        JsonUtil.getInstance().getAllShows();
 
     }
 
