@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
  * Servlet Filter implementation class CORSFilter
  */
 // Enable it for Servlet 3.x implementations
-/* @ WebFilter(asyncSupported = true, urlPatterns = { "/*" }) */
+@WebFilter(asyncSupported = true, urlPatterns = { "/*" })
 public class CORSFilter implements Filter {
 
     /**
