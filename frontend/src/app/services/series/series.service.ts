@@ -23,8 +23,8 @@ export class SeriesService {
   }
 
   getSingleSeries(id: number): Observable<Series> {
-    return this.http.get<Series>(`${this.seriesUrl}/?id=${id}`).pipe(
-      tap(_ => console.log(`Series found!`)),
+    return this.http.get<Series>(`${this.seriesUrl}?id=${id}`).pipe(
+      tap(_ => console.log(`Series id=${id} found!`)),
       catchError(this.handleError<Series>())
       );
   }
