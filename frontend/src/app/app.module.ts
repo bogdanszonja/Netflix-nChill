@@ -11,6 +11,7 @@ import { WatchedComponent } from './components/user-page/watched/watched.compone
 import { SearchComponent } from './components/search/search.component';
 import { SeriesDetailComponent } from './components/series-detail/series-detail.component';
 import { TrendingComponent } from './components/trending/trending.component';
+import { AppRoutingModule } from './modules/app-routing/app-routing.module';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { TrendingComponent } from './components/trending/trending.component';
     TrendingComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]
