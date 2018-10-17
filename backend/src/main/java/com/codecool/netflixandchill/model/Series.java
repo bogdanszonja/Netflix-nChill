@@ -20,13 +20,15 @@ public class Series extends BaseModel {
     @Temporal(TemporalType.DATE)
     private Date airDate;
 
-    @OneToMany(mappedBy = "series", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "series", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @Column(nullable = false)
+    @ToString.Exclude
     private List<Season> seasons = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @ElementCollection(targetClass = Genre.class)
     @Column(name = "genre", nullable = false)
+    @ToString.Exclude
     private List<Genre> genres = new ArrayList<>();
 
     @Builder

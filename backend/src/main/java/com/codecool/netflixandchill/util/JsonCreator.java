@@ -10,6 +10,8 @@ import com.codecool.netflixandchill.model.Season;
 import com.codecool.netflixandchill.model.Series;
 import com.codecool.netflixandchill.model.User;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,23 +72,45 @@ public class JsonCreator {
     }
 
     public String getAllShows() {
-        List<Map<String, Object>> showsJson = new ArrayList<>();
+        JsonArray seriesArray = new JsonArray();
+//        List<Map<String, Object>> showsJson = new ArrayList<>();
 
         List<Series> shows = SeriesDaoDB.getInstance().getAll();
 
         for (Series show: shows) {
-            Map<String, Object> showDetails = new HashMap<>();
-            showDetails.put("id", show.getId());
-            showDetails.put("title", show.getTitle());
-            showDetails.put("description", show.getDescription());
-            showDetails.put("status", show.getStatus());
-            showDetails.put("airDate", show.getAirDate());
-            showDetails.put("seasons", new ArrayList<>());
-            showDetails.put("genres", new ArrayList<>());
-            showsJson.add(showDetails);
+//            Map<String, Object> showDetails = new HashMap<>();
+
+            JsonObject showJson = new JsonObject();
+            showJson.addProperty("id", show.getId());
+            showJson.addProperty("title", show.getTitle());
+            showJson.addProperty("description", show.getDescription());
+            showJson.addProperty("status", show.getStatus().toString());
+            showJson.addProperty("airDate", show.getAirDate().toString());
+            JsonArray seasonArray = new JsonArray();
+            for (Season season: show.getSeasons()) {
+                JsonObject seasonJson = new JsonObject();
+                seasonJson.addProperty("id", season.getId());
+                seasonJson.addProperty("title", season.getTitle());
+                seasonJson.addProperty("description", season.getDescription());
+                seasonJson.addProperty("serialNumber", season.getSerialNumber());
+                seasonJson.addProperty("year", season.getYear().toString());
+                JsonArray episodeArray = new JsonArray();
+                for (Episode episode: season.getEpisodes()) {
+                    JsonObject episodeJson = new JsonObject();
+                    episodeJson.addProperty("id", episode.getId());
+                    episodeJson.addProperty("title", episode.getTitle());
+                    episodeJson.addProperty("description", episode.getDescription());
+                    episodeArray.add(episodeJson);
+                }
+                seasonJson.add("episodes", episodeArray);
+                seasonArray.add(seasonJson);
+            }
+            showJson.add("seasons", seasonArray);
+            showJson.addProperty("genres", new ArrayList<>().toString());
+            seriesArray.add(showJson);
         }
 
-        return gson.toJson(showsJson);
+        return seriesArray.toString();
 
     }
 
