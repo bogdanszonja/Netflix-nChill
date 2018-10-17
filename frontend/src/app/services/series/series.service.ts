@@ -17,7 +17,7 @@ export class SeriesService {
 
   getAllSeries(): Observable<Series[]> {
     return this.http.get<Series[]>(this.seriesUrl).pipe(
-      tap(_ => console.log(`Titles found!`)),
+      tap(_ => console.log(`Series found!`)),
       catchError(this.handleError<Series[]>())
     );
   }
