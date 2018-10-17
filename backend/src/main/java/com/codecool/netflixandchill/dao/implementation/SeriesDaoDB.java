@@ -46,6 +46,8 @@ public class SeriesDaoDB implements SeriesDao {
                 "SELECT s " +
                         "FROM Series s", Series.class)
                 .getResultList();
+        result.stream().forEach(series -> series.getSeasons());
+//        result.stream().forEach(series -> series.getGenres());
         em.close();
         return result;
     }

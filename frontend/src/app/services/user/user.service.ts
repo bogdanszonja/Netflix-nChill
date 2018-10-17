@@ -1,17 +1,18 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Subject } from 'rxjs/internal/Subject';
-import {Series} from "../../models/Series";
-import {Observable} from "rxjs/internal/Observable";
-import {Season} from "../../models/Season";
-import {Episode} from "../../models/Episode";
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {catchError, tap} from "rxjs/operators";
-import {of} from "rxjs/index";
+import { catchError, tap } from 'rxjs/operators';
+import { of } from 'rxjs';
+
+import { Series } from '../../models/Series';
+import { Observable } from 'rxjs/internal/Observable';
+import { Season } from '../../models/Season';
+import { Episode } from '../../models/Episode';
 
 const httpOptions = {
   headers: new HttpHeaders({
-    'Content-Type':  'application/json'
+    'Content-Type': 'application/json'
   })
 };
 
@@ -31,7 +32,7 @@ export class UserService {
     this.loginStatus.next(type);
   }
 
-  addWholeSeries(series: Series):Observable<Series> {
+  addWholeSeries(series: Series): Observable<Series> {
     return this.http.post<Series>(this.url, series, httpOptions)
       .pipe(
         tap(_ => console.log(`Series added`)),
@@ -39,7 +40,7 @@ export class UserService {
       );
   }
 
-  addSingleSeason(season: Season):Observable<Season> {
+  addSingleSeason(season: Season): Observable<Season> {
     return this.http.post<Season>(this.url, season, httpOptions)
       .pipe(
         tap(_ => console.log(`Series added`)),
@@ -47,7 +48,7 @@ export class UserService {
       );
   }
 
-  addSingleEpisode(episode: Episode):Observable<Episode> {
+  addSingleEpisode(episode: Episode): Observable<Episode> {
     return this.http.post<Episode>(this.url, episode, httpOptions)
       .pipe(
         tap(_ => console.log(`Series added`)),
