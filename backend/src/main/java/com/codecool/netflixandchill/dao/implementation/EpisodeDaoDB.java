@@ -52,7 +52,7 @@ public class EpisodeDaoDB implements EpisodeDao {
     }
 
     @Override
-    public List<FakeEpisode> findBySubstring(String substring) {
+    public List<Episode> findBySubstring(String substring) {
         EntityManager em = emfManager.createEntityManager();
         List<Episode> result = em.createQuery(
                 "SELECT e " +
@@ -67,6 +67,6 @@ public class EpisodeDaoDB implements EpisodeDao {
             fakeEpisodes.add(new FakeEpisode(episode));
         }
 
-        return fakeEpisodes;
+        return null;
     }
 }
