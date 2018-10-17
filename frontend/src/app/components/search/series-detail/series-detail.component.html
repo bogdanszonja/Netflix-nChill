@@ -1,3 +1,16 @@
 <div>
-
+  {{ series.title }}
+    <i class="fas fa-plus" (click)="addWholeSeries(series.seasons)"></i>
+    <i class="fas fa-list"></i>
+  {{ series.description }}
+  {{ series.genres }}
+  <div *ngFor="let season of series.seasons">
+    {{ season.serialNumber }}<i class="fas fa-check" (click)="addSingleSeason(season)"></i>
+    <div *ngFor="let episode of season.episodes">
+      {{ episode.serialNumber }}
+      {{ episode.title }}<i class="fas fa-check" (click)="addSingleEpisode(episode)"></i>
+      {{ episode.releaseDate }}
+      {{ episode.runtime }}
+    </div>
+  </div>
 </div>

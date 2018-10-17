@@ -1,9 +1,6 @@
 <div>
   <div *ngFor="let show of searchResult" (click)="selectShow(show)">
     <div>{{ show.title }}</div>
-    <div>{{ show.description }}</div>
-    <div>{{ show.status }}</div>
-    <div>{{ show.airDate }}</div>
   </div>
   <app-series-detail [series]="selectedShow"></app-series-detail>
 </div>
