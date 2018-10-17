@@ -1,6 +1,19 @@
 package com.codecool.netflixandchill.model;
 
 public enum Genre {
-    PORNO,
-    HORROR
+    DRAMA,
+    ACTION,
+    HORROR,
+    SCIENCE_FICTION,
+    ADVENTURE,
+    FANTASY,
+    CRIME,
+    SUPERNATURAL,
+    ANIME,
+    COMEDY,
+    MYSTERY,
+    HISTORY,
+    WESTERN,
+    THRILLER,
+    CHILDREN,
 }
