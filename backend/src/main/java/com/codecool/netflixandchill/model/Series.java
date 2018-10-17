@@ -11,7 +11,17 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Series extends BaseModel {
+public class Series {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+
+    @Column(nullable = false)
+    private String title;
+
+    @Column(nullable = false)
+    private String description;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -33,7 +43,8 @@ public class Series extends BaseModel {
 
     @Builder
     public Series(String title, String description, Status status, Date airDate, List<Genre> genres) {
-        super(title, description);
+        this.title = title;
+        this.description = description;
         this.status = status;
         this.airDate = airDate;
         this.genres = genres;
