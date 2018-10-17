@@ -16,6 +16,7 @@ export class SearchComponent implements OnInit {
   constructor(private seriesService: SeriesService) { }
 
   ngOnInit() {
+    console.log(this.selectedShow);
     this.seriesService.getAllSeries()
       .subscribe(series => this.searchResult = series);
   }
