@@ -1,5 +1,6 @@
 package com.codecool.netflixandchill.controller;
 
+import com.codecool.netflixandchill.util.RequestParser;
 import com.google.gson.JsonObject;
 
 import javax.servlet.annotation.WebServlet;
@@ -13,15 +14,16 @@ public class UserPageController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        System.out.println("ssssssssssssssssssssssssssssssssssssssssssssssssssssss");
+
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        if (request.getParameter("series") != null) {
-            System.out.println(request.getParameter("series"));
-        }
-        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        JsonObject jsonObject = RequestParser.getInstance().getJsonObject(request);
+
+        System.out.println(jsonObject);
+
+        // TODO: handle data sent
 
         JsonObject answer = new JsonObject();
         answer.addProperty("success", true);
