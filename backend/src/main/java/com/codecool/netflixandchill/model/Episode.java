@@ -1,9 +1,6 @@
 package com.codecool.netflixandchill.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -17,6 +14,8 @@ import java.util.Date;
 public class Episode extends BaseModel {
 
     @Column(nullable = false)
+    @Temporal(TemporalType.DATE)
+    @ToString.Exclude
     private Date releaseDate;
 
     @Column(nullable = false)
@@ -29,6 +28,7 @@ public class Episode extends BaseModel {
     private Season season;
 
     @ManyToMany(mappedBy = "watchedEpisodes")
+    @ToString.Exclude
     private Collection<User> users = new ArrayList<>();
 
     @Builder
