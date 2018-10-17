@@ -1,6 +1,6 @@
 package com.codecool.netflixandchill.controller;
 
-import com.codecool.netflixandchill.util.JsonUtil;
+import com.codecool.netflixandchill.util.JsonCreator;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -13,9 +13,15 @@ public class SeriesController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      response.setContentType("application/json");
-      response.setCharacterEncoding("UTF-8");
-      response.getWriter().write(JsonUtil.getInstance().getAllShows());
+        if (request.getParameter("id") != null) {
+            response.getWriter().write(
+                    JsonCreator.getInstance().getSeriesById(Long.parseLong(request.getParameter("id"))));
+            return;
+        }
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(JsonCreator.getInstance().getAllShows());
     }
 
     @Override

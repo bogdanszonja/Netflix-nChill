@@ -9,7 +9,7 @@ public interface SeriesDao {
 
     Series find(long seriesId);
 
-    List<String> getAll();
+    List<Series> getAll();
 
     List<Series> findBySubstring(String substring);
 }
