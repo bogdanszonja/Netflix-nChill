@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
+
 import { Series } from "../../../models/Series";
-import {Episode} from "../../../models/Episode";
-import {Season} from "../../../models/Season";
-import {UserService} from "../../../services/user/user.service";
-import {Observable} from "rxjs/internal/Observable";
+import { Episode } from "../../../models/Episode";
+import { Season } from "../../../models/Season";
+import { UserService } from "../../../services/user/user.service";
 
 @Component({
   selector: 'app-series-detail',

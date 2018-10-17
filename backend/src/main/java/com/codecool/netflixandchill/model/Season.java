@@ -13,8 +13,9 @@ import java.util.List;
 @AllArgsConstructor
 public class Season extends BaseModel {
 
-    @OneToMany(mappedBy = "season", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "season", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @Column(nullable = false)
+    @ToString.Exclude
     private List<Episode> episodes = new ArrayList<>();
 
     @Temporal(TemporalType.DATE)
