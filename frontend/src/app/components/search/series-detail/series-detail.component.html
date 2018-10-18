@@ -4,9 +4,9 @@
     <i class="fas fa-list" (click)="addToWatchlist(series)"></i>
     <i class="far fa-heart" (click)="addToFavourites(series)"></i>
   {{ series.description }}
-  <span *ngFor="let genre of series.genres">
-    {{ genre }}
-  </span>
+  <!--<span *ngFor="let genre of series.genres">-->
+    {{ series.genres }}
+  <!--</span>-->
   <div *ngFor="let season of series.seasons">
     Season {{ season.seasonNumber }}<i class="fas fa-check" (click)="addSingleSeason(season)"></i>
     <div *ngFor="let episode of season.episodes">
