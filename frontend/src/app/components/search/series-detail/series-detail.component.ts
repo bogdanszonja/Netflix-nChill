@@ -35,4 +35,14 @@ export class SeriesDetailComponent implements OnInit {
     this.userService.addSingleEpisode(episode).subscribe();
   }
 
+  addToFavourites(series: Series): void {
+    console.log('added to favourites');
+    this.userService.addToFavourites(series).subscribe();
+  }
+
+  addToWatchlist(series: Series): void {
+    console.log('added to watchlist');
+    this.userService.addToWatchlist(series).subscribe();
+  }
+
 }
