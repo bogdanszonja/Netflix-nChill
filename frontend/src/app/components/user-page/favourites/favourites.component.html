@@ -1,3 +1,8 @@
-<p>
-  favourites works!
-</p>
+<div *ngFor="let show of favourites">
+  {{ show.title }}
+  {{ show.description }}
+  {{ show.status }}
+  <span *ngFor="let genre of show.genres">
+    {{ genre }}
+  </span>
+</div>
