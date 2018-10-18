@@ -57,7 +57,7 @@ public class SeriesDaoDB implements SeriesDao {
         EntityManager em = emfManager.createEntityManager();
         List<Series> result = em.createQuery(
                 "SELECT s " +
-                        "FROM Series s WHERE s.title LIKE '%' || :param || '%'", Series.class)
+                        "FROM Series s WHERE UPPER(s.title) LIKE UPPER('%' || :param || '%')", Series.class)
                 .setParameter("param", substring)
                 .getResultList();
         em.close();
