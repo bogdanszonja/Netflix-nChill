@@ -56,10 +56,14 @@ public class JsonCreator {
     public String findEpisodeBySubstring(String subString) {
         List<Episode> episodes = EpisodeDaoDB.getInstance().findBySubstring(subString);
         JsonArray episodeArray = new JsonArray();
-        for (Episode episode: episodes) {
-            JsonObject episodeJson = new JsonObject();
-            addEpisodePropertiesToJson(episode, episodeJson);
-            episodeArray.add(episodeJson);
+        try {
+            for (Episode episode : episodes) {
+                JsonObject episodeJson = new JsonObject();
+                addEpisodePropertiesToJson(episode, episodeJson);
+                episodeArray.add(episodeJson);
+            }
+        } catch (NullPointerException e) {
+            return null;
         }
         return episodeArray.toString();
     }
@@ -132,10 +136,14 @@ public class JsonCreator {
     public String findSeriesBySubstring(String subString) {
         List<Series> shows = SeriesDaoDB.getInstance().findBySubstring(subString);
         JsonArray seriesArray = new JsonArray();
-        for (Series show: shows) {
-            JsonObject showJson = new JsonObject();
-            addSeriesPropertiesToJson(show, showJson);
-            seriesArray.add(showJson);
+        try {
+            for (Series show : shows) {
+                JsonObject showJson = new JsonObject();
+                addSeriesPropertiesToJson(show, showJson);
+                seriesArray.add(showJson);
+            }
+        } catch (NullPointerException e) {
+            return null;
         }
         return seriesArray.toString();
     }
