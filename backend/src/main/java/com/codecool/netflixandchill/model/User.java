@@ -1,5 +1,6 @@
 package com.codecool.netflixandchill.model;
 
+import com.codecool.netflixandchill.dao.UserDao;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -42,6 +43,14 @@ public class User {
     @JoinTable(joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "episode_id"))
     private Collection<Episode> watchedEpisodes = new ArrayList<>();
 
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "episode_id"))
+    private Collection<Episode> seasonEpisode = new ArrayList<>();
+
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "episode_id"))
+    private Collection<Episode> seriesEpisode = new ArrayList<>();
+
     @Temporal(TemporalType.DATE)
     private Date registrationDate;
 
@@ -65,5 +74,4 @@ public class User {
     public void addSeriesToWatchList(Series series) {
         watchlist.add(series);
     }
-
 }

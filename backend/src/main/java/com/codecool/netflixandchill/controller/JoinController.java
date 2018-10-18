@@ -37,7 +37,7 @@ public class JoinController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         JsonObject jsonObject = RequestParser.getInstance().getJsonObject(request);
-        System.out.println(jsonObject);
+
 //        HttpSession session = sessionManager.getHttpSession(request);
 //
 //        if (session == null) {

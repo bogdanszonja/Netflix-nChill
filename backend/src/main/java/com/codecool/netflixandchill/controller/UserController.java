@@ -5,6 +5,7 @@ import com.codecool.netflixandchill.util.RequestParser;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.hibernate.Session;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -28,27 +29,38 @@ public class UserController extends HttpServlet {
 
         JsonObject jsonObject = RequestParser.getInstance().getJsonObject(request);
         String jsonObjectKey = "";
+        long id;
 
         for (String key : jsonObject.keySet()) {
             jsonObjectKey = key;
         }
 
-        if (jsonObjectKey.equals("episode")) {
-            JsonArray seasons = (JsonArray) jsonObject.get("season");
-            for (JsonElement season : seasons) {
-                JsonArray seasonsEpisode = (JsonArray) ((JsonObject) season).get("episodes");
-                for (JsonElement episode : seasonsEpisode) {
-                    long id = ((JsonObject) episode).get("id").getAsLong();
-                    userDaoDB.addEpisodeToWatchedList(id, 1);
-                }
-            }
-        } else if (jsonObjectKey.equals("favourite")){
-            long id = jsonObject.get("season").getAsLong();
-            userDaoDB.addSeriesToFavouriteList(id, 1);
-        } else {
-            long id = jsonObject.get("series").getAsLong();
-            userDaoDB.addSeriesToWatchList(id, 1);
-        }
+//        switch (jsonObjectKey) {
+//            case "episode":
+//                id = jsonObject.get("episode").getAsLong();
+//                userDaoDB.addEpisodeToWatchedList(id, userDaoDB.getIdFromUser());
+//
+//                break;
+//            case "favourite":
+//                id = jsonObject.get("favourite").getAsLong();
+//                userDaoDB.addSeriesToFavouriteList(id, 1);
+//
+//                break;
+//            case "watchlist":
+//                id = jsonObject.get("watchlist").getAsLong();
+//                userDaoDB.addSeriesToWatchList(id, 1);
+//
+//                break;
+//            case "season":
+//                id = jsonObject.get("season").getAsLong();
+//                userDaoDB.addSeasonToWatchedList(id, 1);
+//
+//                break;
+//            case "series":
+//                id = jsonObject.get("series").getAsLong();
+//                userDaoDB.addSeriesToWatchedList(id, 1);
+//                break;
+//        }
 
 
         JsonObject answer = new JsonObject();
