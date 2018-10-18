@@ -58,11 +58,11 @@ public class User {
         episode.addUser(this);
     }
 
-    public void addFavourites(Series series) {
+    public void addSeriesToFavouriteList(Series series) {
         favourites.add(series);
     }
 
-    public void addWatchedEpisodes(Series series) {
+    public void addSeriesToWatchList(Series series) {
         watchlist.add(series);
     }
 

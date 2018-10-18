@@ -3,7 +3,9 @@ package com.codecool.netflixandchill.controller;
 import com.codecool.netflixandchill.dao.UserDao;
 import com.codecool.netflixandchill.dao.implementation.UserDaoDB;
 import com.codecool.netflixandchill.model.User;
+import com.codecool.netflixandchill.util.RequestParser;
 import com.codecool.netflixandchill.util.SessionManager;
+import com.google.gson.JsonObject;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -27,10 +29,14 @@ public class RegisterController extends HttpServlet {
 //        WebContext context = new WebContext(request, response, request.getServletContext());
 //
 //        engine.process("register.html", context, response.getWriter());
+
+
+
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        JsonObject jsonObject = RequestParser.getInstance().getJsonObject(request);
         HttpSession session = sessionManager.getHttpSession(request);
 
         if (session == null) {
@@ -38,18 +44,21 @@ public class RegisterController extends HttpServlet {
             return;
         }
 
-        String userName = request.getParameter("register_username");
-        String email = request.getParameter("register_email");
-        String password = request.getParameter("register_password");
-        String confirmedPassword = request.getParameter("password_confirm");
+        String userName = jsonObject.get("username").getAsString();
+        String email = jsonObject.get("email").getAsString();
+        String password = jsonObject.get("password").getAsString();
+        String confirmedPassword = jsonObject.get("confirmPassword").getAsString();
 
         if (userDaoDB.validRegister(email, password, confirmedPassword)) {
             userDaoDB.add(User.builder().userName(userName).emailAddress(email).password(password).registrationDate(new Date()).build());
-            response.sendRedirect("/login");
-            return;
         }
 
-        response.sendRedirect("/register");
+        JsonObject answer = new JsonObject();
+        answer.addProperty("success", true);
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(answer.toString());
     }
 
 }

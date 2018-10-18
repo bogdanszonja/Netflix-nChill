@@ -2,6 +2,7 @@ package com.codecool.netflixandchill.dao.implementation;
 
 import com.codecool.netflixandchill.dao.UserDao;
 import com.codecool.netflixandchill.model.Episode;
+import com.codecool.netflixandchill.model.Series;
 import com.codecool.netflixandchill.model.User;
 import com.codecool.netflixandchill.util.EMFManager;
 import com.codecool.netflixandchill.util.TransactionManager;
@@ -80,7 +81,7 @@ public class UserDaoDB implements UserDao {
     }
 
     @Override
-    public void addEpisode(long episodeId, long userId) {
+    public void addEpisodeToWatchedList(long episodeId, long userId) {
         EntityManager em = emfManager.createEntityManager();
 
         EntityTransaction transaction = em.getTransaction();
@@ -88,6 +89,36 @@ public class UserDaoDB implements UserDao {
         User user = em.find(User.class, userId);
         Episode episode = em.find(Episode.class, episodeId);
         user.getWatchedEpisodes().add(episode);
+        em.persist(user);
+        transaction.commit();
+
+        em.close();
+    }
+
+    @Override
+    public void addSeriesToWatchList(long episodeId, long userId) {
+        EntityManager em = emfManager.createEntityManager();
+
+        EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
+        User user = em.find(User.class, userId);
+        Series series = em.find(Series.class, episodeId);
+        user.getWatchlist().add(series);
+        em.persist(user);
+        transaction.commit();
+
+        em.close();
+    }
+
+    @Override
+    public void addSeriesToFavouriteList(long episodeId, long userId) {
+        EntityManager em = emfManager.createEntityManager();
+
+        EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
+        User user = em.find(User.class, userId);
+        Series series = em.find(Series.class, episodeId);
+        user.getFavourites().add(series);
         em.persist(user);
         transaction.commit();
 
