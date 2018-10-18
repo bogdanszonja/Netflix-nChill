@@ -194,8 +194,8 @@ public class JsonCreator {
         userJson.put("registrationDate", user.getRegistrationDate());
         userJson.put("username", user.getUserName());
         userJson.put("series", user.getWatchlist());
-        userJson.put("episode", user.getWatchedEpisodes());
-        userJson.put("favourite", user.getFavourites());
+        userJson.put("episode", new ArrayList<>());
+        userJson.put("favourite", new ArrayList<>());
 
 
     }

@@ -55,8 +55,6 @@ public class UserDaoDB implements UserDao {
                     "WHERE u.emailAddress = :email", User.class)
                 .setParameter("email", email)
                 .getResultList();
-        Collection<Episode> watchedEpisodes = result.get(0).getWatchedEpisodes();
-        System.out.println(watchedEpisodes.size());
         em.close();
         return (result.size() != 0) ? result.get(0): null;
     }
