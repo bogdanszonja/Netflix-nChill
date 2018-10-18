@@ -1,6 +1,8 @@
 package com.codecool.netflixandchill.model;
 
 import lombok.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -35,6 +37,7 @@ public class Episode {
     private Season season;
 
     @ManyToMany(mappedBy = "watchedEpisodes")
+    @LazyCollection(LazyCollectionOption.TRUE)
     @ToString.Exclude
     private Collection<User> users = new ArrayList<>();
 

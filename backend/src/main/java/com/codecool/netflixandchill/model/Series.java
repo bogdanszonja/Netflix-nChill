@@ -1,6 +1,8 @@
 package com.codecool.netflixandchill.model;
 
 import lombok.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -31,13 +33,15 @@ public class Series {
     @Temporal(TemporalType.DATE)
     private Date airDate;
 
-    @OneToMany(mappedBy = "series", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "series", cascade = CascadeType.PERSIST)
+    @LazyCollection(LazyCollectionOption.FALSE)
     @Column(nullable = false)
     @ToString.Exclude
     private List<Season> seasons = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @ElementCollection(targetClass = Genre.class)
+    @LazyCollection(LazyCollectionOption.FALSE)
     @Column(name = "genre", nullable = false)
     @ToString.Exclude
     private List<Genre> genres = new ArrayList<>();

@@ -32,23 +32,24 @@ public class LoginController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        HttpSession session = sessionManager.getHttpSession(request);
+//        HttpSession session = sessionManager.getHttpSession(request);
         JsonObject jsonObject = RequestParser.getInstance().getJsonObject(request);
         JsonCreator jsonCreator = JsonCreator.getInstance();
         JsonObject user = new JsonObject();
 
-        if (session == null) {
-            response.sendRedirect("/login");
-            return;
-        }
+//        if (session == null) {
+//            response.sendRedirect("/login");
+//            return;
+//        }
 
-        String email = jsonObject.get("loginEmail").getAsString();
-        String password = jsonObject.get("loginPassword").getAsString();
+        String email = jsonObject.get("username").getAsString();
+        String password = jsonObject.get("password").getAsString();
 
+        System.out.println(email + password);
         if (userDaoDB.validLogin(email, password)) {
-            session.setAttribute("userId", userDaoDB.find(email).getId());
+//            session.setAttribute("userId", userDaoDB.find(email).getId());
             user.addProperty("user", jsonCreator.findUserByEmail(email));
-
+            System.out.println(user);
         }
 
         response.setContentType("application/json");

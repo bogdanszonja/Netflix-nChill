@@ -21,13 +21,15 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  join(username: string, email: string, password: string, passwordConfirm: string) {
-    console.log(username, email, password, passwordConfirm);
-    this.userService.validateJoin(username, email, password, passwordConfirm).subscribe();
+  join(username: string, email: string, password: string, confirmPassword: string) {
+    console.log(username, email, password, confirmPassword);
+    this.userService.validateJoin(username, email, password, confirmPassword)
+      .subscribe(answer => console.log(answer));
   }
 
   login(username: string, password: string) {
-    this.userService.validateLogin(username, password).subscribe();
+    this.userService.validateLogin(username, password)
+      .subscribe(user => console.log(user));
   }
 
 }
