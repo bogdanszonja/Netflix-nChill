@@ -33,7 +33,7 @@ export class UserService {
   }
 
   addWholeSeries(series: Series): Observable<Series> {
-    return this.http.post<Series>(this.url, series, httpOptions)
+    return this.http.post<Series>(this.url, {'type': 'series', 'series': series}, httpOptions)
       .pipe(
         tap(_ => console.log(`Series added`)),
         catchError(this.handleError<Series>())
@@ -41,17 +41,17 @@ export class UserService {
   }
 
   addSingleSeason(season: Season): Observable<Season> {
-    return this.http.post<Season>(this.url, season, httpOptions)
+    return this.http.post<Season>(this.url, {'type': 'season', 'season': season}, httpOptions)
       .pipe(
-        tap(_ => console.log(`Series added`)),
+        tap(_ => console.log(`Season added`)),
         catchError(this.handleError<Season>())
       );
   }
 
   addSingleEpisode(episode: Episode): Observable<Episode> {
-    return this.http.post<Episode>(this.url, episode, httpOptions)
+    return this.http.post<Episode>(this.url, {'type': 'episode', 'episode': episode}, httpOptions)
       .pipe(
-        tap(_ => console.log(`Series added`)),
+        tap(_ => console.log(`Episode added`)),
         catchError(this.handleError<Episode>())
       );
   }
