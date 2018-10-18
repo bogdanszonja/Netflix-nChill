@@ -1,5 +1,6 @@
 <div>
-  <app-watchlist></app-watchlist>
-  <app-favourites></app-favourites>
-  <app-watched></app-watched>
+  {{ user }}
+  <app-watchlist [watchList]="user.watchList">Watchlist</app-watchlist>
+  <app-favourites [favourites]="user.favourites">Favourites</app-favourites>
+  <app-watched [watchedEpisodes]="user.watchedEpisodes">My Shows</app-watched>
 </div>

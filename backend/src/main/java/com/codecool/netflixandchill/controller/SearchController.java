@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.util.List;
 
 @WebServlet(urlPatterns = {"/search"})
-public class SearchPageController extends HttpServlet {
+public class SearchController extends HttpServlet {
     private SessionManager sessionManager = SessionManager.getInstance();
     private EpisodeDao episodeDao = EpisodeDaoDB.getInstance();
     private UserDao userDao = UserDaoDB.getInstance();

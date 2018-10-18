@@ -17,8 +17,8 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.*;
 
-@WebServlet(urlPatterns = {"/register"})
-public class RegisterController extends HttpServlet {
+@WebServlet(urlPatterns = {"/join"})
+public class JoinController extends HttpServlet {
 
     private UserDao userDaoDB = UserDaoDB.getInstance();
     private SessionManager sessionManager = SessionManager.getInstance();
@@ -37,12 +37,13 @@ public class RegisterController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         JsonObject jsonObject = RequestParser.getInstance().getJsonObject(request);
-        HttpSession session = sessionManager.getHttpSession(request);
-
-        if (session == null) {
-            response.sendRedirect("/register");
-            return;
-        }
+        System.out.println(jsonObject);
+//        HttpSession session = sessionManager.getHttpSession(request);
+//
+//        if (session == null) {
+//            response.sendRedirect("/register");
+//            return;
+//        }
 
         String userName = jsonObject.get("username").getAsString();
         String email = jsonObject.get("email").getAsString();
