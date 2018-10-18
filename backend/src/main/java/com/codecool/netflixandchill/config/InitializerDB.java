@@ -2,10 +2,7 @@ package com.codecool.netflixandchill.config;
 
 import com.codecool.netflixandchill.json.Show;
 import com.codecool.netflixandchill.json.TvShow;
-import com.codecool.netflixandchill.model.Episode;
-import com.codecool.netflixandchill.model.Season;
-import com.codecool.netflixandchill.model.Series;
-import com.codecool.netflixandchill.model.Status;
+import com.codecool.netflixandchill.model.*;
 import com.codecool.netflixandchill.util.EMFManager;
 import com.codecool.netflixandchill.util.RemoteURLReader;
 
@@ -13,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,6 +21,35 @@ public class InitializerDB {
         Initializer init = new Initializer(urlReader);
         Show tvShow = new Show();
         init.addTvShowToMyTvSHowsList();
+
+        EntityTransaction transactionTest = em.getTransaction();
+        transactionTest.begin();
+
+        Series series1 = Series.builder()
+                .title("szonja").description("sz").status(Status.RUNNING).build();
+        Series series2 = Series.builder()
+                .title("zoli").description("z").status(Status.RUNNING).build();
+        Series series3 = Series.builder()
+                .title("anita").description("a").status(Status.RUNNING).build();
+
+        Episode episode1 = Episode.builder()
+                .title("baszó").releaseDate(new Date()).runtime(5).episodeNumber(1).build();
+        Episode episode2 = Episode.builder()
+                .title("fantom").releaseDate(new Date()).runtime(10).episodeNumber(2).build();
+        Episode episode3 = Episode.builder()
+                .title("bögöly").releaseDate(new Date()).runtime(15).episodeNumber(3).build();
+
+        User user = User.builder()
+                .userName("oli").emailAddress("oli").password("oli").registrationDate(new Date()).build();
+        user.addWatchedEpisodes(episode1);
+        user.addWatchedEpisodes(episode2);
+        user.addWatchedEpisodes(episode3);
+        user.addSeriesToFavouriteList(series1);
+        user.addSeriesToFavouriteList(series2);
+        user.addSeriesToWatchList(series3);
+
+        em.persist(user);
+        transactionTest.commit();
 
         for (int i = 0; i < tvShow.getTvShowList().size(); i++) {
             EntityTransaction transaction = em.getTransaction();

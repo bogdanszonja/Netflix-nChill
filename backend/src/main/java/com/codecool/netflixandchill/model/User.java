@@ -1,6 +1,8 @@
 package com.codecool.netflixandchill.model;
 
 import lombok.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -28,17 +30,25 @@ public class User {
     private String password;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "episode_id"))
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinTable(name = "users_watchlist",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "episode_id"))
     @ToString.Exclude
     private Collection<Series> watchlist = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "episode_id"))
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinTable(name = "users_favourites",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "episode_id"))
     @ToString.Exclude
     private Collection<Series> favourites = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "episode_id"))
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinTable(joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "episode_id"))
     @ToString.Exclude
     private Collection<Episode> watchedEpisodes = new ArrayList<>();
 

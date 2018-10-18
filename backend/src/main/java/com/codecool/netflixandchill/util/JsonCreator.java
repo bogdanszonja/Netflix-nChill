@@ -4,10 +4,7 @@ import com.codecool.netflixandchill.dao.implementation.EpisodeDaoDB;
 import com.codecool.netflixandchill.dao.implementation.SeasonDaoDB;
 import com.codecool.netflixandchill.dao.implementation.SeriesDaoDB;
 import com.codecool.netflixandchill.dao.implementation.UserDaoDB;
-import com.codecool.netflixandchill.model.Episode;
-import com.codecool.netflixandchill.model.Season;
-import com.codecool.netflixandchill.model.Series;
-import com.codecool.netflixandchill.model.User;
+import com.codecool.netflixandchill.model.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -100,8 +97,8 @@ public class JsonCreator {
         showJson.put("description", show.getDescription());
         showJson.put("status", show.getStatus());
         showJson.put("airDate", show.getAirDate());
-        showJson.put("seasons", new ArrayList<>());
-        showJson.put("genres", new ArrayList<>());
+        showJson.put("seasons", show.getSeasons());
+        showJson.put("genres", show.getGenres());
 
         return gson.toJson(showJson);
     }
@@ -133,11 +130,43 @@ public class JsonCreator {
     }
 
     public String findUserByEmail(String email) {
-        Map<String, Object> userJson = new HashMap<>();
         User user = UserDaoDB.getInstance().find(email);
-        putUserDataToJson(user, userJson);
+        JsonObject userJson = new JsonObject();
+        userJson.addProperty("id", user.getId());
+        userJson.addProperty("username", user.getUserName());
+        userJson.addProperty("emailAddress", user.getEmailAddress());
+        userJson.addProperty("registrationDate", user.getRegistrationDate().toString());
+        JsonArray watchlistArray = new JsonArray();
+        for (Series series: user.getWatchlist()) {
+            JsonObject seriesJson = new JsonObject();
+            seriesJson.addProperty("id", series.getId());
+            seriesJson.addProperty("description", series.getDescription());
+            seriesJson.addProperty("title", series.getTitle());
+            seriesJson.addProperty("airDate", series.getAirDate().toString());
+            seriesJson.addProperty("status", series.getStatus().toString());
+            watchlistArray.add(seriesJson);
+        }
+        JsonArray favouritesArray = new JsonArray();
+        for (Series series: user.getFavourites()) {
+            JsonObject seriesJson = new JsonObject();
+            seriesJson.addProperty("id", series.getId());
+            seriesJson.addProperty("description", series.getDescription());
+            seriesJson.addProperty("title", series.getTitle());
+            seriesJson.addProperty("airDate", series.getAirDate().toString());
+            seriesJson.addProperty("status", series.getStatus().toString());
+            favouritesArray.add(seriesJson);
+        }
+        JsonArray watchedEpisodesArray = new JsonArray();
+        for (Episode episode: user.getWatchedEpisodes()) {
+            JsonObject episodeJson = new JsonObject();
+            this.addEpisodePropertiesToJson(episode, episodeJson);
+            watchedEpisodesArray.add(episodeJson);
+        }
+        userJson.add("watchlist", watchlistArray);
+        userJson.add("favourites", favouritesArray);
+        userJson.add("watchedEpisodes", watchedEpisodesArray);
 
-        return gson.toJson(userJson);
+        return userJson.toString();
     }
 
     public String getAllUsers() {
@@ -146,7 +175,7 @@ public class JsonCreator {
         for (User user: users) {
             JsonObject userJson = new JsonObject();
             userJson.addProperty("id", user.getId());
-            userJson.addProperty("emailaddress", user.getEmailAddress());
+            userJson.addProperty("emailAddress", user.getEmailAddress());
             userJson.addProperty("registrationDate", user.getRegistrationDate().toString());
             userJson.addProperty("username", user.getUserName());
             userArray.add(userJson);
@@ -184,20 +213,18 @@ public class JsonCreator {
         seriesJson.addProperty("id", show.getId());
         seriesJson.addProperty("description", show.getDescription());
         seriesJson.addProperty("title", show.getTitle());
-        seriesJson.addProperty("airdate", show.getAirDate().toString());
+        seriesJson.addProperty("airDate", show.getAirDate().toString());
         seriesJson.addProperty("status", show.getStatus().toString());
     }
 
     private void putUserDataToJson(User user, Map<String,Object> userJson) {
         userJson.put("id", user.getId());
-        userJson.put("emailaddress", user.getEmailAddress());
+        userJson.put("emailAddress", user.getEmailAddress());
         userJson.put("registrationDate", user.getRegistrationDate());
         userJson.put("username", user.getUserName());
-        userJson.put("series", user.getWatchlist());
-        userJson.put("episode", new ArrayList<>());
-        userJson.put("favourite", new ArrayList<>());
-
-
+        userJson.put("watchlist", user.getWatchlist());
+        userJson.put("favourite", user.getFavourites());
+        userJson.put("watchedEpisodes", user.getWatchedEpisodes());
     }
 
     private void addAllShowPropertyToJson(List<Series> shows, JsonArray seriesArray) {
@@ -218,7 +245,13 @@ public class JsonCreator {
                 seasonArray.add(seasonJson);
             }
             showJson.add("seasons", seasonArray);
-            showJson.addProperty("genres", new ArrayList<>().toString());
+            JsonArray genreArray = new JsonArray();
+            for (Genre genre: show.getGenres()) {
+                JsonObject genreJson = new JsonObject();
+                genreJson.addProperty("name", String.valueOf(genre));
+                genreArray.add(genreJson);
+            }
+            showJson.add("genres", genreArray);
             seriesArray.add(showJson);
         }
     }
