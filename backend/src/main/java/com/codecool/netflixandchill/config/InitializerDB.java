@@ -13,12 +13,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.HashSet;
 import java.util.Set;
 
 public class InitializerDB {
-    public static void populateDb(EntityManager em) throws IOException, ParseException {
+    public static void populateDb(EntityManager em) throws IOException {
 
         RemoteURLReader urlReader = new RemoteURLReader();
         Initializer init = new Initializer(urlReader);
@@ -67,7 +66,7 @@ public class InitializerDB {
         }
     }
 
-    public static void main(String[] args) throws IOException, ParseException {
+    public static void main(String[] args) throws IOException {
         EntityManagerFactory entityManager =  EMFManager.getInstance();
         EntityManager em = entityManager.createEntityManager();
 
