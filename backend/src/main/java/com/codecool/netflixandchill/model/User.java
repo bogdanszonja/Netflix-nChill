@@ -32,6 +32,14 @@ public class User {
 
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "episode_id"))
+    private Collection<Series> watchlist = new ArrayList<>();
+
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "episode_id"))
+    private Collection<Series> favourites = new ArrayList<>();
+
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "episode_id"))
     private Collection<Episode> watchedEpisodes = new ArrayList<>();
 
     @Temporal(TemporalType.DATE)
@@ -48,6 +56,14 @@ public class User {
     public void addWatchedEpisodes(Episode episode) {
         watchedEpisodes.add(episode);
         episode.addUser(this);
+    }
+
+    public void addFavourites(Series series) {
+        favourites.add(series);
+    }
+
+    public void addWatchedEpisodes(Series series) {
+        watchlist.add(series);
     }
 
 }

@@ -18,6 +18,9 @@ public class RequestParser {
         return instance;
     }
 
+    private RequestParser() {
+    }
+
     public JsonObject getJsonObject(HttpServletRequest request) throws IOException {
         StringBuilder sb = new StringBuilder();
         String line;

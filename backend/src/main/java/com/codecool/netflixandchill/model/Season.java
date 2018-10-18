@@ -11,7 +11,14 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Season extends BaseModel {
+public class Season {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+
+    @Column(nullable = false)
+    private String title;
 
     @OneToMany(mappedBy = "season", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @Column(nullable = false)
@@ -22,16 +29,16 @@ public class Season extends BaseModel {
     private Date year;
 
     @Column(nullable = false)
-    private int serialNumber;
+    private int seasonNumber;
 
     @ManyToOne
     private Series series;
 
     @Builder
-    public Season(String title, String description, Date year, int serialNumber) {
-        super(title, description);
+    public Season(String title, Date year, int seasonNumber) {
+        this.title = title;
         this.year = year;
-        this.serialNumber = serialNumber;
+        this.seasonNumber = seasonNumber;
     }
 
     public void addEpisode(Episode episode) {
