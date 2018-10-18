@@ -25,32 +25,6 @@ public class InitializerDB {
         EntityTransaction transactionTest = em.getTransaction();
         transactionTest.begin();
 
-        Series series1 = Series.builder()
-                .title("szonja").description("sz").status(Status.RUNNING).build();
-        Series series2 = Series.builder()
-                .title("zoli").description("z").status(Status.RUNNING).build();
-        Series series3 = Series.builder()
-                .title("anita").description("a").status(Status.RUNNING).build();
-
-        Episode episode1 = Episode.builder()
-                .title("baszó").releaseDate(new Date()).runtime(5).episodeNumber(1).build();
-        Episode episode2 = Episode.builder()
-                .title("fantom").releaseDate(new Date()).runtime(10).episodeNumber(2).build();
-        Episode episode3 = Episode.builder()
-                .title("bögöly").releaseDate(new Date()).runtime(15).episodeNumber(3).build();
-
-        User user = User.builder()
-                .userName("oli").emailAddress("oli").password("oli").registrationDate(new Date()).build();
-        user.addWatchedEpisodes(episode1);
-        user.addWatchedEpisodes(episode2);
-        user.addWatchedEpisodes(episode3);
-        user.addSeriesToFavouriteList(series1);
-        user.addSeriesToFavouriteList(series2);
-        user.addSeriesToWatchList(series3);
-
-        em.persist(user);
-        transactionTest.commit();
-
         for (int i = 0; i < tvShow.getTvShowList().size(); i++) {
             EntityTransaction transaction = em.getTransaction();
             transaction.begin();

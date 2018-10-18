@@ -52,13 +52,17 @@ public class User {
     @ToString.Exclude
     private Collection<Episode> watchedEpisodes = new ArrayList<>();
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "episode_id"))
-    private Collection<Episode> seasonEpisode = new ArrayList<>();
-
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "episode_id"))
-    private Collection<Episode> seriesEpisode = new ArrayList<>();
+//    @ManyToMany(cascade = CascadeType.PERSIST)
+//    @LazyCollection(LazyCollectionOption.FALSE)
+//    @JoinTable(joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "episode_id"))
+//    @ToString.Exclude
+//    private Collection<Episode> watchedSeasonEpisode = new ArrayList<>();
+//
+//    @ManyToMany(cascade = CascadeType.PERSIST)
+//    @LazyCollection(LazyCollectionOption.FALSE)
+//    @JoinTable(joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "episode_id"))
+//    @ToString.Exclude
+//    private Collection<Episode> watchedSeriesEpisode = new ArrayList<>();
 
     @Temporal(TemporalType.DATE)
     private Date registrationDate;

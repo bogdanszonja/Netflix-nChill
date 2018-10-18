@@ -105,7 +105,7 @@ public class UserDaoDB implements UserDao {
         transaction.begin();
         User user = em.find(User.class, userId);
         Series series = em.find(Series.class, episodeId);
-        user.getWatchlist().add(series);
+        user.addSeriesToWatchList(series);
         em.persist(user);
         transaction.commit();
 
@@ -120,7 +120,7 @@ public class UserDaoDB implements UserDao {
         transaction.begin();
         User user = em.find(User.class, userId);
         Series series = em.find(Series.class, episodeId);
-        user.getFavourites().add(series);
+        user.addSeriesToFavouriteList(series);
         em.persist(user);
         transaction.commit();
 
@@ -155,7 +155,7 @@ public class UserDaoDB implements UserDao {
         return result;
     }
 
-    public void addSeasonToWatchedList(long seasonId, int userId) {
+    public void addSeasonEpisodeToWatchedList(long seasonId, long userId) {
         EntityManager em = emfManager.createEntityManager();
 
         EntityTransaction transaction = em.getTransaction();
@@ -163,7 +163,7 @@ public class UserDaoDB implements UserDao {
         User user = em.find(User.class, userId);
         Season season = em.find(Season.class, seasonId);
         for (Episode episode : season.getEpisodes()) {
-            user.getSeasonEpisode().add(episode);
+            user.addWatchedEpisodes(episode);
             em.persist(user);
         }
         transaction.commit();
@@ -171,17 +171,21 @@ public class UserDaoDB implements UserDao {
         em.close();
     }
 
-//    public void addSeriesToWatchedList(long seriesId, int userId) {
-//        EntityManager em = emfManager.createEntityManager();
-//
-//        EntityTransaction transaction = em.getTransaction();
-//        transaction.begin();
-//        User user = em.find(User.class, userId);
-//        Series series = em.find(Series.class, seriesId);
-//        user.getSeriesEpisode().add(series);
-//        em.persist(user);
-//        transaction.commit();
-//
-//        em.close();
-//    }
+    public void addSeriesEpisodeToWatchedList(long seriesId, long userId) {
+        EntityManager em = emfManager.createEntityManager();
+
+        EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
+        User user = em.find(User.class, userId);
+        Series series = em.find(Series.class, seriesId);
+        for (Season season : series.getSeasons()) {
+            for (Episode episode : season.getEpisodes()) {
+                user.addWatchedEpisodes(episode);
+                em.persist(user);
+            }
+        }
+        transaction.commit();
+
+        em.close();
+    }
 }

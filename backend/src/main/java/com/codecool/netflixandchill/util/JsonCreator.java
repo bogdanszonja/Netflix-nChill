@@ -137,35 +137,36 @@ public class JsonCreator {
         userJson.addProperty("emailAddress", user.getEmailAddress());
         userJson.addProperty("registrationDate", user.getRegistrationDate().toString());
         JsonArray watchlistArray = new JsonArray();
-        for (Series series: user.getWatchlist()) {
-            JsonObject seriesJson = new JsonObject();
-            seriesJson.addProperty("id", series.getId());
-            seriesJson.addProperty("description", series.getDescription());
-            seriesJson.addProperty("title", series.getTitle());
-            seriesJson.addProperty("airDate", series.getAirDate().toString());
-            seriesJson.addProperty("status", series.getStatus().toString());
-            watchlistArray.add(seriesJson);
+        if (!user.getWatchlist().isEmpty()) {
+            for (Series series: user.getWatchlist()) {
+                JsonObject seriesJson = new JsonObject();
+                seriesJson.addProperty("id", series.getId());
+                seriesJson.addProperty("description", series.getDescription());
+                seriesJson.addProperty("title", series.getTitle());
+                seriesJson.addProperty("airDate", series.getAirDate().toString());
+                seriesJson.addProperty("status", series.getStatus().toString());
+                watchlistArray.add(seriesJson);
+            }
+            JsonArray favouritesArray = new JsonArray();
+            for (Series series: user.getFavourites()) {
+                JsonObject seriesJson = new JsonObject();
+                seriesJson.addProperty("id", series.getId());
+                seriesJson.addProperty("description", series.getDescription());
+                seriesJson.addProperty("title", series.getTitle());
+                seriesJson.addProperty("airDate", series.getAirDate().toString());
+                seriesJson.addProperty("status", series.getStatus().toString());
+                favouritesArray.add(seriesJson);
+            }
+            JsonArray watchedEpisodesArray = new JsonArray();
+            for (Episode episode: user.getWatchedEpisodes()) {
+                JsonObject episodeJson = new JsonObject();
+                this.addEpisodePropertiesToJson(episode, episodeJson);
+                watchedEpisodesArray.add(episodeJson);
+            }
+            userJson.add("watchlist", watchlistArray);
+            userJson.add("favourites", favouritesArray);
+            userJson.add("watchedEpisodes", watchedEpisodesArray);
         }
-        JsonArray favouritesArray = new JsonArray();
-        for (Series series: user.getFavourites()) {
-            JsonObject seriesJson = new JsonObject();
-            seriesJson.addProperty("id", series.getId());
-            seriesJson.addProperty("description", series.getDescription());
-            seriesJson.addProperty("title", series.getTitle());
-            seriesJson.addProperty("airDate", series.getAirDate().toString());
-            seriesJson.addProperty("status", series.getStatus().toString());
-            favouritesArray.add(seriesJson);
-        }
-        JsonArray watchedEpisodesArray = new JsonArray();
-        for (Episode episode: user.getWatchedEpisodes()) {
-            JsonObject episodeJson = new JsonObject();
-            this.addEpisodePropertiesToJson(episode, episodeJson);
-            watchedEpisodesArray.add(episodeJson);
-        }
-        userJson.add("watchlist", watchlistArray);
-        userJson.add("favourites", favouritesArray);
-        userJson.add("watchedEpisodes", watchedEpisodesArray);
-
         return userJson.toString();
     }
 
