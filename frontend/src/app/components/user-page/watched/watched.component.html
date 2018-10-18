@@ -1,3 +1,16 @@
-<p>
-  watched works!
-</p>
+<div *ngFor="let series of watchedEpisodes">
+  {{ series.title }}
+  {{ series.description }}
+  <span *ngFor="let genre of series.genres">
+    {{ genre }}
+  </span>
+  <div *ngFor="let season of series.seasons">
+    Season {{ season.seasonNumber }}
+    <div *ngFor="let episode of season.episodes">
+      {{ episode.episodeNumber }}
+      {{ episode.title }}
+      {{ episode.releaseDate }}
+      {{ episode.runtime }}
+    </div>
+  </div>
+</div>
