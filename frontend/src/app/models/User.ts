@@ -1,5 +1,5 @@
-import {Series} from './Series';
-import {Episode} from "./Episode";
+import { Series } from './Series';
+import { Episode } from "./Episode";
 
 export class User {
 
