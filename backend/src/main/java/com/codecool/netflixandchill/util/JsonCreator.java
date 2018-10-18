@@ -56,10 +56,14 @@ public class JsonCreator {
     public String findEpisodeBySubstring(String subString) {
         List<Episode> episodes = EpisodeDaoDB.getInstance().findBySubstring(subString);
         JsonArray episodeArray = new JsonArray();
-        for (Episode episode: episodes) {
-            JsonObject episodeJson = new JsonObject();
-            addEpisodePropertiesToJson(episode, episodeJson);
-            episodeArray.add(episodeJson);
+        try {
+            for (Episode episode : episodes) {
+                JsonObject episodeJson = new JsonObject();
+                addEpisodePropertiesToJson(episode, episodeJson);
+                episodeArray.add(episodeJson);
+            }
+        } catch (NullPointerException e) {
+            return null;
         }
         return episodeArray.toString();
     }
@@ -105,37 +109,17 @@ public class JsonCreator {
     public String getAllShows() {
         JsonArray seriesArray = new JsonArray();
         List<Series> shows = SeriesDaoDB.getInstance().getAll();
-
-        for (Series show: shows) {
-            JsonObject showJson = new JsonObject();
-            addSeriesPropertiesToJson(show, showJson);
-            JsonArray seasonArray = new JsonArray();
-            for (Season season: show.getSeasons()) {
-                JsonObject seasonJson = new JsonObject();
-                addSeasonPropertiesToJson(season, seasonJson);
-                JsonArray episodeArray = new JsonArray();
-                for (Episode episode: season.getEpisodes()) {
-                    JsonObject episodeJson = new JsonObject();
-                    addEpisodePropertiesToJson(episode, episodeJson);
-                    episodeArray.add(episodeJson);
-                }
-                seasonJson.add("episodes", episodeArray);
-                seasonArray.add(seasonJson);
-            }
-            showJson.add("seasons", seasonArray);
-            showJson.addProperty("genres", new ArrayList<>().toString());
-            seriesArray.add(showJson);
-        }
+        addAllShowPropertyToJson(shows, seriesArray);
         return seriesArray.toString();
     }
 
     public String findSeriesBySubstring(String subString) {
         List<Series> shows = SeriesDaoDB.getInstance().findBySubstring(subString);
         JsonArray seriesArray = new JsonArray();
-        for (Series show: shows) {
-            JsonObject showJson = new JsonObject();
-            addSeriesPropertiesToJson(show, showJson);
-            seriesArray.add(showJson);
+        try {
+            addAllShowPropertyToJson(shows, seriesArray);
+        } catch (NullPointerException e) {
+            return null;
         }
         return seriesArray.toString();
     }
@@ -214,5 +198,28 @@ public class JsonCreator {
         userJson.put("favourite", user.getFavourites());
 
 
+    }
+
+    private void addAllShowPropertyToJson(List<Series> shows, JsonArray seriesArray) {
+        for (Series show : shows) {
+            JsonObject showJson = new JsonObject();
+            addSeriesPropertiesToJson(show, showJson);
+            JsonArray seasonArray = new JsonArray();
+            for (Season season : show.getSeasons()) {
+                JsonObject seasonJson = new JsonObject();
+                addSeasonPropertiesToJson(season, seasonJson);
+                JsonArray episodeArray = new JsonArray();
+                for (Episode episode : season.getEpisodes()) {
+                    JsonObject episodeJson = new JsonObject();
+                    addEpisodePropertiesToJson(episode, episodeJson);
+                    episodeArray.add(episodeJson);
+                }
+                seasonJson.add("episodes", episodeArray);
+                seasonArray.add(seasonJson);
+            }
+            showJson.add("seasons", seasonArray);
+            showJson.addProperty("genres", new ArrayList<>().toString());
+            seriesArray.add(showJson);
+        }
     }
 }

@@ -6,7 +6,7 @@ export class Episode {
   title: string;
   releaseDate: Date;
   runtime: number;
-  serialNumber: number;
+  episodeNumber: number;
   season: Season;
 
 }
