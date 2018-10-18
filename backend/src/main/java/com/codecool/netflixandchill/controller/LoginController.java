@@ -2,7 +2,10 @@ package com.codecool.netflixandchill.controller;
 
 import com.codecool.netflixandchill.dao.UserDao;
 import com.codecool.netflixandchill.dao.implementation.UserDaoDB;
+import com.codecool.netflixandchill.util.JsonCreator;
+import com.codecool.netflixandchill.util.RequestParser;
 import com.codecool.netflixandchill.util.SessionManager;
+import com.google.gson.JsonObject;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
@@ -30,21 +33,26 @@ public class LoginController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = sessionManager.getHttpSession(request);
+        JsonObject jsonObject = RequestParser.getInstance().getJsonObject(request);
+        JsonCreator jsonCreator = JsonCreator.getInstance();
+        JsonObject user = new JsonObject();
 
         if (session == null) {
             response.sendRedirect("/login");
             return;
         }
 
-        String email = request.getParameter("login_email");
-        String password = request.getParameter("login_password");
+        String email = jsonObject.get("loginEmail").getAsString();
+        String password = jsonObject.get("loginPassword").getAsString();
 
         if (userDaoDB.validLogin(email, password)) {
             session.setAttribute("userId", userDaoDB.find(email).getId());
-            response.sendRedirect("/user-page");
-            return;
+            user.addProperty("user", jsonCreator.findUserByEmail(email));
+
         }
 
-        response.sendRedirect("/login");
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(user.toString());
     }
 }

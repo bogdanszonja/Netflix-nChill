@@ -193,6 +193,11 @@ public class JsonCreator {
         userJson.put("emailaddress", user.getEmailAddress());
         userJson.put("registrationDate", user.getRegistrationDate());
         userJson.put("username", user.getUserName());
+        userJson.put("series", user.getWatchlist());
+        userJson.put("episode", user.getWatchedEpisodes());
+        userJson.put("favourite", user.getFavourites());
+
+
     }
 
     private void addAllShowPropertyToJson(List<Series> shows, JsonArray seriesArray) {
