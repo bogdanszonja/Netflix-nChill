@@ -34,7 +34,6 @@ public class JsonCreator {
         Episode episode = EpisodeDaoDB.getInstance().find(episodeId);
 
         episodeJson.put("id", episode.getId());
-        episodeJson.put("description", episode.getDescription());
         episodeJson.put("title", episode.getTitle());
         episodeJson.put("releaseDate", episode.getReleaseDate());
         episodeJson.put("runtime", episode.getRuntime());
@@ -70,7 +69,6 @@ public class JsonCreator {
         Season season = SeasonDaoDB.getInstance().find(seasonId);
 
         seasonJson.put("id", season.getId());
-        seasonJson.put("description", season.getDescription());
         seasonJson.put("title", season.getTitle());
         seasonJson.put("seasonNumber", season.getSeasonNumber());
         seasonJson.put("year", season.getYear());
@@ -183,24 +181,22 @@ public class JsonCreator {
         return episodeArray.toString();
     }
 
-    public void addEpisodePropertiesToJson(Episode episode, JsonObject episodeJson) {
+    private void addEpisodePropertiesToJson(Episode episode, JsonObject episodeJson) {
         episodeJson.addProperty("id", episode.getId());
-        episodeJson.addProperty("description", episode.getDescription());
         episodeJson.addProperty("title", episode.getTitle());
         episodeJson.addProperty("releaseDate", episode.getReleaseDate().toString());
         episodeJson.addProperty("runtime", episode.getRuntime());
         episodeJson.addProperty("episodeNumber", episode.getEpisodeNumber());
     }
 
-    public void addSeasonPropertiesToJson(Season season, JsonObject seasonJson) {
+    private void addSeasonPropertiesToJson(Season season, JsonObject seasonJson) {
         seasonJson.addProperty("id", season.getId());
-        seasonJson.addProperty("description", season.getDescription());
         seasonJson.addProperty("title", season.getTitle());
         seasonJson.addProperty("seasonNumber", season.getSeasonNumber());
         seasonJson.addProperty("year", season.getYear().toString());
     }
 
-    public void addSeriesPropertiesToJson(Series show, JsonObject seriesJson) {
+    private void addSeriesPropertiesToJson(Series show, JsonObject seriesJson) {
         seriesJson.addProperty("id", show.getId());
         seriesJson.addProperty("description", show.getDescription());
         seriesJson.addProperty("title", show.getTitle());
