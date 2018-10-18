@@ -16,7 +16,11 @@ public interface UserDao {
 
     List<User> getAll();
 
-    void addEpisode(long episodeId, long userId);
+    void addEpisodeToWatchedList(long episodeId, long userId);
+
+    void addSeriesToWatchList(long episodeId, long userId);
+
+    void addSeriesToFavouriteList(long episodeId, long userId);
 
     boolean validRegister(String email, String password, String confirmedPassword);
 
