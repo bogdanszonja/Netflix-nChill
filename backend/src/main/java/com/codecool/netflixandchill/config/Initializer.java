@@ -11,34 +11,43 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
 public class Initializer {
     private RemoteURLReader urlReader;
+    private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+    private static final DateFormat format2 = new SimpleDateFormat("MMM/dd/yyyy");
 
     public Initializer(RemoteURLReader urlReader) {
         this.urlReader = urlReader;
     }
 
-    public JSONArray getAllShowJSON() throws IOException {
-        String netflixPath = "https://www.episodate.com/api/most-popular?page=:page";
+    public List<JSONArray> getAllShowJSON() throws IOException {
+        String netflixPath;
+        List<JSONArray> pages = new LinkedList<>();
 
-        String result = urlReader.readFromUrl(netflixPath);
-        JSONObject json = new JSONObject(result);
+        for (int i = 0; i < 10; i++) {
+            netflixPath = "https://www.episodate.com/api/most-popular?page=" + i;
+            String result = urlReader.readFromUrl(netflixPath);
+            JSONObject json = new JSONObject(result);
+            pages.add(json.getJSONArray("tv_shows"));
+        }
 
-        return json.getJSONArray("tv_shows");
+        return pages;
 
     }
 
     public List<Integer> getAllShowsId() throws IOException {
-        return getAllShowJSON().toList().stream()
-                .map(o -> (Integer) ((HashMap) o).get("id"))
-                .collect(Collectors.toList());
+        List<Integer> showIdList = new ArrayList<>();
+
+        for (JSONArray array : getAllShowJSON()) {
+            showIdList.addAll(array.toList().stream()
+                    .map(o -> (Integer) ((HashMap) o).get("id"))
+                    .collect(Collectors.toList()));
+        }
+        return showIdList;
     }
 
     public JSONArray getAllShowWithSeasonAndEpisodeJSON() throws IOException {
@@ -68,8 +77,16 @@ public class Initializer {
         return genres;
     }
 
-    public Date formatStringToDate(String stringDate) throws ParseException {
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        return format.parse(stringDate);
+    public Date formatStringToDate(String stringDate) {
+        try {
+            return format.parse(stringDate);
+        } catch (ParseException e) {
+            try {
+                return format2.parse(stringDate);
+            } catch (ParseException e1) {
+                e1.printStackTrace();
+            }
+        }
+        return null;
     }
 }

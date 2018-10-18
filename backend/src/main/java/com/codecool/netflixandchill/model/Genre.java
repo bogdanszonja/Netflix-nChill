@@ -16,4 +16,15 @@ public enum Genre {
     WESTERN,
     THRILLER,
     CHILDREN,
+    LEGAL,
+    ROMANCE,
+    ESPIONAGE,
+    MEDICAL,
+    FAMILY,
+    MUSIC,
+    FOOD,
+    ADULT,
+    SPORTS,
+    TEENS,
+
 }
