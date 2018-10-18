@@ -73,10 +73,9 @@ export class UserService {
       );
   }
 
-  validateJoin(username: string, email: string, password: string, passwordConfirm: string): Observable<any> {
-    console.log('pina2');
+  validateJoin(username: string, email: string, password: string, confirmPassword: string): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/join`, {
-      'username': username, 'email': email, 'password': password, 'passwordConfirm': passwordConfirm}, httpOptions)
+      'username': username, 'email': email, 'password': password, 'confirmPassword': confirmPassword}, httpOptions)
       .pipe(
         tap(_ => console.log(`User join`)),
         catchError(this.handleError<any>())

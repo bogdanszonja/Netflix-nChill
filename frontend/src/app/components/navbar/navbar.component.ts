@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-
 import { Router } from '@angular/router';
 
 import { UserService } from '../../services/user/user.service';
@@ -44,4 +43,9 @@ export class NavbarComponent implements OnInit {
   logout(): void {
     this.isLoggedIn = false;
   }
+
+  toMyPage() {
+    console.log('my page');
+  }
+
 }
