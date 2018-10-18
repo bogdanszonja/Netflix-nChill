@@ -11,7 +11,14 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Episode extends BaseModel {
+public class Episode {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+
+    @Column(nullable = false)
+    private String title;
 
     @Column(nullable = false)
     @Temporal(TemporalType.DATE)
@@ -22,7 +29,7 @@ public class Episode extends BaseModel {
     private int runtime;
 
     @Column(nullable = false)
-    private int serialNumber;
+    private int episodeNumber;
 
     @ManyToOne
     private Season season;
@@ -32,11 +39,11 @@ public class Episode extends BaseModel {
     private Collection<User> users = new ArrayList<>();
 
     @Builder
-    public Episode(String title, String description, Date releaseDate, int runtime, int serialNumber) {
-        super(title, description);
+    public Episode(String title, Date releaseDate, int runtime, int episodeNumber) {
+        this.title = title;
         this.releaseDate = releaseDate;
         this.runtime = runtime;
-        this.serialNumber = serialNumber;
+        this.episodeNumber = episodeNumber;
     }
 
     public void addUser(User user) {

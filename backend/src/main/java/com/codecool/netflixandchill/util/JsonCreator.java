@@ -91,15 +91,13 @@ public class JsonCreator {
                 JsonObject seasonJson = new JsonObject();
                 seasonJson.addProperty("id", season.getId());
                 seasonJson.addProperty("title", season.getTitle());
-                seasonJson.addProperty("description", season.getDescription());
-                seasonJson.addProperty("serialNumber", season.getSerialNumber());
+                seasonJson.addProperty("seasonNumber", season.getSeasonNumber());
                 seasonJson.addProperty("year", season.getYear().toString());
                 JsonArray episodeArray = new JsonArray();
                 for (Episode episode: season.getEpisodes()) {
                     JsonObject episodeJson = new JsonObject();
                     episodeJson.addProperty("id", episode.getId());
                     episodeJson.addProperty("title", episode.getTitle());
-                    episodeJson.addProperty("description", episode.getDescription());
                     episodeArray.add(episodeJson);
                 }
                 seasonJson.add("episodes", episodeArray);

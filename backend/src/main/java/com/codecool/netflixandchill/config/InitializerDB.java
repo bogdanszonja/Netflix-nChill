@@ -45,17 +45,17 @@ public class InitializerDB {
             }
 
             for (int j = 0; j < seasonSet.size(); j++) {
-                season = Season.builder().title("Season").description("").year(init.formatStringToDate(currentShow.
-                        getEpisodes()[j].getAir_date())).serialNumber(j + 1).build();
+                season = Season.builder().title("Season").year(init.formatStringToDate(currentShow.
+                        getEpisodes()[j].getAir_date())).seasonNumber(j + 1).build();
 
                 series.addSeason(season);
 
                     for (int k = 0; k < currentShow.getEpisodes().length; k++) {
-                        if (Integer.parseInt(currentShow.getEpisodes()[k].getSeason()) == season.getSerialNumber()) {
-                            episode = Episode.builder().title(currentShow.getEpisodes()[k].getName()).description("").
+                        if (Integer.parseInt(currentShow.getEpisodes()[k].getSeason()) == season.getSeasonNumber()) {
+                            episode = Episode.builder().title(currentShow.getEpisodes()[k].getName()).
                                 releaseDate(init.formatStringToDate(currentShow.getEpisodes()[k].getAir_date())).
                                 runtime(Integer.parseInt(currentShow.getRuntime())).
-                                serialNumber(Integer.parseInt(currentShow.getEpisodes()[k].getEpisode())).build();
+                                episodeNumber(Integer.parseInt(currentShow.getEpisodes()[k].getEpisode())).build();
                             season.addEpisode(episode);
                             em.persist(episode);
                     }
