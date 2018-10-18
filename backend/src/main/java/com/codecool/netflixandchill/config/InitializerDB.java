@@ -33,7 +33,7 @@ public class InitializerDB {
 
             TvShow currentShow = tvShow.getTvShowList().get(i).getTvShow();
 
-            Series series = Series.builder().title(currentShow.getName()).description("").
+            Series series = Series.builder().title(currentShow.getName()).description(currentShow.getDescription()).
                     airDate(init.formatStringToDate(currentShow.getStart_date())).status(Status.valueOf(currentShow.getStatus().
                     replace(" ", "_").toUpperCase())).genres((init.convertStringToEnumGenre(currentShow.getGenres()))).build();
 
