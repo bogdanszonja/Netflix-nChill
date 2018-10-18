@@ -21,4 +21,12 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  join(username: string, email: string, password: string, passwordConfirm: string) {
+    this.userService.validateJoin(username, email, password, passwordConfirm);
+  }
+
+  login(username: string, password: string) {
+    this.userService.validateLogin(username, password);
+  }
+
 }

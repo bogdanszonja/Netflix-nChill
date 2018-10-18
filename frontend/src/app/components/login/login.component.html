@@ -8,11 +8,13 @@
     <input type="password" required #password>
     <label>Confirm Password</label>
     <input type="password" required #confirmPassword>
+    <button (click)="join(username.value, email.value, password.value, confirmPassword.value)">Join</button>
   </div>
   <div [style.font-size]="showPart === 'login'? 'large': 'small'" class="login">
     <label>Username</label>
     <input type="text" required #username>
     <label>Password</label>
     <input type="password" required #password>
+    <button (click)="login(username.value, password.value)">Login</button>
   </div>
 </div>
