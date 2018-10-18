@@ -1,6 +1,5 @@
 package com.codecool.netflixandchill.model;
 
-import com.sun.deploy.security.ValidationState;
 import lombok.*;
 
 import javax.persistence.*;

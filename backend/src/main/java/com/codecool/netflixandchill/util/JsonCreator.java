@@ -109,27 +109,7 @@ public class JsonCreator {
     public String getAllShows() {
         JsonArray seriesArray = new JsonArray();
         List<Series> shows = SeriesDaoDB.getInstance().getAll();
-
-        for (Series show: shows) {
-            JsonObject showJson = new JsonObject();
-            addSeriesPropertiesToJson(show, showJson);
-            JsonArray seasonArray = new JsonArray();
-            for (Season season: show.getSeasons()) {
-                JsonObject seasonJson = new JsonObject();
-                addSeasonPropertiesToJson(season, seasonJson);
-                JsonArray episodeArray = new JsonArray();
-                for (Episode episode: season.getEpisodes()) {
-                    JsonObject episodeJson = new JsonObject();
-                    addEpisodePropertiesToJson(episode, episodeJson);
-                    episodeArray.add(episodeJson);
-                }
-                seasonJson.add("episodes", episodeArray);
-                seasonArray.add(seasonJson);
-            }
-            showJson.add("seasons", seasonArray);
-            showJson.addProperty("genres", new ArrayList<>().toString());
-            seriesArray.add(showJson);
-        }
+        addAllShowPropertyToJson(shows, seriesArray);
         return seriesArray.toString();
     }
 
@@ -137,11 +117,7 @@ public class JsonCreator {
         List<Series> shows = SeriesDaoDB.getInstance().findBySubstring(subString);
         JsonArray seriesArray = new JsonArray();
         try {
-            for (Series show : shows) {
-                JsonObject showJson = new JsonObject();
-                addSeriesPropertiesToJson(show, showJson);
-                seriesArray.add(showJson);
-            }
+            addAllShowPropertyToJson(shows, seriesArray);
         } catch (NullPointerException e) {
             return null;
         }
@@ -217,5 +193,28 @@ public class JsonCreator {
         userJson.put("emailaddress", user.getEmailAddress());
         userJson.put("registrationDate", user.getRegistrationDate());
         userJson.put("username", user.getUserName());
+    }
+
+    private void addAllShowPropertyToJson(List<Series> shows, JsonArray seriesArray) {
+        for (Series show : shows) {
+            JsonObject showJson = new JsonObject();
+            addSeriesPropertiesToJson(show, showJson);
+            JsonArray seasonArray = new JsonArray();
+            for (Season season : show.getSeasons()) {
+                JsonObject seasonJson = new JsonObject();
+                addSeasonPropertiesToJson(season, seasonJson);
+                JsonArray episodeArray = new JsonArray();
+                for (Episode episode : season.getEpisodes()) {
+                    JsonObject episodeJson = new JsonObject();
+                    addEpisodePropertiesToJson(episode, episodeJson);
+                    episodeArray.add(episodeJson);
+                }
+                seasonJson.add("episodes", episodeArray);
+                seasonArray.add(seasonJson);
+            }
+            showJson.add("seasons", seasonArray);
+            showJson.addProperty("genres", new ArrayList<>().toString());
+            seriesArray.add(showJson);
+        }
     }
 }

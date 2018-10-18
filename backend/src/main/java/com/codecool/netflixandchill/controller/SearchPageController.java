@@ -30,26 +30,6 @@ public class SearchPageController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-//        TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(request.getServletContext());
-//        WebContext context = new WebContext(request, response, request.getServletContext());
-//
-//        HttpSession session = sessionManager.getHttpSession(request);
-//
-//        if (session != null) context.setVariable("userId", session.getAttribute("userId"));
-//
-//        String searchWord = request.getParameter("search");
-//
-//        List<FakeEpisode> searchedEpisodes = episodeDao.findBySubstring(searchWord);
-//        context.setVariable("episodes", searchedEpisodes);
-//
-//        engine.process("search.html", context, response.getWriter());
-
-
-
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String searchTerm = request.getParameter("searchTerm");
         String result = JsonCreator.getInstance().findSeriesBySubstring(searchTerm);
 
@@ -60,6 +40,14 @@ public class SearchPageController extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(result);
+
+
+
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
     }
 
 }

@@ -56,7 +56,7 @@ public class EpisodeDaoDB implements EpisodeDao {
         EntityManager em = emfManager.createEntityManager();
         List<Episode> result = em.createQuery(
                 "SELECT e " +
-                        "FROM Episode e WHERE e.title LIKE '%' || :param || '%'", Episode.class)
+                        "FROM Episode e WHERE UPPER(e.title) LIKE UPPER('%' || :param || '%')", Episode.class)
                 .setParameter("param", substring)
                 .getResultList();
         em.close();
