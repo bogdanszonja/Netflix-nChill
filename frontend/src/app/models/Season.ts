@@ -4,7 +4,7 @@ export class Season {
 
   id: number;
   year: Date;
-  serialNumber: number;
+  seasonNumber: number;
   episodes: Episode[];
 
 }

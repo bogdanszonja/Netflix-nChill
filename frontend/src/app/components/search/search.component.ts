@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { Series } from '../../models/Series';
 import { SeriesService } from '../../services/series/series.service';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-search',
@@ -10,20 +11,27 @@ import { SeriesService } from '../../services/series/series.service';
 })
 export class SearchComponent implements OnInit {
 
-  searchResult: Series[];
+  searchResult: Series[] = [];
   selectedShow: Series;
 
   constructor(private seriesService: SeriesService) { }
 
   ngOnInit() {
-    console.log(this.selectedShow);
-    this.seriesService.getAllSeries()
-      .subscribe(series => this.searchResult = series);
+    console.log('pina');
+    this.seriesService.searchResult.subscribe(series => {
+      this.searchResult = series;
+      console.log(this.searchResult + 'eredmény');
+      console.log(this.searchResult);
+    });
   }
 
   selectShow(show: Series) {
     this.selectedShow = show;
   }
+
+  // getSeries(): Observable<Series[]> {
+  //   return this.seriesService.searchResult.subscribe(series => this.searchResult = series);
+  // }
 
 }
 
