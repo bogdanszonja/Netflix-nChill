@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
 import { UserService } from '../../services/user/user.service';
+import {SeriesService} from '../../services/series/series.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -12,7 +14,9 @@ export class NavbarComponent implements OnInit {
   isLoggedIn = false;
   searchToggle = false;
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService,
+              private seriesService: SeriesService,
+              private router: Router) { }
 
   ngOnInit() {
   }
@@ -22,7 +26,8 @@ export class NavbarComponent implements OnInit {
   }
 
   search(searchInput: string): void {
-    console.log(searchInput);
+    this.seriesService.searchSeries(searchInput);
+    this.router.navigate(['/search']);
     this.searchToggle = !this.searchToggle;
   }
 
