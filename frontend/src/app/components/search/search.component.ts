@@ -10,15 +10,16 @@ import { SeriesService } from '../../services/series/series.service';
 })
 export class SearchComponent implements OnInit {
 
-  searchResult: Series[];
+  searchResult: Series[] = [];
   selectedShow: Series;
 
   constructor(private seriesService: SeriesService) { }
 
   ngOnInit() {
-    console.log(this.selectedShow);
-    this.seriesService.getAllSeries()
-      .subscribe(series => this.searchResult = series);
+    this.seriesService.searchResult.subscribe(series => {
+      this.searchResult = series;
+      console.log(this.searchResult);
+    });
   }
 
   selectShow(show: Series) {
