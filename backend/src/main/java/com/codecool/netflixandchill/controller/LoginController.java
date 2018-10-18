@@ -49,7 +49,6 @@ public class LoginController extends HttpServlet {
         if (userDaoDB.validLogin(email, password)) {
 //            session.setAttribute("userId", userDaoDB.find(email).getId());
             user.addProperty("user", jsonCreator.findUserByEmail(email));
-            System.out.println(user);
         }
 
         response.setContentType("application/json");
