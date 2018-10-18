@@ -131,7 +131,6 @@ public class JsonCreator {
         return seriesArray.toString();
     }
 
-
     public String findSeriesBySubstring(String subString) {
         List<Series> shows = SeriesDaoDB.getInstance().findBySubstring(subString);
         JsonArray seriesArray = new JsonArray();
@@ -143,7 +142,6 @@ public class JsonCreator {
         return seriesArray.toString();
     }
 
-
     public String findUserById(long userId) {
         Map<String, Object> userJson = new HashMap<>();
         User user = UserDaoDB.getInstance().find(userId);
@@ -152,7 +150,6 @@ public class JsonCreator {
         return gson.toJson(userJson);
     }
 
-
     public String findUserByEmail(String email) {
         Map<String, Object> userJson = new HashMap<>();
         User user = UserDaoDB.getInstance().find(email);
@@ -160,7 +157,6 @@ public class JsonCreator {
 
         return gson.toJson(userJson);
     }
-
 
     public String getAllUsers() {
         List<User> users = UserDaoDB.getInstance().getAll();
@@ -176,7 +172,6 @@ public class JsonCreator {
         return userArray.toString();
     }
 
-
     public String getWatchedEpisodesByUserId(long userId) {
         List<Episode> episodes = UserDaoDB.getInstance().getWatchedEpisodesById(userId);
         JsonArray episodeArray = new JsonArray();
@@ -188,7 +183,6 @@ public class JsonCreator {
         return episodeArray.toString();
     }
 
-
     public void addEpisodePropertiesToJson(Episode episode, JsonObject episodeJson) {
         episodeJson.addProperty("id", episode.getId());
         episodeJson.addProperty("description", episode.getDescription());
@@ -198,7 +192,6 @@ public class JsonCreator {
         episodeJson.addProperty("episodeNumber", episode.getEpisodeNumber());
     }
 
-
     public void addSeasonPropertiesToJson(Season season, JsonObject seasonJson) {
         seasonJson.addProperty("id", season.getId());
         seasonJson.addProperty("description", season.getDescription());
@@ -207,7 +200,6 @@ public class JsonCreator {
         seasonJson.addProperty("year", season.getYear().toString());
     }
 
-
     public void addSeriesPropertiesToJson(Series show, JsonObject seriesJson) {
         seriesJson.addProperty("id", show.getId());
         seriesJson.addProperty("description", show.getDescription());
@@ -215,7 +207,6 @@ public class JsonCreator {
         seriesJson.addProperty("airdate", show.getAirDate().toString());
         seriesJson.addProperty("status", show.getStatus().toString());
     }
-
 
     private void putUserDataToJson(User user, Map<String,Object> userJson) {
         userJson.put("id", user.getId());

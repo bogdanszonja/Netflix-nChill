@@ -18,10 +18,9 @@ public class FakeEpisode {
     public FakeEpisode(Episode episode) {
         this.id = episode.getId();
         this.title = episode.getTitle();
-        this.description = episode.getDescription();
         this.releaseDate = episode.getReleaseDate();
         this.runtime = episode.getRuntime();
-        this.serialNumber = episode.getSerialNumber();
+        this.serialNumber = episode.getEpisodeNumber();
         this.season = episode.getSeason();
     }
 
