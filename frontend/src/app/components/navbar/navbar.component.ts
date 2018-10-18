@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
+import { Router } from '@angular/router';
+
 import { UserService } from '../../services/user/user.service';
-import {SeriesService} from '../../services/series/series.service';
-import {Router} from '@angular/router';
+import { SeriesService } from '../../services/series/series.service';
 
 @Component({
   selector: 'app-navbar',
