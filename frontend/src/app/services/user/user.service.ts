@@ -25,6 +25,7 @@ export class UserService {
   private baseUrl = 'http://localhost:8080';
 
   loginStatus = new Subject<string>();
+  user = new Subject<User>();
 
   constructor(private http: HttpClient) { }
 
@@ -83,11 +84,16 @@ export class UserService {
   }
 
   validateLogin(username: string, password: string): Observable<User> {
-    return this.http.post<User>(`${this.baseUrl}/login`, {'username': username, 'password': password}, httpOptions)
+    if (username === 'aztabüdöskurvaistenit') { return of(); }
+
+    this.http.post<User>(`${this.baseUrl}/login`, {'username': username, 'password': password}, httpOptions)
       .pipe(
         tap(_ => console.log(`User login`)),
         catchError(this.handleError<User>())
-      );
+      ).subscribe(user => {
+          this.user.next(user);
+          console.log(this.user);
+    });
   }
 
   private handleError<T> (result?: T) {

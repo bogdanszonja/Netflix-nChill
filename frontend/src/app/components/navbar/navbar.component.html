@@ -4,6 +4,6 @@
   <button *ngIf="!isLoggedIn" routerLink="/login" (click)="join()">Join</button>
   <button *ngIf="!isLoggedIn" routerLink="/login" (click)="login()">Login</button>
   <button *ngIf="isLoggedIn" (click)="logout()">Logout</button>
-  <a *ngIf="isLoggedIn" (click)="toMyPage()">My Page</a>
+  <a *ngIf="isLoggedIn" routerLink="/user-page" (click)="toMyPage()">My Page</a>
   <app-login></app-login>
 </div>
