@@ -6,8 +6,6 @@ import com.codecool.netflixandchill.util.JsonCreator;
 import com.codecool.netflixandchill.util.RequestParser;
 import com.codecool.netflixandchill.util.SessionManager;
 import com.google.gson.JsonObject;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -24,10 +22,7 @@ public class LoginController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-//        TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(request.getServletContext());
-//        WebContext context = new WebContext(request, response, request.getServletContext());
-//
-//        engine.process("login.html", context, response.getWriter());
+
     }
 
     @Override
@@ -35,7 +30,9 @@ public class LoginController extends HttpServlet {
 //        HttpSession session = sessionManager.getHttpSession(request);
         JsonObject jsonObject = RequestParser.getInstance().getJsonObject(request);
         JsonCreator jsonCreator = JsonCreator.getInstance();
-        JsonObject user = new JsonObject();
+        JsonObject invalidLogin = new JsonObject();
+        invalidLogin.addProperty("success", false);
+        String userJson = invalidLogin.toString();
 
 //        if (session == null) {
 //            response.sendRedirect("/login");
@@ -45,14 +42,13 @@ public class LoginController extends HttpServlet {
         String email = jsonObject.get("username").getAsString();
         String password = jsonObject.get("password").getAsString();
 
-        System.out.println(email + password);
         if (userDaoDB.validLogin(email, password)) {
 //            session.setAttribute("userId", userDaoDB.find(email).getId());
-            user.addProperty("user", jsonCreator.findUserByEmail(email));
+            userJson = jsonCreator.findUserByEmail(email);
         }
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(user.toString());
+        response.getWriter().write(userJson);
     }
 }

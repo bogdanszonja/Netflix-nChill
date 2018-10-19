@@ -1,6 +1,6 @@
 <div>
   {{ series.title }}
-    <i class="fas fa-plus" (click)="addWholeSeries(series)"></i>
+    <i class="fas fa-plus" (click)="addWholeSeries(user.id, series)"></i>
     <i class="fas fa-list" (click)="addToWatchlist(series)"></i>
     <i class="far fa-heart" (click)="addToFavourites(series)"></i>
   {{ series.description }}
