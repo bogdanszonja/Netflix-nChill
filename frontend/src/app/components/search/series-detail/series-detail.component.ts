@@ -4,7 +4,7 @@ import { Series } from '../../../models/Series';
 import { Episode } from '../../../models/Episode';
 import { Season } from '../../../models/Season';
 import { UserService } from '../../../services/user/user.service';
-import {User} from '../../../models/User';
+import { User } from '../../../models/User';
 
 @Component({
   selector: 'app-series-detail',
@@ -25,12 +25,9 @@ export class SeriesDetailComponent implements OnInit {
     });
   }
 
-  addWholeSeries(userId: number, series: Series): void {
-    this.userService.user.subscribe(user => userId = user.id);
-    console.log(userId);
+  addWholeSeries(series: Series): void {
     console.log('all seasons added');
-    this.userService.addWholeSeries(series)
-      .subscribe(answer => console.log(answer));
+    this.userService.addWholeSeries(series).subscribe();
   }
 
   addSingleSeason(season: Season): void {
