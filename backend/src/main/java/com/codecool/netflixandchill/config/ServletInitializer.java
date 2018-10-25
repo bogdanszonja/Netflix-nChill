@@ -9,27 +9,70 @@ import com.codecool.netflixandchill.dao.implementation.EpisodeDaoDB;
 import com.codecool.netflixandchill.dao.implementation.SeasonDaoDB;
 import com.codecool.netflixandchill.dao.implementation.SeriesDaoDB;
 import com.codecool.netflixandchill.dao.implementation.UserDaoDB;
+import com.codecool.netflixandchill.json.Show;
+import com.codecool.netflixandchill.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.persistence.EntityManagerFactory;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
+import java.io.IOException;
 
 @WebListener
 public class ServletInitializer implements ServletContextListener {
 
+    private static final Logger logger = LoggerFactory.getLogger(ServletInitializer.class);
+
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        EpisodeDao episodeDao = new EpisodeDaoDB();
-        SeasonDao seasonDao = new SeasonDaoDB();
-        SeriesDao seriesDao = new SeriesDaoDB();
-        UserDao userDao = new UserDaoDB();
+        EntityManagerFactory emf = EMFManager.getInstance();
+        RemoteURLReader remoteURLReader = new RemoteURLReader();
+        Show show = new Show();
+
+        Initializer initializer = new Initializer(remoteURLReader);
+        InitializerDB initializerDB = new InitializerDB(emf, initializer, show);
+
+        try {
+            initializerDB.populateDb();
+        } catch (IOException e) {
+            logger.info("Error in initializerDB!");
+            e.printStackTrace();
+        }
+
+        SessionManager sessionManager = new SessionManager();
+        RequestParser requestParser = new RequestParser();
+        TransactionManager transactionManager = new TransactionManager();
+
+        EpisodeDao episodeDao = new EpisodeDaoDB(transactionManager, emf);
+        SeasonDao seasonDao = new SeasonDaoDB(transactionManager, emf);
+        SeriesDao seriesDao = new SeriesDaoDB(transactionManager, emf);
+        UserDao userDao = new UserDaoDB(transactionManager, emf);
+
+        JsonCreator jsonCreator = new JsonCreator(episodeDao, seasonDao, seriesDao, userDao);
 
         ServletContext context = sce.getServletContext();
-        context.addServlet("Series", new SeriesController(seriesDao)).addMapping("/series");
-        context.addServlet("Search", new SearchController(seriesDao)).addMapping("/search");
-        context.addServlet("Join", new JoinController(seriesDao)).addMapping("/join");
-        context.addServlet("Login", new LoginController(seriesDao)).addMapping("/login");
-        context.addServlet("User", new UserController(seriesDao, userDao)).addMapping("/user");
+        context.addServlet("Join",
+                new JoinController(requestParser, jsonCreator, sessionManager, userDao))
+                .addMapping("/join");
+        context.addServlet("Login",
+                new LoginController(requestParser, jsonCreator, sessionManager, userDao))
+                .addMapping("/login");
+        context.addServlet("Search",
+                new SearchController(requestParser, jsonCreator, sessionManager, episodeDao, userDao))
+                .addMapping("/search");
+        context.addServlet("Series",
+                new SeriesController(requestParser, jsonCreator, sessionManager))
+                .addMapping("/series");
+        context.addServlet("User",
+                new UserController(requestParser, jsonCreator, sessionManager, userDao))
+                .addMapping("/user");
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        logger.warn("Modification happened, server restarting...");
     }
 }
