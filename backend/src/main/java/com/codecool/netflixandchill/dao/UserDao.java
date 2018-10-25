@@ -27,4 +27,8 @@ public interface UserDao {
     boolean validLogin(String email, String password);
 
     List<Episode> getWatchedEpisodesById(long userId);
+
+    void addSeasonEpisodeToWatchedList(long seasonId, long userId);
+
+    void addSeriesEpisodeToWatchedList(long seriesId, long userId);
 }

@@ -5,7 +5,6 @@ import com.codecool.netflixandchill.model.Episode;
 import com.codecool.netflixandchill.model.Season;
 import com.codecool.netflixandchill.model.Series;
 import com.codecool.netflixandchill.model.User;
-import com.codecool.netflixandchill.util.EMFManager;
 import com.codecool.netflixandchill.util.TransactionManager;
 
 import javax.persistence.EntityManager;
@@ -16,18 +15,15 @@ import java.util.List;
 
 public class UserDaoDB implements UserDao {
 
-    private TransactionManager transactionManager = TransactionManager.getInstance();
-    private EntityManagerFactory emfManager = EMFManager.getInstance();
-    private static UserDaoDB instance = null;
+    private TransactionManager transactionManager;
+    private EntityManagerFactory emfManager;
 
-    public static UserDaoDB getInstance() {
-        if (instance == null) {
-            instance = new UserDaoDB();
-        }
-        return instance;
+
+    public UserDaoDB(TransactionManager transactionManager, EntityManagerFactory emfManager) {
+        this.transactionManager = transactionManager;
+        this.emfManager = emfManager;
     }
 
-    private UserDaoDB() {}
 
     @Override
     public void add(User user) {
@@ -155,6 +151,7 @@ public class UserDaoDB implements UserDao {
         return result;
     }
 
+    @Override
     public void addSeasonEpisodeToWatchedList(long seasonId, long userId) {
         EntityManager em = emfManager.createEntityManager();
 
@@ -171,6 +168,7 @@ public class UserDaoDB implements UserDao {
         em.close();
     }
 
+    @Override
     public void addSeriesEpisodeToWatchedList(long seriesId, long userId) {
         EntityManager em = emfManager.createEntityManager();
 

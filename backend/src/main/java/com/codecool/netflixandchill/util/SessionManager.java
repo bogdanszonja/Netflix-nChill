@@ -5,17 +5,6 @@ import javax.servlet.http.HttpSession;
 
 public class SessionManager {
 
-    private static SessionManager instance = null;
-
-    public static SessionManager getInstance() {
-        if (instance == null) {
-            instance = new SessionManager();
-        }
-        return instance;
-    }
-
-    private SessionManager() {}
-
     public HttpSession getHttpSessionRedirect(HttpServletRequest req) {
         HttpSession session = req.getSession(false);
 
@@ -38,7 +27,7 @@ public class SessionManager {
         if (session == null) {
             session = req.getSession(true);
             session.setAttribute("userId", null);
-            return null;
+//            return null;
         }
 
         return session;

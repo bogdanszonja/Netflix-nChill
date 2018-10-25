@@ -1,4 +1,4 @@
-package com.codecool.netflixandchill.config;
+package com.codecool.netflixandchill.util;
 
 import java.io.IOException;
 import javax.servlet.Filter;

@@ -1,73 +1,108 @@
 package com.codecool.netflixandchill.controller;
 
-import com.codecool.netflixandchill.dao.implementation.UserDaoDB;
+import com.codecool.netflixandchill.dao.UserDao;
+import com.codecool.netflixandchill.util.JsonCreator;
 import com.codecool.netflixandchill.util.RequestParser;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
+import com.codecool.netflixandchill.util.SessionManager;
 import com.google.gson.JsonObject;
-import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Iterator;
 
-@WebServlet(urlPatterns = "/user")
 public class UserController extends HttpServlet {
+
+    private RequestParser requestParser;
+    private JsonCreator jsonCreator;
+    private SessionManager sessionManager;
+    private UserDao userDao;
+    private Logger logger = LoggerFactory.getLogger(UserController.class);
+
+
+    public UserController(RequestParser rp, JsonCreator jc, SessionManager sm,
+                          UserDao userDao) {
+        this.requestParser = rp;
+        this.jsonCreator = jc;
+        this.sessionManager = sm;
+        this.userDao = userDao;
+    }
+
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        logger.info("Get request");
+        JsonObject answer = new JsonObject();
+        answer.add("data", jsonCreator.findUserById(Long.parseLong(request.getParameter("userId"))));
+        logger.info("Answer to send back: " + answer);
 
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(answer.toString());
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        UserDaoDB userDaoDB = UserDaoDB.getInstance();
-
-        JsonObject jsonObject = RequestParser.getInstance().getJsonObject(request);
+        logger.info("Post request");
+//        HttpSession session = sessionManager.getHttpSession(request);
+        JsonObject jsonObject = requestParser.getJsonObject(request);
+        logger.info("Data from request: " + jsonObject);
         String jsonObjectKey = "";
-        System.out.println(jsonObject);
-//        long userId = jsonObject.get("userId").getAsLong();
+        long userId = jsonObject.get("userId").getAsLong();
         long id;
 
         for (String key : jsonObject.keySet()) {
             jsonObjectKey = key;
         }
+        logger.info("JsonObjectKey: " + jsonObjectKey);
 
+//        System.out.println(request.getSession().getAttribute("userId"));
+//        if (session.getAttribute("userId") == null) {
+//            System.out.println("pina");
+//            return;
+//        }
+
+//        int userId = (Integer) session.getAttribute("userId");
 
         switch (jsonObjectKey) {
             case "episode":
+                logger.info("Switch-case: episode");
                 id = jsonObject.get("episode").getAsLong();
-                userDaoDB.addEpisodeToWatchedList(id, 19542);
+                userDao.addEpisodeToWatchedList(id, userId);
 
                 break;
             case "favourite":
+                logger.info("Switch-case: favourite");
                 id = jsonObject.get("favourite").getAsLong();
-                userDaoDB.addSeriesToFavouriteList(id, 19542);
+                userDao.addSeriesToFavouriteList(id, userId);
 
                 break;
             case "watchlist":
+                logger.info("Switch-case: watchlist");
                 id = jsonObject.get("watchlist").getAsLong();
-                userDaoDB.addSeriesToWatchList(id, 19542);
+                userDao.addSeriesToWatchList(id, userId);
 
                 break;
             case "season":
+                logger.info("Switch-case: season");
                 id = jsonObject.get("season").getAsLong();
-                userDaoDB.addSeasonEpisodeToWatchedList(id, 19542);
+                userDao.addSeasonEpisodeToWatchedList(id, userId);
 
                 break;
             case "series":
+                logger.info("Switch-case: series");
                 id = jsonObject.get("series").getAsLong();
-                userDaoDB.addSeriesEpisodeToWatchedList(id, 19542);
+                userDao.addSeriesEpisodeToWatchedList(id, userId);
                 break;
         }
 
 
         JsonObject answer = new JsonObject();
-        answer.addProperty("success", true);
+        answer.add("data", jsonCreator.findUserById(userId));
+        logger.info("Answer to send back: " + answer);
+//        answer.addProperty("success", true);
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

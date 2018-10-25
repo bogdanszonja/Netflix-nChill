@@ -3,27 +3,33 @@ package com.codecool.netflixandchill.config;
 import com.codecool.netflixandchill.json.Show;
 import com.codecool.netflixandchill.json.TvShow;
 import com.codecool.netflixandchill.model.*;
-import com.codecool.netflixandchill.util.EMFManager;
-import com.codecool.netflixandchill.util.RemoteURLReader;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 public class InitializerDB {
-    public static void populateDb(EntityManager em) throws IOException {
 
-        RemoteURLReader urlReader = new RemoteURLReader();
-        Initializer init = new Initializer(urlReader);
-        Show tvShow = new Show();
+    private EntityManagerFactory emf;
+    private Initializer init;
+    private Show tvShow;
+
+
+    public InitializerDB(EntityManagerFactory emf, Initializer init, Show tvShow) {
+        this.emf = emf;
+        this.init = init;
+        this.tvShow = tvShow;
+    }
+
+
+    public void populateDb() throws IOException {
+
+        EntityManager em = emf.createEntityManager();
+
         init.addTvShowToMyTvSHowsList();
-
-        EntityTransaction transactionTest = em.getTransaction();
-        transactionTest.begin();
 
         for (int i = 0; i < tvShow.getTvShowList().size(); i++) {
             EntityTransaction transaction = em.getTransaction();
@@ -45,7 +51,7 @@ public class InitializerDB {
             }
 
             for (int j = 0; j < seasonSet.size(); j++) {
-                season = Season.builder().title("Season").year(init.formatStringToDate(currentShow.
+                season = Season.builder().title("Season " + (j + 1)).year(init.formatStringToDate(currentShow.
                         getEpisodes()[j].getAir_date())).seasonNumber(j + 1).build();
 
                 series.addSeason(season);
@@ -65,15 +71,8 @@ public class InitializerDB {
             em.persist(series);
             transaction.commit();
         }
-    }
-
-    public static void main(String[] args) throws IOException {
-        EntityManagerFactory entityManager =  EMFManager.getInstance();
-        EntityManager em = entityManager.createEntityManager();
-
-        populateDb(em);
         em.clear();
         em.close();
-        entityManager.close();
     }
+
 }
