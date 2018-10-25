@@ -8,7 +8,7 @@
 
     <logger name="com.codecool.shop" level="debug"/>
 
-    <root level="warn">
+    <root level="info">
         <appender-ref ref="STDOUT"/>
     </root>
 </configuration>
