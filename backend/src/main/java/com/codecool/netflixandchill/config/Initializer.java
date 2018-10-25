@@ -35,7 +35,7 @@ public class Initializer implements ServletContextListener {
         try {
             initializerDB.populateDB();
         } catch (IOException e) {
-            logger.info("Error in initializerDB!");
+            logger.info("Error in InitializerDB!");
             e.printStackTrace();
         }
 

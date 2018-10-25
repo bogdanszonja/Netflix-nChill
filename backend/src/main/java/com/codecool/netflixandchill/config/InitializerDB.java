@@ -3,8 +3,6 @@ package com.codecool.netflixandchill.config;
 import com.codecool.netflixandchill.model.*;
 import com.codecool.netflixandchill.util.RemoteURLReader;
 import com.google.gson.*;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -14,10 +12,12 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
-
 
 class InitializerDB {
+
+    private static final int NUMBER_OF_PAGES_TO_DOWNLOAD = 2;
+    private static final int MAX_NUMBER_OF_PAGES_TO_DOWNLOAD = 545;
+
     private RemoteURLReader urlReader;
     private EntityManagerFactory emf;
     private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -28,47 +28,45 @@ class InitializerDB {
         this.emf = emf;
     }
 
-    private List<JSONArray> getAllShowJSON() throws IOException {
-        List<JSONArray> pages = new LinkedList<>();
+    private JsonArray getAllSeriesJson() throws IOException {
+        JsonArray seriesArray = new JsonArray();
+        JsonParser jsonParser = new JsonParser();
 
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= NUMBER_OF_PAGES_TO_DOWNLOAD; i++) {
             String seriesPath = "https://www.episodate.com/api/most-popular?page=" + i;
             String result = urlReader.readFromUrl(seriesPath);
-            JSONObject json = new JSONObject(result);
-
-            pages.add(json.getJSONArray("tv_shows"));
+            JsonObject page = (JsonObject) jsonParser.parse(result);
+            page.get("tv_shows").getAsJsonArray().forEach(seriesArray::add);
         }
 
-        return pages;
-
+        return seriesArray;
     }
 
-    private List<Integer> getAllShowsId() throws IOException {
-        List<Integer> showIdList = new ArrayList<>();
+    private List<Integer> getAllSeriesId() throws IOException {
+        List<Integer> seriesIdList = new ArrayList<>();
 
-        for (JSONArray array : getAllShowJSON()) {
-            showIdList.addAll(array.toList().stream()
-                    .map(o -> (Integer) ((HashMap) o).get("id"))
-                    .collect(Collectors.toList()));
-        }
-        return showIdList;
+        getAllSeriesJson().forEach(series -> seriesIdList.add(series.getAsJsonObject().get("id").getAsInt()));
+
+        return seriesIdList;
     }
 
-    private JsonArray getAllShowWithSeasonAndEpisodeJson() throws IOException {
-        JsonArray jsonArray = new JsonArray();
+    private JsonArray getAllSeriesWithSeasonAndEpisodeJson() throws IOException {
+        JsonArray seriesArray = new JsonArray();
         JsonParser jsonParser = new JsonParser();
-        for (Integer id : getAllShowsId()) {
+
+        for (Integer id : getAllSeriesId()) {
             String seriesPath = "https://www.episodate.com/api/show-details?q=" + id.toString();
             String result = urlReader.readFromUrl(seriesPath);
-            jsonArray.add((jsonParser.parse(result)));
+            seriesArray.add(jsonParser.parse(result));
         }
-        return jsonArray;
+
+        return seriesArray;
     }
 
     void populateDB() throws IOException {
         EntityManager em = emf.createEntityManager();
 
-        for (JsonElement element : getAllShowWithSeasonAndEpisodeJson()) {
+        for (JsonElement element : getAllSeriesWithSeasonAndEpisodeJson()) {
             EntityTransaction transaction = em.getTransaction();
             transaction.begin();
 
@@ -127,6 +125,7 @@ class InitializerDB {
 
     private List<Genre> convertJsonArrayToEnumGenre(JsonArray genreList) {
         List<Genre> genres = new LinkedList<>();
+
         genreList.forEach(genre -> genres.add(Genre.valueOf(genre.getAsString()
                 .replace("-", "_")
                 .toUpperCase())));
@@ -146,4 +145,5 @@ class InitializerDB {
         }
         return null;
     }
+
 }
