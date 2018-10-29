@@ -55,11 +55,23 @@ public class User {
     @Temporal(TemporalType.DATE)
     private Date registrationDate;
 
+//    @Builder
+//    public User(String userName, String emailAddress, String password, Date registrationDate) {
+//        this.userName = userName;
+//        this.emailAddress = emailAddress;
+//        this.password = password;
+//        this.registrationDate = registrationDate;
+//    }
+
     @Builder
-    public User(String userName, String emailAddress, String password, Date registrationDate) {
+    public User(String userName, String emailAddress, String password, Collection<Series> watchlist,
+                Collection<Series> favourites, Collection<Episode> watchedEpisodes, Date registrationDate) {
         this.userName = userName;
         this.emailAddress = emailAddress;
         this.password = password;
+        this.watchlist = watchlist;
+        this.favourites = favourites;
+        this.watchedEpisodes = watchedEpisodes;
         this.registrationDate = registrationDate;
     }
 

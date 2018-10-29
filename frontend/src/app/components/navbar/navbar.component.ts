@@ -19,6 +19,7 @@ export class NavbarComponent implements OnInit {
               private router: Router) { }
 
   ngOnInit() {
+    this.userService.loggedIn.subscribe(status => this.isLoggedIn = status);
   }
 
   showSearchField(): void {
@@ -36,16 +37,13 @@ export class NavbarComponent implements OnInit {
   }
 
   login(): void {
-    this.isLoggedIn = true;
     this.userService.handleLogin('login');
   }
 
   logout(): void {
-    this.isLoggedIn = false;
-  }
-
-  toMyPage() {
-    console.log('my page');
+    localStorage.removeItem('userId');
+    this.userService.logoutUser();
+    this.router.navigate(['/']);
   }
 
 }

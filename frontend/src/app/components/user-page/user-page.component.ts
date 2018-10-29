@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+
 import { User } from '../../models/User';
-import {UserService} from '../../services/user/user.service';
+import { UserService } from '../../services/user/user.service';
 
 @Component({
   selector: 'app-user-page',
@@ -10,16 +11,26 @@ import {UserService} from '../../services/user/user.service';
 export class UserPageComponent implements OnInit {
 
   user: User;
+  tabNum: number;
 
   constructor(private userService: UserService) { }
 
   ngOnInit() {
-    console.log('user-page-constructor');
-    console.log(this.user);
-    this.userService.user.subscribe(user => {
+    console.log('User-page-constructor');
+    this.getUser(parseInt(localStorage.getItem('userId')));
+    this.tabNum = 1;
+  }
+
+  getUser(userId: number): void {
+    this.userService.getUser(userId)
+    .subscribe(user => {
+      console.log(user);
       this.user = user;
-      console.log(this.user);
     });
+  }
+
+  changeTab(tabNum: number): void {
+    this.tabNum = tabNum;
   }
 
 }

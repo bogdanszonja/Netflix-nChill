@@ -2,7 +2,6 @@ package com.codecool.netflixandchill.dao.implementation;
 
 import com.codecool.netflixandchill.dao.SeasonDao;
 import com.codecool.netflixandchill.model.Season;
-import com.codecool.netflixandchill.util.EMFManager;
 import com.codecool.netflixandchill.util.TransactionManager;
 
 import javax.persistence.EntityManager;
@@ -10,18 +9,16 @@ import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
 public class SeasonDaoDB implements SeasonDao {
-    private TransactionManager transactionManager = TransactionManager.getInstance();
-    private EntityManagerFactory emfManager = EMFManager.getInstance();
-    private static SeasonDaoDB instance = null;
 
-    public static SeasonDaoDB getInstance() {
-        if (instance == null) {
-            instance = new SeasonDaoDB();
-        }
-        return instance;
+    private TransactionManager transactionManager;
+    private EntityManagerFactory emfManager;
+
+
+    public SeasonDaoDB(TransactionManager transactionManager, EntityManagerFactory emfManager) {
+        this.transactionManager = transactionManager;
+        this.emfManager = emfManager;
     }
 
-    private SeasonDaoDB() {}
 
     @Override
     public void add(Season season) {

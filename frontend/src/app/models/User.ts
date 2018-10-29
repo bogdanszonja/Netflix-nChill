@@ -7,7 +7,7 @@ export class User {
   username: string;
   emailAddress: string;
   registrationDate: Date;
-  watchList: Series[];
+  watchlist: Series[];
   favourites: Series[];
   watchedEpisodes: Episode[];
 

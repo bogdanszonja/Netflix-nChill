@@ -2,7 +2,7 @@
   {{ series.title }}
   {{ series.description }}
   <span *ngFor="let genre of series.genres">
-    {{ genre }}
+    {{ genre.name }}
   </span>
   <div *ngFor="let season of series.seasons">
     Season {{ season.seasonNumber }}

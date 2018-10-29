@@ -1,43 +1,48 @@
 package com.codecool.netflixandchill.controller;
 
 import com.codecool.netflixandchill.dao.UserDao;
-import com.codecool.netflixandchill.dao.implementation.UserDaoDB;
 import com.codecool.netflixandchill.model.User;
+import com.codecool.netflixandchill.util.JsonCreator;
 import com.codecool.netflixandchill.util.RequestParser;
 import com.codecool.netflixandchill.util.SessionManager;
 import com.google.gson.JsonObject;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.*;
 
-@WebServlet(urlPatterns = {"/join"})
 public class JoinController extends HttpServlet {
 
-    private UserDao userDaoDB = UserDaoDB.getInstance();
-    private SessionManager sessionManager = SessionManager.getInstance();
+    private RequestParser requestParser;
+    private JsonCreator jsonCreator;
+    private SessionManager sessionManager;
+    private UserDao userDao;
+    private Logger logger = LoggerFactory.getLogger(JoinController.class);
+
+
+    public JoinController(RequestParser rp, JsonCreator jc, SessionManager sm,
+                          UserDao userDao) {
+        this.requestParser = rp;
+        this.jsonCreator = jc;
+        this.sessionManager = sm;
+        this.userDao = userDao;
+    }
+
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-//        TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(request.getServletContext());
-//        WebContext context = new WebContext(request, response, request.getServletContext());
-//
-//        engine.process("register.html", context, response.getWriter());
-
-
-
+        logger.info("Get request");
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        JsonObject jsonObject = RequestParser.getInstance().getJsonObject(request);
-
+        logger.info("Post request");
+        JsonObject jsonObject = requestParser.getJsonObject(request);
+        logger.info("Data from request: " + jsonObject);
 //        HttpSession session = sessionManager.getHttpSession(request);
 //
 //        if (session == null) {
@@ -50,8 +55,9 @@ public class JoinController extends HttpServlet {
         String password = jsonObject.get("password").getAsString();
         String confirmedPassword = jsonObject.get("confirmPassword").getAsString();
 
-        if (userDaoDB.validRegister(email, password, confirmedPassword)) {
-            userDaoDB.add(User.builder().userName(userName).emailAddress(email).password(password).registrationDate(new Date()).build());
+        if (userDao.validRegister(email, password, confirmedPassword)) {
+            logger.info("Valid registration");
+            userDao.add(User.builder().userName(userName).emailAddress(email).password(password).registrationDate(new Date()).build());
         }
 
         JsonObject answer = new JsonObject();

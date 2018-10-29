@@ -1,92 +1,75 @@
 package com.codecool.netflixandchill.config;
 
-import com.codecool.netflixandchill.json.Show;
-import com.codecool.netflixandchill.model.Genre;
-import com.codecool.netflixandchill.util.RemoteURLReader;
-import com.google.gson.Gson;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.codecool.netflixandchill.controller.*;
+import com.codecool.netflixandchill.dao.EpisodeDao;
+import com.codecool.netflixandchill.dao.SeasonDao;
+import com.codecool.netflixandchill.dao.SeriesDao;
+import com.codecool.netflixandchill.dao.UserDao;
+import com.codecool.netflixandchill.dao.implementation.EpisodeDaoDB;
+import com.codecool.netflixandchill.dao.implementation.SeasonDaoDB;
+import com.codecool.netflixandchill.dao.implementation.SeriesDaoDB;
+import com.codecool.netflixandchill.dao.implementation.UserDaoDB;
+import com.codecool.netflixandchill.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.persistence.EntityManagerFactory;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Collectors;
 
+@WebListener
+public class Initializer implements ServletContextListener {
 
-public class Initializer {
-    private RemoteURLReader urlReader;
-    private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-    private static final DateFormat format2 = new SimpleDateFormat("MMM/dd/yyyy");
+    private static final Logger logger = LoggerFactory.getLogger(Initializer.class);
 
-    public Initializer(RemoteURLReader urlReader) {
-        this.urlReader = urlReader;
-    }
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        EntityManagerFactory emf = EMFManager.getInstance();
+        RemoteURLReader remoteURLReader = new RemoteURLReader();
 
-    public List<JSONArray> getAllShowJSON() throws IOException {
-        String netflixPath;
-        List<JSONArray> pages = new LinkedList<>();
+        InitializerDB initializerDB = new InitializerDB(remoteURLReader, emf);
 
-        for (int i = 0; i < 10; i++) {
-            netflixPath = "https://www.episodate.com/api/most-popular?page=" + i;
-            String result = urlReader.readFromUrl(netflixPath);
-            JSONObject json = new JSONObject(result);
-            pages.add(json.getJSONArray("tv_shows"));
-        }
-
-        return pages;
-
-    }
-
-    public List<Integer> getAllShowsId() throws IOException {
-        List<Integer> showIdList = new ArrayList<>();
-
-        for (JSONArray array : getAllShowJSON()) {
-            showIdList.addAll(array.toList().stream()
-                    .map(o -> (Integer) ((HashMap) o).get("id"))
-                    .collect(Collectors.toList()));
-        }
-        return showIdList;
-    }
-
-    public JSONArray getAllShowWithSeasonAndEpisodeJSON() throws IOException {
-        JSONArray jsonArray = new JSONArray();
-        for (Integer id : getAllShowsId()) {
-            String netflixPath = "https://www.episodate.com/api/show-details?q=" + id.toString();
-            String result = urlReader.readFromUrl(netflixPath);
-            JSONObject json = new JSONObject(result);
-            jsonArray.put(json);
-        }
-        return jsonArray;
-    }
-
-    public void addTvShowToMyTvSHowsList() throws IOException {
-        Gson gson = new Gson();
-        for (Object object : getAllShowWithSeasonAndEpisodeJSON()) {
-            Show show = gson.fromJson(object.toString(), Show.class);
-            show.addShowToMyTvShow(show);
-        }
-    }
-
-    public List<Genre> convertStringToEnumGenre(String[] genreList) {
-        List<Genre> genres = new LinkedList<>();
-        for (String genre : genreList) {
-                genres.add(Genre.valueOf(genre.replace("-", "_").toUpperCase()));
-        }
-        return genres;
-    }
-
-    public Date formatStringToDate(String stringDate) {
         try {
-            return format.parse(stringDate);
-        } catch (ParseException e) {
-            try {
-                return format2.parse(stringDate);
-            } catch (ParseException e1) {
-                e1.printStackTrace();
-            }
+            initializerDB.populateDB();
+        } catch (IOException e) {
+            logger.info("Error in InitializerDB!");
+            e.printStackTrace();
         }
-        return null;
+
+        SessionManager sessionManager = new SessionManager();
+        RequestParser requestParser = new RequestParser();
+        TransactionManager transactionManager = new TransactionManager();
+
+        EpisodeDao episodeDao = new EpisodeDaoDB(transactionManager, emf);
+        SeasonDao seasonDao = new SeasonDaoDB(transactionManager, emf);
+        SeriesDao seriesDao = new SeriesDaoDB(transactionManager, emf);
+        UserDao userDao = new UserDaoDB(transactionManager, emf);
+
+        JsonCreator jsonCreator = new JsonCreator(episodeDao, seasonDao, seriesDao, userDao);
+
+        ServletContext context = sce.getServletContext();
+        context.addServlet("Join",
+                new JoinController(requestParser, jsonCreator, sessionManager, userDao))
+                .addMapping("/join");
+        context.addServlet("Login",
+                new LoginController(requestParser, jsonCreator, sessionManager, userDao))
+                .addMapping("/login");
+        context.addServlet("Search",
+                new SearchController(requestParser, jsonCreator, sessionManager, episodeDao, userDao))
+                .addMapping("/search");
+        context.addServlet("Series",
+                new SeriesController(requestParser, jsonCreator, sessionManager))
+                .addMapping("/series");
+        context.addServlet("User",
+                new UserController(requestParser, jsonCreator, sessionManager, userDao))
+                .addMapping("/user");
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        logger.warn("Modification happened, server restarting...");
     }
 }
