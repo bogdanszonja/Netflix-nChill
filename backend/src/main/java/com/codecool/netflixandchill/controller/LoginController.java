@@ -60,6 +60,12 @@ public class LoginController extends HttpServlet {
             session.setAttribute("userId", userDao.find(email).getId());
             logger.info("UserId: " + session.getAttribute("userId"));
             answer.add("data", jsonCreator.findUserByEmail(email));
+        } else {
+            logger.info("Invalid login");
+            JsonObject error = new JsonObject();
+            error.addProperty("message", "Internal server error");
+            error.addProperty("cause", "Invalid username of password");
+            answer.add("error", error);
         }
 
         response.setContentType("application/json");

@@ -15,13 +15,14 @@ import java.util.*;
 
 class InitializerDB {
 
-    private static final int NUMBER_OF_PAGES_TO_DOWNLOAD = 2;
+    private static final int NUMBER_OF_PAGES_TO_DOWNLOAD = 1;
     private static final int MAX_NUMBER_OF_PAGES_TO_DOWNLOAD = 545;
+
+    private static final DateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    private static final DateFormat FORMAT_2 = new SimpleDateFormat("MMM/dd/yyyy");
 
     private RemoteURLReader urlReader;
     private EntityManagerFactory emf;
-    private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-    private static final DateFormat format2 = new SimpleDateFormat("MMM/dd/yyyy");
 
     InitializerDB(RemoteURLReader urlReader, EntityManagerFactory emf) {
         this.urlReader = urlReader;
@@ -135,10 +136,10 @@ class InitializerDB {
 
     private Date formatStringToDate(String stringDate) {
         try {
-            return format.parse(stringDate);
+            return FORMAT.parse(stringDate);
         } catch (ParseException e) {
             try {
-                return format2.parse(stringDate);
+                return FORMAT_2.parse(stringDate);
             } catch (ParseException e1) {
                 e1.printStackTrace();
             }

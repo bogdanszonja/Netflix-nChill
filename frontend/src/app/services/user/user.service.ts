@@ -99,14 +99,21 @@ export class UserService {
     this.http.post(`${this.baseUrl}/login`, {'username': username, 'password': password}, httpOptions)
       .pipe(
         tap(_ => console.log(`User login, should get back User`)),
-        map(response => {
-          return response['data'];
-        }),
+        // map(response => {
+        //   if (response['data']) {
+        //     return response['data'];
+        //   }
+        //   return response['error'];
+        // }),
         catchError(this.handleError<User>())
-      ).subscribe(user => {
-          localStorage.setItem('userId', user['id']);
-          this.user.next(user);
+      ).subscribe(response => {
+        if (response['data']) {
+          localStorage.setItem('userId', response['data']['id']);
+          this.user.next(response['data']);
           this.loggedIn.next(true);
+        } else {
+          console.log(response['error']);
+        }
     });
   }
 

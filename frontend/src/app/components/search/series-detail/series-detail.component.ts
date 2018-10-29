@@ -15,6 +15,7 @@ export class SeriesDetailComponent implements OnInit {
 
   @Input() series: Series;
   user: User;
+  userId: number = parseInt(localStorage.getItem('userId'));
 
   constructor(private userService: UserService) { }
 
