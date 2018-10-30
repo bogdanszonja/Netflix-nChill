@@ -35,7 +35,14 @@ public class SearchController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         JsonObject answer = new JsonObject();
         String searchTerm = request.getParameter("searchTerm");
-        answer.add("data", jsonCreator.findSeriesBySubstring(searchTerm));
+
+        if (jsonCreator.findSeriesBySubstring(searchTerm).size() == 0) {
+            answer.add("data", jsonCreator.findSeriesBySubstring(searchTerm));
+        } else {
+            JsonObject error = new JsonObject();
+            error.addProperty("message", "Series not found");
+            answer.add("error", error);
+        }
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
