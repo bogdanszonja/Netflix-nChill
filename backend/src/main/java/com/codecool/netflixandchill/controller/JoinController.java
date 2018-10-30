@@ -55,13 +55,22 @@ public class JoinController extends HttpServlet {
         String password = jsonObject.get("password").getAsString();
         String confirmedPassword = jsonObject.get("confirmPassword").getAsString();
 
+        JsonObject answer = new JsonObject();
+
         if (userDao.validRegister(email, password, confirmedPassword)) {
             logger.info("Valid registration");
             userDao.add(User.builder().userName(userName).emailAddress(email).password(password).registrationDate(new Date()).build());
+            answer.addProperty("success", true);
+        } else if (userDao.checkIfEmailAlreadyExists(email)){
+            answer.addProperty("error", "email address already exists");
+            response.setStatus(400);
+        } else if (password != confirmedPassword){
+            answer.addProperty("error", "password and confirmed password are not the same");
+            response.setStatus(400);
+        } else if(userDao.checkIfUserNameAlreadyExists(userName)) {
+            answer.addProperty("error", "username already exists");
+            response.setStatus(400);
         }
-
-        JsonObject answer = new JsonObject();
-        answer.addProperty("success", true);
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

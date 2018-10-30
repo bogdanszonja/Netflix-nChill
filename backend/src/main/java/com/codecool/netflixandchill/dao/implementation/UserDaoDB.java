@@ -59,6 +59,7 @@ public class UserDaoDB implements UserDao {
         return (result.size() != 0) ? result.get(0): null;
     }
 
+
     @Override
     public void remove(long userId) {
         EntityManager em = emfManager.createEntityManager();
@@ -128,6 +129,27 @@ public class UserDaoDB implements UserDao {
         User user = find(email);
 
         return (user == null) && (password.equals(confirmedPassword));
+    }
+
+    @Override
+    public boolean checkIfUserNameAlreadyExists(String userName) {
+        EntityManager em = emfManager.createEntityManager();
+
+        List<User> result = em.createQuery(
+                "SELECT u " +
+                        "FROM User u " +
+                        "WHERE u.userName = :userName", User.class)
+                .setParameter("userName", userName)
+                .getResultList();
+        em.close();
+        return (result.size() != 0) ? true: false;
+    }
+
+    @Override
+    public boolean checkIfEmailAlreadyExists(String email) {
+        User user = find(email);
+
+        return (user != null);
     }
 
     @Override
