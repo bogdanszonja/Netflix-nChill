@@ -66,6 +66,7 @@ public class LoginController extends HttpServlet {
             error.addProperty("message", "Internal server error");
             error.addProperty("cause", "Invalid username of password");
             answer.add("error", error);
+            response.setStatus(409);
         }
 
         response.setContentType("application/json");
