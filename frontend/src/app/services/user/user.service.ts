@@ -89,8 +89,12 @@ export class UserService {
       .pipe(
         tap(_ => console.log(`User join`)),
         catchError(this.handleError<any>())
-      ).subscribe(data => {
-        console.log(data['success']);
+      ).subscribe(response => {
+      if (response['data']) {
+        console.log(response['data']);
+      } else {
+        console.log(response['error']);
+      }
     });
   }
 
@@ -100,12 +104,6 @@ export class UserService {
     this.http.post(`${this.baseUrl}/login`, {'username': username, 'password': password}, httpOptions)
       .pipe(
         tap(_ => console.log(`User login, should get back User`)),
-        // map(response => {
-        //   if (response['data']) {
-        //     return response['data'];
-        //   }
-        //   return response['error'];
-        // }),
         catchError(this.handleError<User>())
       ).subscribe(response => {
         if (response['data']) {
@@ -138,4 +136,5 @@ export class UserService {
   logoutUser() {
     this.auth.logout();
   }
+
 }

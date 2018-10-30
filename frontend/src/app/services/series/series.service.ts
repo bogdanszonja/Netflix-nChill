@@ -42,13 +42,14 @@ export class SeriesService {
     this.http.get<Series[]>(`${this.baseUrl}/search?searchTerm=${searchTerm}`)
       .pipe(
         tap(_ => console.log(`More series found!`)),
-        map(response => {
-          return response['data'];
-        }),
         catchError(this.handleError<Series[]>())
-      ).subscribe(series => {
-          this.searchResult.next(series);
+      ).subscribe(response => {
+        if (response['data']) {
+          this.searchResult.next(response['data']);
           console.log(this.searchResult);
+        } else {
+          console.log(response['error']);
+        }
       });
   }
 

@@ -20,35 +20,57 @@ export class SeriesDetailComponent implements OnInit {
   constructor(private userService: UserService) { }
 
   ngOnInit() {
-    this.userService.user.subscribe(user => {
-      this.user = user;
-      console.log(this.user);
+    this.userService.user.subscribe(response => {
+      if (response['data']) {
+        this.user = response['data'];
+        console.log(this.user);
+      } else {
+        console.log(response['error']);
+      }
     });
   }
 
   addWholeSeries(series: Series): void {
     console.log('all seasons added');
-    this.userService.addWholeSeries(series).subscribe();
+    this.userService.addWholeSeries(series).subscribe(response => {
+      console.log(this.handleResponse(response));
+    });
   }
 
   addSingleSeason(season: Season): void {
     console.log('season added');
-    this.userService.addSingleSeason(season).subscribe();
+    this.userService.addSingleSeason(season).subscribe(response => {
+      console.log(this.handleResponse(response));
+    });
   }
 
   addSingleEpisode(episode: Episode): void {
     console.log('episode added');
-    this.userService.addSingleEpisode(episode).subscribe();
+    this.userService.addSingleEpisode(episode).subscribe(response => {
+      console.log(this.handleResponse(response));
+    });
   }
 
   addToFavourites(series: Series): void {
     console.log('added to favourites');
-    this.userService.addToFavourites(series).subscribe();
+    this.userService.addToFavourites(series).subscribe(response => {
+      console.log(this.handleResponse(response));
+    });
   }
 
   addToWatchlist(series: Series): void {
     console.log('added to watchlist');
-    this.userService.addToWatchlist(series).subscribe();
+    this.userService.addToWatchlist(series).subscribe(response => {
+      console.log(this.handleResponse(response));
+    });
+  }
+
+  handleResponse(response) {
+    if (response['data']) {
+      return response['data'];
+    } else {
+      return response['error'];
+    }
   }
 
 }
