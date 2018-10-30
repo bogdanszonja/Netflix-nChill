@@ -24,6 +24,10 @@ public interface UserDao {
 
     boolean validRegister(String email, String password, String confirmedPassword);
 
+    boolean checkIfUserNameAlreadyExists(String userName);
+
+    boolean checkIfEmailAlreadyExists(String email);
+
     boolean validLogin(String email, String password);
 
     List<Episode> getWatchedEpisodesById(long userId);
