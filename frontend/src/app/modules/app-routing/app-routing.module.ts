@@ -8,6 +8,7 @@ import { LoginComponent } from '../../components/login/login.component';
 import { WatchlistComponent } from '../../components/user-page/watchlist/watchlist.component';
 import { FavouritesComponent } from '../../components/user-page/favourites/favourites.component';
 import { WatchedComponent } from '../../components/user-page/watched/watched.component';
+import { AuthGuard } from '../../guards/auth/auth.guard';
 
 const routes: Routes = [
   {path: '', component: TrendingComponent},
@@ -21,7 +22,8 @@ const routes: Routes = [
       {path: 'favourites', component: FavouritesComponent},
       {path: 'watched', component: WatchedComponent},
       {path: '', redirectTo: 'watchlist', pathMatch: 'full'}
-    ]
+    ],
+    canActivate: [AuthGuard]
   }
 ];
 

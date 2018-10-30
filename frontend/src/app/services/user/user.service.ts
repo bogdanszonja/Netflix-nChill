@@ -10,6 +10,7 @@ import { Observable } from 'rxjs/internal/Observable';
 import { Season } from '../../models/Season';
 import { Episode } from '../../models/Episode';
 import { User } from '../../models/User';
+import { AuthService } from '../auth/auth.service';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -25,10 +26,10 @@ export class UserService {
   private baseUrl = 'http://localhost:8080';
 
   loginStatus = new Subject<string>();
-  loggedIn = new Subject<boolean>();
   user = new Subject<User>();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,
+              private auth: AuthService) { }
 
   handleLogin(type: string) {
     console.log(this.loginStatus);
@@ -108,9 +109,8 @@ export class UserService {
         catchError(this.handleError<User>())
       ).subscribe(response => {
         if (response['data']) {
-          localStorage.setItem('userId', response['data']['id']);
+          this.auth.sendToken(response['data']['id']);
           this.user.next(response['data']);
-          this.loggedIn.next(true);
         } else {
           console.log(response['error']);
         }
@@ -136,6 +136,6 @@ export class UserService {
   }
 
   logoutUser() {
-    this.loggedIn.next(false);
+    this.auth.logout();
   }
 }
