@@ -12,8 +12,8 @@ export class AuthService {
 
   constructor(private myRoute: Router) { }
 
-  sendToken(token: string) {
-    localStorage.setItem('userId', token);
+  sendToken(token: number) {
+    localStorage.setItem('userId', token.toString());
     this.loggedIn.next(true);
   }
 

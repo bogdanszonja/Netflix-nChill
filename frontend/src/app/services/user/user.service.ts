@@ -90,11 +90,7 @@ export class UserService {
         tap(_ => console.log(`User join`)),
         catchError(this.handleError<any>())
       ).subscribe(response => {
-      if (response['data']) {
-        console.log(response['data']);
-      } else {
-        console.log(response['error']);
-      }
+        console.log(response);
     });
   }
 
@@ -106,12 +102,8 @@ export class UserService {
         tap(_ => console.log(`User login, should get back User`)),
         catchError(this.handleError<User>())
       ).subscribe(response => {
-        if (response['data']) {
           this.auth.sendToken(response['data']['id']);
           this.user.next(response['data']);
-        } else {
-          console.log(response['error']);
-        }
     });
   }
 
