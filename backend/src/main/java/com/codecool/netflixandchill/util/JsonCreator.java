@@ -29,11 +29,13 @@ public class JsonCreator {
     public JsonObject getEpisodeById(long episodeId) {
         Episode episode = episodeDao.find(episodeId);
 
-        return this.createEpisodeJson(episode);
+        return (episode == null) ? null : this.createEpisodeJson(episode);
     }
 
     public JsonArray getAllEpisodes() {
         List<Episode> episodes = episodeDao.getAll();
+
+        if (episodes.isEmpty()) return null;
 
         JsonArray episodeArray = new JsonArray();
         episodes.forEach(episode -> episodeArray.add(this.createEpisodeJson(episode)));
@@ -44,6 +46,8 @@ public class JsonCreator {
     public JsonArray findEpisodeBySubstring(String subString) {
         List<Episode> episodes = episodeDao.findBySubstring(subString);
 
+        if (episodes.isEmpty()) return null;
+
         JsonArray episodeArray = new JsonArray();
         episodes.forEach(episode -> episodeArray.add(this.createEpisodeJson(episode)));
 
@@ -53,11 +57,13 @@ public class JsonCreator {
     public JsonObject getSeasonById(long seasonId) {
         Season season = seasonDao.find(seasonId);
 
-        return this.createSeasonJson(season);
+        return (season == null) ? null : this.createSeasonJson(season);
     }
 
     public JsonArray getAllSeasons() {
         List<Season> seasons = seasonDao.getAll();
+
+        if (seasons.isEmpty()) return null;
 
         JsonArray seasonArray = new JsonArray();
         seasons.forEach(season -> seasonArray.add(this.createSeasonJson(season)));
@@ -68,11 +74,13 @@ public class JsonCreator {
     public JsonObject getSeriesById(long seriesId) {
         Series series = seriesDao.find(seriesId);
 
-        return this.createSeriesJson(series);
+        return (series == null) ? null : this.createSeriesJson(series);
     }
 
     public JsonArray getAllSeries() {
         List<Series> seriesList = seriesDao.getAll();
+
+        if (seriesList.isEmpty()) return null;
 
         JsonArray seriesArray = new JsonArray();
         seriesList.forEach(series -> seriesArray.add(this.createSeriesJson(series)));
@@ -83,6 +91,8 @@ public class JsonCreator {
     public JsonArray findSeriesBySubstring(String subString) {
         List<Series> seriesList = seriesDao.findBySubstring(subString);
 
+        if (seriesList.isEmpty()) return null;
+
         JsonArray seriesArray = new JsonArray();
         seriesList.forEach(series -> seriesArray.add(this.createSeriesJson(series)));
 
@@ -91,18 +101,21 @@ public class JsonCreator {
 
     public JsonObject findUserById(long userId) {
         User user = userDao.find(userId);
-
         return this.createUserJson(user);
+
+//        return (user == null) ? null : this.createUserJson(user);
     }
 
     public JsonObject findUserByEmail(String email) {
         User user = userDao.find(email);
 
-        return this.createUserJson(user);
+        return (user == null) ? null : this.createUserJson(user);
     }
 
     public JsonArray getAllUsers() {
         List<User> users = userDao.getAll();
+
+        if (users.isEmpty()) return null;
 
         JsonArray userArray = new JsonArray();
         users.forEach(user -> userArray.add(this.createUserJson(user)));
@@ -112,6 +125,8 @@ public class JsonCreator {
 
     public JsonArray getWatchedEpisodesByUserId(long userId) {
         List<Episode> episodes = userDao.getWatchedEpisodesById(userId);
+
+        if (episodes.isEmpty()) return null;
 
         JsonArray episodeArray = new JsonArray();
         episodes.forEach(episode -> episodeArray.add(this.createEpisodeJson(episode)));

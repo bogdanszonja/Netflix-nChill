@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 
 import { UserService } from '../../services/user/user.service';
 import { SeriesService } from '../../services/series/series.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -11,15 +12,16 @@ import { SeriesService } from '../../services/series/series.service';
 })
 export class NavbarComponent implements OnInit {
 
-  isLoggedIn = false;
+  isLoggedIn = localStorage.getItem('userId') !== null;
   searchToggle = false;
 
   constructor(private userService: UserService,
               private seriesService: SeriesService,
-              private router: Router) { }
+              private router: Router,
+              private auth: AuthService) { }
 
   ngOnInit() {
-    this.userService.loggedIn.subscribe(status => this.isLoggedIn = status);
+    this.auth.loggedIn.subscribe(status => this.isLoggedIn = status);
   }
 
   showSearchField(): void {
