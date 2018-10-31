@@ -30,6 +30,7 @@ public class Series {
     @Column(nullable = false)
     private Status status;
 
+    @Column(name = "air_date")
     @Temporal(TemporalType.DATE)
     private Date airDate;
 

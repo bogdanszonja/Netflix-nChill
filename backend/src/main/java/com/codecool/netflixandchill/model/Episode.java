@@ -22,15 +22,15 @@ public class Episode {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "release_date")
     @Temporal(TemporalType.DATE)
     @ToString.Exclude
     private Date releaseDate;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "run_time")
     private int runtime;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "episode_number")
     private int episodeNumber;
 
     @ManyToOne

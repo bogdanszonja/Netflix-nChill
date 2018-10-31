@@ -20,10 +20,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, name = "user_name")
     private String userName;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, name = "email_address")
     private String emailAddress;
 
     @Column(nullable = false)
@@ -52,6 +52,7 @@ public class User {
     @ToString.Exclude
     private Collection<Episode> watchedEpisodes = new ArrayList<>();
 
+    @Column(name = "registraion_date")
     @Temporal(TemporalType.DATE)
     private Date registrationDate;
 
