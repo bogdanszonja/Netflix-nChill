@@ -1,5 +1,6 @@
 package com.codecool.netflixandchill.controller;
 
+import com.codecool.netflixandchill.model.Series;
 import com.codecool.netflixandchill.util.JsonCreator;
 import com.codecool.netflixandchill.util.RequestParser;
 import com.codecool.netflixandchill.util.SessionManager;
@@ -30,7 +31,7 @@ public class SeriesController extends HttpServlet {
 
         if (request.getParameter("id") != null) {
             if (jsonCreator.getSeriesById(Long.parseLong(request.getParameter("id"))) != null) {
-                answer.add("data", jsonCreator.getSeriesById(Long.parseLong(request.getParameter("id"))));
+                answer.add("data", jsonCreator.createSeriesJsonById(Integer.parseInt(request.getParameter("id"))));
                 response.getWriter().write(answer.toString());
                 return;
             } else {

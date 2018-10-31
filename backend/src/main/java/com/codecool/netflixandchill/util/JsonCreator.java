@@ -4,6 +4,7 @@ import com.codecool.netflixandchill.dao.EpisodeDao;
 import com.codecool.netflixandchill.dao.SeasonDao;
 import com.codecool.netflixandchill.dao.SeriesDao;
 import com.codecool.netflixandchill.dao.UserDao;
+import com.codecool.netflixandchill.dao.implementation.SeriesDaoDB;
 import com.codecool.netflixandchill.model.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -83,7 +84,7 @@ public class JsonCreator {
         if (seriesList.isEmpty()) return null;
 
         JsonArray seriesArray = new JsonArray();
-        seriesList.forEach(series -> seriesArray.add(this.createSeriesJson(series)));
+        seriesList.forEach(series -> seriesArray.add(this.createSeriesTitleJson(series)));
 
         return seriesArray;
     }
@@ -94,7 +95,7 @@ public class JsonCreator {
         if (seriesList.isEmpty()) return null;
 
         JsonArray seriesArray = new JsonArray();
-        seriesList.forEach(series -> seriesArray.add(this.createSeriesJson(series)));
+        seriesList.forEach(series -> seriesArray.add(this.createSeriesTitleJson(series)));
 
         return seriesArray;
     }
@@ -171,16 +172,51 @@ public class JsonCreator {
         seriesJson.addProperty("airDate", series.getAirDate().toString());
         seriesJson.addProperty("status", series.getStatus().toString());
 
-//        JsonArray seasonArray = new JsonArray();
-//        series.getSeasons().forEach(season -> seasonArray.add(this.createSeasonJson(season)));
-//        seriesJson.add("seasons", seasonArray);
-//
-//        JsonArray genreArray = new JsonArray();
-//        series.getGenres().forEach(genre -> genreArray.add(this.createGenreJson(genre)));
-//        seriesJson.add("genres", genreArray);
+        JsonArray seasonArray = new JsonArray();
+        series.getSeasons().forEach(season -> seasonArray.add(this.createSeasonJson(season)));
+        seriesJson.add("seasons", seasonArray);
+
+        JsonArray genreArray = new JsonArray();
+        series.getGenres().forEach(genre -> genreArray.add(this.createGenreJson(genre)));
+        seriesJson.add("genres", genreArray);
 
         return seriesJson;
     }
+
+
+    private JsonObject createSeriesTitleJson(Series series) {
+        JsonObject seriesJson = new JsonObject();
+
+        seriesJson.addProperty("id", series.getId());
+        seriesJson.addProperty("title", series.getTitle());
+
+        return seriesJson;
+    }
+
+
+    public JsonObject createSeriesJsonById(int id) {
+        JsonObject seriesJson = new JsonObject();
+        Series series = seriesDao.find(id);
+
+        seriesJson.addProperty("id", series.getId());
+        seriesJson.addProperty("title", series.getTitle());
+        seriesJson.addProperty("image", series.getImage());
+        seriesJson.addProperty("trailer", series.getTrailer());
+        seriesJson.addProperty("description", series.getDescription());
+        seriesJson.addProperty("airDate", series.getAirDate().toString());
+        seriesJson.addProperty("status", series.getStatus().toString());
+
+        JsonArray seasonArray = new JsonArray();
+        series.getSeasons().forEach(season -> seasonArray.add(this.createSeasonJson(season)));
+        seriesJson.add("seasons", seasonArray);
+
+        JsonArray genreArray = new JsonArray();
+        series.getGenres().forEach(genre -> genreArray.add(this.createGenreJson(genre)));
+        seriesJson.add("genres", genreArray);
+
+        return seriesJson;
+    }
+
 
     private JsonObject createGenreJson(Genre genre) {
         JsonObject genreJson = new JsonObject();
