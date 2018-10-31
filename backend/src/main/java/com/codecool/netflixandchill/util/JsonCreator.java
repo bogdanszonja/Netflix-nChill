@@ -165,17 +165,19 @@ public class JsonCreator {
 
         seriesJson.addProperty("id", series.getId());
         seriesJson.addProperty("title", series.getTitle());
+        seriesJson.addProperty("image", series.getImage());
+        seriesJson.addProperty("trailer", series.getTrailer());
         seriesJson.addProperty("description", series.getDescription());
         seriesJson.addProperty("airDate", series.getAirDate().toString());
         seriesJson.addProperty("status", series.getStatus().toString());
 
-        JsonArray seasonArray = new JsonArray();
-        series.getSeasons().forEach(season -> seasonArray.add(this.createSeasonJson(season)));
-        seriesJson.add("seasons", seasonArray);
-
-        JsonArray genreArray = new JsonArray();
-        series.getGenres().forEach(genre -> genreArray.add(this.createGenreJson(genre)));
-        seriesJson.add("genres", genreArray);
+//        JsonArray seasonArray = new JsonArray();
+//        series.getSeasons().forEach(season -> seasonArray.add(this.createSeasonJson(season)));
+//        seriesJson.add("seasons", seasonArray);
+//
+//        JsonArray genreArray = new JsonArray();
+//        series.getGenres().forEach(genre -> genreArray.add(this.createGenreJson(genre)));
+//        seriesJson.add("genres", genreArray);
 
         return seriesJson;
     }
