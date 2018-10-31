@@ -31,7 +31,7 @@ public class Season {
     @Temporal(TemporalType.DATE)
     private Date year;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "season_number")
     private int seasonNumber;
 
     @ManyToOne
