@@ -1,9 +1,8 @@
 package com.codecool.netflixandchill.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -31,25 +30,48 @@ public class User {
     private String password;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "episode_id"))
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinTable(name = "users_watchlist",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "episode_id"))
+    @ToString.Exclude
     private Collection<Series> watchlist = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "episode_id"))
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinTable(name = "users_favourites",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "episode_id"))
+    @ToString.Exclude
     private Collection<Series> favourites = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "episode_id"))
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinTable(joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "episode_id"))
+    @ToString.Exclude
     private Collection<Episode> watchedEpisodes = new ArrayList<>();
 
     @Temporal(TemporalType.DATE)
     private Date registrationDate;
 
+//    @Builder
+//    public User(String userName, String emailAddress, String password, Date registrationDate) {
+//        this.userName = userName;
+//        this.emailAddress = emailAddress;
+//        this.password = password;
+//        this.registrationDate = registrationDate;
+//    }
+
     @Builder
-    public User(String userName, String emailAddress, String password, Date registrationDate) {
+    public User(String userName, String emailAddress, String password, Collection<Series> watchlist,
+                Collection<Series> favourites, Collection<Episode> watchedEpisodes, Date registrationDate) {
         this.userName = userName;
         this.emailAddress = emailAddress;
         this.password = password;
+        this.watchlist = watchlist;
+        this.favourites = favourites;
+        this.watchedEpisodes = watchedEpisodes;
         this.registrationDate = registrationDate;
     }
 
@@ -58,11 +80,11 @@ public class User {
         episode.addUser(this);
     }
 
-    public void addFavourites(Series series) {
+    public void addSeriesToFavouriteList(Series series) {
         favourites.add(series);
     }
 
-    public void addWatchedEpisodes(Series series) {
+    public void addSeriesToWatchList(Series series) {
         watchlist.add(series);
     }
 

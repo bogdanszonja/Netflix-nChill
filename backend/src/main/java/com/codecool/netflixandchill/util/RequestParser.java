@@ -9,18 +9,6 @@ import java.io.IOException;
 
 public class RequestParser {
 
-    private static RequestParser instance = null;
-
-    public static RequestParser getInstance() {
-        if (instance == null) {
-            instance = new RequestParser();
-        }
-        return instance;
-    }
-
-    private RequestParser() {
-    }
-
     public JsonObject getJsonObject(HttpServletRequest request) throws IOException {
         StringBuilder sb = new StringBuilder();
         String line;

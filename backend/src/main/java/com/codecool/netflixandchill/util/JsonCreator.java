@@ -1,221 +1,215 @@
 package com.codecool.netflixandchill.util;
 
-import com.codecool.netflixandchill.dao.implementation.EpisodeDaoDB;
-import com.codecool.netflixandchill.dao.implementation.SeasonDaoDB;
-import com.codecool.netflixandchill.dao.implementation.SeriesDaoDB;
-import com.codecool.netflixandchill.dao.implementation.UserDaoDB;
-import com.codecool.netflixandchill.model.Episode;
-import com.codecool.netflixandchill.model.Season;
-import com.codecool.netflixandchill.model.Series;
-import com.codecool.netflixandchill.model.User;
-import com.google.gson.Gson;
+import com.codecool.netflixandchill.dao.EpisodeDao;
+import com.codecool.netflixandchill.dao.SeasonDao;
+import com.codecool.netflixandchill.dao.SeriesDao;
+import com.codecool.netflixandchill.dao.UserDao;
+import com.codecool.netflixandchill.model.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class JsonCreator {
 
-    private static JsonCreator instance = null;
-    private static Gson gson = new Gson();
+    private EpisodeDao episodeDao;
+    private SeasonDao seasonDao;
+    private SeriesDao seriesDao;
+    private UserDao userDao;
 
-    public static JsonCreator getInstance() {
-        if (instance == null) {
-            instance = new JsonCreator();
-        }
-        return instance;
+
+    public JsonCreator(EpisodeDao episodeDao, SeasonDao seasonDao, SeriesDao seriesDao, UserDao userDao) {
+        this.episodeDao = episodeDao;
+        this.seasonDao = seasonDao;
+        this.seriesDao = seriesDao;
+        this.userDao = userDao;
     }
 
-    public String getEpisodeById(long episodeId) {
-        Map<String, Object> episodeJson = new HashMap<>();
-        Episode episode = EpisodeDaoDB.getInstance().find(episodeId);
 
-        episodeJson.put("id", episode.getId());
-        episodeJson.put("title", episode.getTitle());
-        episodeJson.put("releaseDate", episode.getReleaseDate());
-        episodeJson.put("runtime", episode.getRuntime());
-        episodeJson.put("episodeNumber", episode.getEpisodeNumber());
+    public JsonObject getEpisodeById(long episodeId) {
+        Episode episode = episodeDao.find(episodeId);
 
-        return gson.toJson(episodeJson);
+        return (episode == null) ? null : this.createEpisodeJson(episode);
     }
 
-    public String getAllEpisodes() {
-        List<Episode> episodes = EpisodeDaoDB.getInstance().getAll();
+    public JsonArray getAllEpisodes() {
+        List<Episode> episodes = episodeDao.getAll();
+
+        if (episodes.isEmpty()) return null;
+
         JsonArray episodeArray = new JsonArray();
-        for (Episode episode : episodes) {
-            JsonObject episodeJson = new JsonObject();
-            addEpisodePropertiesToJson(episode, episodeJson);
-            episodeArray.add(episodeJson);
-        }
-        return episodeArray.toString();
+        episodes.forEach(episode -> episodeArray.add(this.createEpisodeJson(episode)));
+
+        return episodeArray;
     }
 
-    public String findEpisodeBySubstring(String subString) {
-        List<Episode> episodes = EpisodeDaoDB.getInstance().findBySubstring(subString);
+    public JsonArray findEpisodeBySubstring(String subString) {
+        List<Episode> episodes = episodeDao.findBySubstring(subString);
+
+        if (episodes.isEmpty()) return null;
+
         JsonArray episodeArray = new JsonArray();
-        try {
-            for (Episode episode : episodes) {
-                JsonObject episodeJson = new JsonObject();
-                addEpisodePropertiesToJson(episode, episodeJson);
-                episodeArray.add(episodeJson);
-            }
-        } catch (NullPointerException e) {
-            return null;
-        }
-        return episodeArray.toString();
+        episodes.forEach(episode -> episodeArray.add(this.createEpisodeJson(episode)));
+
+        return episodeArray;
     }
 
-    public String getSeasonById(long seasonId) {
-        Map<String, Object> seasonJson = new HashMap<>();
-        Season season = SeasonDaoDB.getInstance().find(seasonId);
+    public JsonObject getSeasonById(long seasonId) {
+        Season season = seasonDao.find(seasonId);
 
-        seasonJson.put("id", season.getId());
-        seasonJson.put("title", season.getTitle());
-        seasonJson.put("seasonNumber", season.getSeasonNumber());
-        seasonJson.put("year", season.getYear());
-
-        return gson.toJson(seasonJson);
+        return (season == null) ? null : this.createSeasonJson(season);
     }
 
-    public String getAllSeasons() {
-        List<Season> seasons = SeasonDaoDB.getInstance().getAll();
+    public JsonArray getAllSeasons() {
+        List<Season> seasons = seasonDao.getAll();
+
+        if (seasons.isEmpty()) return null;
+
         JsonArray seasonArray = new JsonArray();
-        for (Season season: seasons) {
-            JsonObject seasonJson = new JsonObject();
-            addSeasonPropertiesToJson(season, seasonJson);
-            seasonArray.add(seasonJson);
-        }
-        return seasonArray.toString();
+        seasons.forEach(season -> seasonArray.add(this.createSeasonJson(season)));
+
+        return seasonArray;
     }
 
-    public String getSeriesById(long seriesId) {
-        Map<String, Object> showJson = new HashMap<>();
-        Series show = SeriesDaoDB.getInstance().find(seriesId);
+    public JsonObject getSeriesById(long seriesId) {
+        Series series = seriesDao.find(seriesId);
 
-        showJson.put("id", show.getId());
-        showJson.put("title", show.getTitle());
-        showJson.put("description", show.getDescription());
-        showJson.put("status", show.getStatus());
-        showJson.put("airDate", show.getAirDate());
-        showJson.put("seasons", new ArrayList<>());
-        showJson.put("genres", new ArrayList<>());
-
-        return gson.toJson(showJson);
+        return (series == null) ? null : this.createSeriesJson(series);
     }
 
-    public String getAllShows() {
+    public JsonArray getAllSeries() {
+        List<Series> seriesList = seriesDao.getAll();
+
+        if (seriesList.isEmpty()) return null;
+
         JsonArray seriesArray = new JsonArray();
-        List<Series> shows = SeriesDaoDB.getInstance().getAll();
+        seriesList.forEach(series -> seriesArray.add(this.createSeriesJson(series)));
 
-        for (Series show: shows) {
-            JsonObject showJson = new JsonObject();
-            addSeriesPropertiesToJson(show, showJson);
-            JsonArray seasonArray = new JsonArray();
-            for (Season season: show.getSeasons()) {
-                JsonObject seasonJson = new JsonObject();
-                addSeasonPropertiesToJson(season, seasonJson);
-                JsonArray episodeArray = new JsonArray();
-                for (Episode episode: season.getEpisodes()) {
-                    JsonObject episodeJson = new JsonObject();
-                    addEpisodePropertiesToJson(episode, episodeJson);
-                    episodeArray.add(episodeJson);
-                }
-                seasonJson.add("episodes", episodeArray);
-                seasonArray.add(seasonJson);
-            }
-            showJson.add("seasons", seasonArray);
-            showJson.addProperty("genres", new ArrayList<>().toString());
-            seriesArray.add(showJson);
-        }
-        return seriesArray.toString();
+        return seriesArray;
     }
 
-    public String findSeriesBySubstring(String subString) {
-        List<Series> shows = SeriesDaoDB.getInstance().findBySubstring(subString);
+    public JsonArray findSeriesBySubstring(String subString) {
+        List<Series> seriesList = seriesDao.findBySubstring(subString);
+
+        if (seriesList.isEmpty()) return null;
+
         JsonArray seriesArray = new JsonArray();
-        try {
-            for (Series show : shows) {
-                JsonObject showJson = new JsonObject();
-                addSeriesPropertiesToJson(show, showJson);
-                seriesArray.add(showJson);
-            }
-        } catch (NullPointerException e) {
-            return null;
-        }
-        return seriesArray.toString();
+        seriesList.forEach(series -> seriesArray.add(this.createSeriesJson(series)));
+
+        return seriesArray;
     }
 
-    public String findUserById(long userId) {
-        Map<String, Object> userJson = new HashMap<>();
-        User user = UserDaoDB.getInstance().find(userId);
-        putUserDataToJson(user, userJson);
+    public JsonObject findUserById(long userId) {
+        User user = userDao.find(userId);
+        return this.createUserJson(user);
 
-        return gson.toJson(userJson);
+//        return (user == null) ? null : this.createUserJson(user);
     }
 
-    public String findUserByEmail(String email) {
-        Map<String, Object> userJson = new HashMap<>();
-        User user = UserDaoDB.getInstance().find(email);
-        putUserDataToJson(user, userJson);
+    public JsonObject findUserByEmail(String email) {
+        User user = userDao.find(email);
 
-        return gson.toJson(userJson);
+        return (user == null) ? null : this.createUserJson(user);
     }
 
-    public String getAllUsers() {
-        List<User> users = UserDaoDB.getInstance().getAll();
+    public JsonArray getAllUsers() {
+        List<User> users = userDao.getAll();
+
+        if (users.isEmpty()) return null;
+
         JsonArray userArray = new JsonArray();
-        for (User user: users) {
-            JsonObject userJson = new JsonObject();
-            userJson.addProperty("id", user.getId());
-            userJson.addProperty("emailaddress", user.getEmailAddress());
-            userJson.addProperty("registrationDate", user.getRegistrationDate().toString());
-            userJson.addProperty("username", user.getUserName());
-            userArray.add(userJson);
-        }
-        return userArray.toString();
+        users.forEach(user -> userArray.add(this.createUserJson(user)));
+
+        return userArray;
     }
 
-    public String getWatchedEpisodesByUserId(long userId) {
-        List<Episode> episodes = UserDaoDB.getInstance().getWatchedEpisodesById(userId);
+    public JsonArray getWatchedEpisodesByUserId(long userId) {
+        List<Episode> episodes = userDao.getWatchedEpisodesById(userId);
+
+        if (episodes.isEmpty()) return null;
+
         JsonArray episodeArray = new JsonArray();
-        for (Episode episode: episodes) {
-            JsonObject episodeJson = new JsonObject();
-            addEpisodePropertiesToJson(episode, episodeJson);
-            episodeArray.add(episodeJson);
-        }
-        return episodeArray.toString();
+        episodes.forEach(episode -> episodeArray.add(this.createEpisodeJson(episode)));
+
+        return episodeArray;
     }
 
-    private void addEpisodePropertiesToJson(Episode episode, JsonObject episodeJson) {
+    private JsonObject createEpisodeJson(Episode episode) {
+        JsonObject episodeJson = new JsonObject();
+
         episodeJson.addProperty("id", episode.getId());
         episodeJson.addProperty("title", episode.getTitle());
         episodeJson.addProperty("releaseDate", episode.getReleaseDate().toString());
         episodeJson.addProperty("runtime", episode.getRuntime());
         episodeJson.addProperty("episodeNumber", episode.getEpisodeNumber());
+
+        return episodeJson;
     }
 
-    private void addSeasonPropertiesToJson(Season season, JsonObject seasonJson) {
+    private JsonObject createSeasonJson(Season season) {
+        JsonObject seasonJson = new JsonObject();
+
         seasonJson.addProperty("id", season.getId());
         seasonJson.addProperty("title", season.getTitle());
         seasonJson.addProperty("seasonNumber", season.getSeasonNumber());
         seasonJson.addProperty("year", season.getYear().toString());
+
+        JsonArray episodeArray = new JsonArray();
+        season.getEpisodes().forEach(episode -> episodeArray.add(this.createEpisodeJson(episode)));
+        seasonJson.add("episodes", episodeArray);
+
+        return seasonJson;
     }
 
-    private void addSeriesPropertiesToJson(Series show, JsonObject seriesJson) {
-        seriesJson.addProperty("id", show.getId());
-        seriesJson.addProperty("description", show.getDescription());
-        seriesJson.addProperty("title", show.getTitle());
-        seriesJson.addProperty("airdate", show.getAirDate().toString());
-        seriesJson.addProperty("status", show.getStatus().toString());
+    private JsonObject createSeriesJson(Series series) {
+        JsonObject seriesJson = new JsonObject();
+
+        seriesJson.addProperty("id", series.getId());
+        seriesJson.addProperty("title", series.getTitle());
+        seriesJson.addProperty("description", series.getDescription());
+        seriesJson.addProperty("airDate", series.getAirDate().toString());
+        seriesJson.addProperty("status", series.getStatus().toString());
+
+        JsonArray seasonArray = new JsonArray();
+        series.getSeasons().forEach(season -> seasonArray.add(this.createSeasonJson(season)));
+        seriesJson.add("seasons", seasonArray);
+
+        JsonArray genreArray = new JsonArray();
+        series.getGenres().forEach(genre -> genreArray.add(this.createGenreJson(genre)));
+        seriesJson.add("genres", genreArray);
+
+        return seriesJson;
     }
 
-    private void putUserDataToJson(User user, Map<String,Object> userJson) {
-        userJson.put("id", user.getId());
-        userJson.put("emailaddress", user.getEmailAddress());
-        userJson.put("registrationDate", user.getRegistrationDate());
-        userJson.put("username", user.getUserName());
+    private JsonObject createGenreJson(Genre genre) {
+        JsonObject genreJson = new JsonObject();
+
+        genreJson.addProperty("name", String.valueOf(genre));
+
+        return genreJson;
     }
+
+    private JsonObject createUserJson(User user) {
+        JsonObject userJson = new JsonObject();
+
+        userJson.addProperty("id", user.getId());
+        userJson.addProperty("username", user.getUserName());
+        userJson.addProperty("emailAddress", user.getEmailAddress());
+        userJson.addProperty("registrationDate", user.getRegistrationDate().toString());
+
+        JsonArray watchlistArray = new JsonArray();
+        user.getWatchlist().forEach(series -> watchlistArray.add(this.createSeriesJson(series)));
+        userJson.add("watchlist", watchlistArray);
+
+        JsonArray favouritesArray = new JsonArray();
+        user.getFavourites().forEach(series -> favouritesArray.add(this.createSeriesJson(series)));
+        userJson.add("favourites", favouritesArray);
+
+        JsonArray watchedEpisodesArray = new JsonArray();
+        user.getWatchedEpisodes().forEach(episode -> watchedEpisodesArray.add(this.createEpisodeJson(episode)));
+        userJson.add("watchedEpisodes", watchedEpisodesArray);
+
+        return userJson;
+    }
+
 }

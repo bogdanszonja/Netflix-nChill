@@ -1,4 +1,4 @@
-<div *ngIf="showPart">
+<div>
   <div [style.font-size]="showPart === 'join'? 'large': 'small'" class="join">
     <label>Username</label>
     <input type="text" required #username>
@@ -8,11 +8,13 @@
     <input type="password" required #password>
     <label>Confirm Password</label>
     <input type="password" required #confirmPassword>
+    <button (click)="join(username.value, email.value, password.value, confirmPassword.value)">Join</button>
   </div>
   <div [style.font-size]="showPart === 'login'? 'large': 'small'" class="login">
     <label>Username</label>
-    <input type="text" required #username>
+    <input type="text" required #usernameLogin>
     <label>Password</label>
-    <input type="password" required #password>
+    <input type="password" required #passwordLogin>
+    <button (click)="login(usernameLogin.value, passwordLogin.value)">Login</button>
   </div>
 </div>

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { Series } from '../../../models/Series';
 
 @Component({
   selector: 'app-watchlist',
@@ -6,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./watchlist.component.css']
 })
 export class WatchlistComponent implements OnInit {
+
+  @Input() watchList: Series[];
 
   constructor() { }
 

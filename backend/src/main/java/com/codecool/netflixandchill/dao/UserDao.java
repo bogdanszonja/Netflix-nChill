@@ -16,11 +16,23 @@ public interface UserDao {
 
     List<User> getAll();
 
-    void addEpisode(long episodeId, long userId);
+    void addEpisodeToWatchedList(long episodeId, long userId);
+
+    void addSeriesToWatchList(long episodeId, long userId);
+
+    void addSeriesToFavouriteList(long episodeId, long userId);
 
     boolean validRegister(String email, String password, String confirmedPassword);
+
+    boolean checkIfUserNameAlreadyExists(String userName);
+
+    boolean checkIfEmailAlreadyExists(String email);
 
     boolean validLogin(String email, String password);
 
     List<Episode> getWatchedEpisodesById(long userId);
+
+    void addSeasonEpisodeToWatchedList(long seasonId, long userId);
+
+    void addSeriesEpisodeToWatchedList(long seriesId, long userId);
 }

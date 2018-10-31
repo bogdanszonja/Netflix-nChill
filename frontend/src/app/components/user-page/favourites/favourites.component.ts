@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+
+import { Series } from '../../../models/Series';
 
 @Component({
   selector: 'app-favourites',
@@ -6,6 +8,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./favourites.component.css']
 })
 export class FavouritesComponent implements OnInit {
+
+  @Input() favourites: Series[];
 
   constructor() { }
 

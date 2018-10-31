@@ -2,8 +2,9 @@ package com.codecool.netflixandchill.dao.implementation;
 
 import com.codecool.netflixandchill.dao.UserDao;
 import com.codecool.netflixandchill.model.Episode;
+import com.codecool.netflixandchill.model.Season;
+import com.codecool.netflixandchill.model.Series;
 import com.codecool.netflixandchill.model.User;
-import com.codecool.netflixandchill.util.EMFManager;
 import com.codecool.netflixandchill.util.TransactionManager;
 
 import javax.persistence.EntityManager;
@@ -14,18 +15,15 @@ import java.util.List;
 
 public class UserDaoDB implements UserDao {
 
-    private TransactionManager transactionManager = TransactionManager.getInstance();
-    private EntityManagerFactory emfManager = EMFManager.getInstance();
-    private static UserDaoDB instance = null;
+    private TransactionManager transactionManager;
+    private EntityManagerFactory emfManager;
 
-    public static UserDaoDB getInstance() {
-        if (instance == null) {
-            instance = new UserDaoDB();
-        }
-        return instance;
+
+    public UserDaoDB(TransactionManager transactionManager, EntityManagerFactory emfManager) {
+        this.transactionManager = transactionManager;
+        this.emfManager = emfManager;
     }
 
-    private UserDaoDB() {}
 
     @Override
     public void add(User user) {
@@ -40,8 +38,11 @@ public class UserDaoDB implements UserDao {
         User user = em.find(User.class, userId);
         em.close();
         Collection<Episode> watchedEpisodes = user.getWatchedEpisodes();
-        System.out.println(watchedEpisodes.size());
         return user;
+    }
+
+    public long getIdFromUser(User user) {
+        return user.getId();
     }
 
     @Override
@@ -54,11 +55,10 @@ public class UserDaoDB implements UserDao {
                     "WHERE u.emailAddress = :email", User.class)
                 .setParameter("email", email)
                 .getResultList();
-        Collection<Episode> watchedEpisodes = result.get(0).getWatchedEpisodes();
-        System.out.println(watchedEpisodes.size());
         em.close();
         return (result.size() != 0) ? result.get(0): null;
     }
+
 
     @Override
     public void remove(long userId) {
@@ -80,7 +80,7 @@ public class UserDaoDB implements UserDao {
     }
 
     @Override
-    public void addEpisode(long episodeId, long userId) {
+    public void addEpisodeToWatchedList(long episodeId, long userId) {
         EntityManager em = emfManager.createEntityManager();
 
         EntityTransaction transaction = em.getTransaction();
@@ -95,10 +95,61 @@ public class UserDaoDB implements UserDao {
     }
 
     @Override
+    public void addSeriesToWatchList(long episodeId, long userId) {
+        EntityManager em = emfManager.createEntityManager();
+
+        EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
+        User user = em.find(User.class, userId);
+        Series series = em.find(Series.class, episodeId);
+        user.addSeriesToWatchList(series);
+        em.persist(user);
+        transaction.commit();
+
+        em.close();
+    }
+
+    @Override
+    public void addSeriesToFavouriteList(long episodeId, long userId) {
+        EntityManager em = emfManager.createEntityManager();
+
+        EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
+        User user = em.find(User.class, userId);
+        Series series = em.find(Series.class, episodeId);
+        user.addSeriesToFavouriteList(series);
+        em.persist(user);
+        transaction.commit();
+
+        em.close();
+    }
+
+    @Override
     public boolean validRegister(String email, String password, String confirmedPassword) {
         User user = find(email);
 
         return (user == null) && (password.equals(confirmedPassword));
+    }
+
+    @Override
+    public boolean checkIfUserNameAlreadyExists(String userName) {
+        EntityManager em = emfManager.createEntityManager();
+
+        List<User> result = em.createQuery(
+                "SELECT u " +
+                        "FROM User u " +
+                        "WHERE u.userName = :userName", User.class)
+                .setParameter("userName", userName)
+                .getResultList();
+        em.close();
+        return (result.size() != 0) ? true: false;
+    }
+
+    @Override
+    public boolean checkIfEmailAlreadyExists(String email) {
+        User user = find(email);
+
+        return (user != null);
     }
 
     @Override
@@ -120,5 +171,41 @@ public class UserDaoDB implements UserDao {
                 .getResultList();
         em.close();
         return result;
+    }
+
+    @Override
+    public void addSeasonEpisodeToWatchedList(long seasonId, long userId) {
+        EntityManager em = emfManager.createEntityManager();
+
+        EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
+        User user = em.find(User.class, userId);
+        Season season = em.find(Season.class, seasonId);
+        for (Episode episode : season.getEpisodes()) {
+            user.addWatchedEpisodes(episode);
+            em.persist(user);
+        }
+        transaction.commit();
+
+        em.close();
+    }
+
+    @Override
+    public void addSeriesEpisodeToWatchedList(long seriesId, long userId) {
+        EntityManager em = emfManager.createEntityManager();
+
+        EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
+        User user = em.find(User.class, userId);
+        Series series = em.find(Series.class, seriesId);
+        for (Season season : series.getSeasons()) {
+            for (Episode episode : season.getEpisodes()) {
+                user.addWatchedEpisodes(episode);
+                em.persist(user);
+            }
+        }
+        transaction.commit();
+
+        em.close();
     }
 }

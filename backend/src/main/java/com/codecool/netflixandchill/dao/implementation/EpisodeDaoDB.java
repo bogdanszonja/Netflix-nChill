@@ -1,29 +1,24 @@
 package com.codecool.netflixandchill.dao.implementation;
 
 import com.codecool.netflixandchill.dao.EpisodeDao;
-import com.codecool.netflixandchill.dao.FakeEpisode;
 import com.codecool.netflixandchill.model.Episode;
-import com.codecool.netflixandchill.util.EMFManager;
 import com.codecool.netflixandchill.util.TransactionManager;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import java.util.ArrayList;
 import java.util.List;
 
 public class EpisodeDaoDB implements EpisodeDao {
-    private TransactionManager transactionManager = TransactionManager.getInstance();
-    private EntityManagerFactory emfManager = EMFManager.getInstance();
-    private static EpisodeDaoDB instance = null;
 
-    public static EpisodeDaoDB getInstance() {
-        if (instance == null) {
-            instance = new EpisodeDaoDB();
-        }
-        return instance;
+    private TransactionManager transactionManager;
+    private EntityManagerFactory emfManager;
+
+
+    public EpisodeDaoDB(TransactionManager transactionManager, EntityManagerFactory emfManager) {
+        this.transactionManager = transactionManager;
+        this.emfManager = emfManager;
     }
 
-    private EpisodeDaoDB() {}
 
     @Override
     public void add(Episode episode) {
@@ -56,17 +51,11 @@ public class EpisodeDaoDB implements EpisodeDao {
         EntityManager em = emfManager.createEntityManager();
         List<Episode> result = em.createQuery(
                 "SELECT e " +
-                        "FROM Episode e WHERE e.title LIKE '%' || :param || '%'", Episode.class)
+                        "FROM Episode e WHERE UPPER(e.title) LIKE UPPER('%' || :param || '%')", Episode.class)
                 .setParameter("param", substring)
                 .getResultList();
         em.close();
 
-        List<FakeEpisode> fakeEpisodes = new ArrayList<>();
-
-        for (Episode episode : result) {
-            fakeEpisodes.add(new FakeEpisode(episode));
-        }
-
-        return null;
+        return result;
     }
 }

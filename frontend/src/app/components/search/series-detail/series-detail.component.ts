@@ -4,6 +4,7 @@ import { Series } from '../../../models/Series';
 import { Episode } from '../../../models/Episode';
 import { Season } from '../../../models/Season';
 import { UserService } from '../../../services/user/user.service';
+import { User } from '../../../models/User';
 
 @Component({
   selector: 'app-series-detail',
@@ -13,26 +14,63 @@ import { UserService } from '../../../services/user/user.service';
 export class SeriesDetailComponent implements OnInit {
 
   @Input() series: Series;
+  user: User;
+  userId: number = parseInt(localStorage.getItem('userId'));
 
   constructor(private userService: UserService) { }
 
   ngOnInit() {
+    this.userService.user.subscribe(response => {
+      if (response['data']) {
+        this.user = response['data'];
+        console.log(this.user);
+      } else {
+        console.log(response['error']);
+      }
+    });
   }
 
   addWholeSeries(series: Series): void {
     console.log('all seasons added');
-    this.userService.addWholeSeries(series)
-      .subscribe(answer => console.log(answer));
+    this.userService.addWholeSeries(series).subscribe(response => {
+      console.log(this.handleResponse(response));
+    });
   }
 
   addSingleSeason(season: Season): void {
     console.log('season added');
-    this.userService.addSingleSeason(season).subscribe();
+    this.userService.addSingleSeason(season).subscribe(response => {
+      console.log(this.handleResponse(response));
+    });
   }
 
   addSingleEpisode(episode: Episode): void {
     console.log('episode added');
-    this.userService.addSingleEpisode(episode).subscribe();
+    this.userService.addSingleEpisode(episode).subscribe(response => {
+      console.log(this.handleResponse(response));
+    });
+  }
+
+  addToFavourites(series: Series): void {
+    console.log('added to favourites');
+    this.userService.addToFavourites(series).subscribe(response => {
+      console.log(this.handleResponse(response));
+    });
+  }
+
+  addToWatchlist(series: Series): void {
+    console.log('added to watchlist');
+    this.userService.addToWatchlist(series).subscribe(response => {
+      console.log(this.handleResponse(response));
+    });
+  }
+
+  handleResponse(response) {
+    if (response['data']) {
+      return response['data'];
+    } else {
+      return response['error'];
+    }
   }
 
 }

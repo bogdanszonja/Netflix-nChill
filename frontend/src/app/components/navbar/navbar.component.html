@@ -1,7 +1,8 @@
 <div>
   <input #searchInput *ngIf="searchToggle" (keyup.enter)="search(searchInput.value)">
   <button (click)="showSearchField()"><i class="fas fa-search"></i></button>
-  <button *ngIf="!isLoggedIn" routerLink="/login" (click)="join()">Join</button>
-  <button *ngIf="!isLoggedIn" routerLink="/login" (click)="login()">Login</button>
+  <button *ngIf="!isLoggedIn" [routerLink]="[{ outlets: { 'login': ['login'] } }]" (click)="join()">Join</button>
+  <button *ngIf="!isLoggedIn" [routerLink]="[{ outlets: { 'login': ['login'] } }]" (click)="login()">Login</button>
   <button *ngIf="isLoggedIn" (click)="logout()">Logout</button>
+  <a *ngIf="isLoggedIn" [routerLink]="['user-page']">My Page</a>
 </div>

@@ -1,62 +1,118 @@
 package com.codecool.netflixandchill.config;
 
-import com.codecool.netflixandchill.json.Show;
-import com.codecool.netflixandchill.json.TvShow;
-import com.codecool.netflixandchill.model.Episode;
-import com.codecool.netflixandchill.model.Season;
-import com.codecool.netflixandchill.model.Series;
-import com.codecool.netflixandchill.model.Status;
-import com.codecool.netflixandchill.util.EMFManager;
+import com.codecool.netflixandchill.model.*;
 import com.codecool.netflixandchill.util.RemoteURLReader;
+import com.google.gson.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
-public class InitializerDB {
-    public static void populateDb(EntityManager em) throws IOException {
+class InitializerDB {
 
-        RemoteURLReader urlReader = new RemoteURLReader();
-        Initializer init = new Initializer(urlReader);
-        Show tvShow = new Show();
-        init.addTvShowToMyTvSHowsList();
+    private static final int NUMBER_OF_PAGES_TO_DOWNLOAD = 1;
+    private static final int MAX_NUMBER_OF_PAGES_TO_DOWNLOAD = 545;
 
-        for (int i = 0; i < tvShow.getTvShowList().size(); i++) {
+    private static final DateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    private static final DateFormat FORMAT_2 = new SimpleDateFormat("MMM/dd/yyyy");
+
+    private RemoteURLReader urlReader;
+    private EntityManagerFactory emf;
+
+    InitializerDB(RemoteURLReader urlReader, EntityManagerFactory emf) {
+        this.urlReader = urlReader;
+        this.emf = emf;
+    }
+
+    private JsonArray getAllSeriesJson() throws IOException {
+        JsonArray seriesArray = new JsonArray();
+        JsonParser jsonParser = new JsonParser();
+
+        for (int i = 1; i <= NUMBER_OF_PAGES_TO_DOWNLOAD; i++) {
+            String seriesPath = "https://www.episodate.com/api/most-popular?page=" + i;
+            String result = urlReader.readFromUrl(seriesPath);
+            JsonObject page = (JsonObject) jsonParser.parse(result);
+            page.get("tv_shows").getAsJsonArray().forEach(seriesArray::add);
+        }
+
+        return seriesArray;
+    }
+
+    private List<Integer> getAllSeriesId() throws IOException {
+        List<Integer> seriesIdList = new ArrayList<>();
+
+        getAllSeriesJson().forEach(series -> seriesIdList.add(series.getAsJsonObject().get("id").getAsInt()));
+
+        return seriesIdList;
+    }
+
+    private JsonArray getAllSeriesWithSeasonAndEpisodeJson() throws IOException {
+        JsonArray seriesArray = new JsonArray();
+        JsonParser jsonParser = new JsonParser();
+
+        for (Integer id : getAllSeriesId()) {
+            String seriesPath = "https://www.episodate.com/api/show-details?q=" + id.toString();
+            String result = urlReader.readFromUrl(seriesPath);
+            seriesArray.add(jsonParser.parse(result));
+        }
+
+        return seriesArray;
+    }
+
+    void populateDB() throws IOException {
+        EntityManager em = emf.createEntityManager();
+
+        for (JsonElement element : getAllSeriesWithSeasonAndEpisodeJson()) {
             EntityTransaction transaction = em.getTransaction();
             transaction.begin();
 
             Episode episode;
             Season season;
 
-            TvShow currentShow = tvShow.getTvShowList().get(i).getTvShow();
+            JsonObject currentSeries = (JsonObject) element.getAsJsonObject().get("tvShow");
 
-            Series series = Series.builder().title(currentShow.getName()).description(currentShow.getDescription()).
-                    airDate(init.formatStringToDate(currentShow.getStart_date())).status(Status.valueOf(currentShow.getStatus().
-                    replace(" ", "_").toUpperCase())).genres((init.convertStringToEnumGenre(currentShow.getGenres()))).build();
+            Series series = Series.builder()
+                    .title(currentSeries.get("name").getAsString())
+                    .description(currentSeries.get("description").getAsString())
+                    .airDate(formatStringToDate(currentSeries.get("start_date").getAsString()))
+                    .status(Status.valueOf(currentSeries.get("status").getAsString()
+                    .replace(" ", "_").toUpperCase()))
+                    .genres((convertJsonArrayToEnumGenre(currentSeries.get("genres").getAsJsonArray())))
+                    .build();
 
             Set<Integer> seasonSet = new HashSet<>();
 
-            for (int j = 0; j < currentShow.getEpisodes().length ; j++) {
-                seasonSet.add(Integer.parseInt(currentShow.getEpisodes()[j].getSeason()));
+            JsonArray episodes = currentSeries.get("episodes").getAsJsonArray();
+
+            for (int j = 0; j < episodes.size(); j++) {
+                seasonSet.add(episodes.get(j).getAsJsonObject().get("season").getAsInt());
             }
 
             for (int j = 0; j < seasonSet.size(); j++) {
-                season = Season.builder().title("Season").year(init.formatStringToDate(currentShow.
-                        getEpisodes()[j].getAir_date())).seasonNumber(j + 1).build();
+                season = Season.builder()
+                        .title("Season " + (j + 1))
+                        .year(formatStringToDate(episodes.get(j).getAsJsonObject().get("air_date").getAsString()))
+                        .seasonNumber(j + 1)
+                        .build();
 
                 series.addSeason(season);
 
-                    for (int k = 0; k < currentShow.getEpisodes().length; k++) {
-                        if (Integer.parseInt(currentShow.getEpisodes()[k].getSeason()) == season.getSeasonNumber()) {
-                            episode = Episode.builder().title(currentShow.getEpisodes()[k].getName()).
-                                releaseDate(init.formatStringToDate(currentShow.getEpisodes()[k].getAir_date())).
-                                runtime(Integer.parseInt(currentShow.getRuntime())).
-                                episodeNumber(Integer.parseInt(currentShow.getEpisodes()[k].getEpisode())).build();
-                            season.addEpisode(episode);
-                            em.persist(episode);
+                for (int k = 0; k < episodes.size(); k++) {
+                    if (episodes.get(k).getAsJsonObject().get("season").getAsInt() == season.getSeasonNumber()) {
+                        episode = Episode.builder()
+                                .title(episodes.get(k).getAsJsonObject().get("name").getAsString())
+                                .releaseDate(formatStringToDate(episodes.get(k).getAsJsonObject().get("air_date").getAsString()))
+                                .runtime(currentSeries.get("runtime").getAsInt())
+                                .episodeNumber(episodes.get(k).getAsJsonObject().get("episode").getAsInt())
+                                .build();
+
+                        season.addEpisode(episode);
+                        em.persist(episode);
                     }
                 }
                 em.persist(season);
@@ -64,15 +120,31 @@ public class InitializerDB {
             em.persist(series);
             transaction.commit();
         }
-    }
-
-    public static void main(String[] args) throws IOException {
-        EntityManagerFactory entityManager =  EMFManager.getInstance();
-        EntityManager em = entityManager.createEntityManager();
-
-        populateDb(em);
         em.clear();
         em.close();
-        entityManager.close();
     }
+
+    private List<Genre> convertJsonArrayToEnumGenre(JsonArray genreList) {
+        List<Genre> genres = new LinkedList<>();
+
+        genreList.forEach(genre -> genres.add(Genre.valueOf(genre.getAsString()
+                .replace("-", "_")
+                .toUpperCase())));
+
+        return genres;
+    }
+
+    private Date formatStringToDate(String stringDate) {
+        try {
+            return FORMAT.parse(stringDate);
+        } catch (ParseException e) {
+            try {
+                return FORMAT_2.parse(stringDate);
+            } catch (ParseException e1) {
+                e1.printStackTrace();
+            }
+        }
+        return null;
+    }
+
 }

@@ -2,7 +2,6 @@ package com.codecool.netflixandchill.dao.implementation;
 
 import com.codecool.netflixandchill.dao.SeriesDao;
 import com.codecool.netflixandchill.model.Series;
-import com.codecool.netflixandchill.util.EMFManager;
 import com.codecool.netflixandchill.util.TransactionManager;
 
 import javax.persistence.EntityManager;
@@ -10,18 +9,16 @@ import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
 public class SeriesDaoDB implements SeriesDao {
-    private TransactionManager transactionManager = TransactionManager.getInstance();
-    private EntityManagerFactory emfManager = EMFManager.getInstance();
-    private static SeriesDaoDB instance = null;
 
-    public static SeriesDaoDB getInstance() {
-        if (instance == null) {
-            instance = new SeriesDaoDB();
-        }
-        return instance;
+    private TransactionManager transactionManager;
+    private EntityManagerFactory emfManager;
+
+
+    public SeriesDaoDB(TransactionManager transactionManager, EntityManagerFactory emfManager) {
+        this.transactionManager = transactionManager;
+        this.emfManager = emfManager;
     }
 
-    private SeriesDaoDB() {}
 
     @Override
     public void add(Series series) {
@@ -57,7 +54,7 @@ public class SeriesDaoDB implements SeriesDao {
         EntityManager em = emfManager.createEntityManager();
         List<Series> result = em.createQuery(
                 "SELECT s " +
-                        "FROM Series s WHERE s.title LIKE '%' || :param || '%'", Series.class)
+                        "FROM Series s WHERE UPPER(s.title) LIKE UPPER('%' || :param || '%')", Series.class)
                 .setParameter("param", substring)
                 .getResultList();
         em.close();
