@@ -80,6 +80,8 @@ class InitializerDB {
                     .title(currentSeries.get("name").getAsString())
                     .description(currentSeries.get("description").getAsString())
                     .airDate(formatStringToDate(currentSeries.get("start_date").getAsString()))
+                    .image(currentSeries.get("image_path").getAsString())
+                    .trailer(currentSeries.get("youtube_link").getAsString())
                     .status(Status.valueOf(currentSeries.get("status").getAsString()
                     .replace(" ", "_").toUpperCase()))
                     .genres((convertJsonArrayToEnumGenre(currentSeries.get("genres").getAsJsonArray())))

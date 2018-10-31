@@ -33,6 +33,12 @@ public class Series {
     @Temporal(TemporalType.DATE)
     private Date airDate;
 
+    @Column(nullable = false)
+    private String image;
+
+    @Column(nullable = false)
+    private String trailer;
+
     @OneToMany(mappedBy = "series", cascade = CascadeType.PERSIST)
     @LazyCollection(LazyCollectionOption.FALSE)
     @Column(nullable = false)
@@ -47,8 +53,10 @@ public class Series {
     private List<Genre> genres = new ArrayList<>();
 
     @Builder
-    public Series(String title, String description, Status status, Date airDate, List<Genre> genres) {
+    public Series(String title, String image, String trailer, String description, Status status, Date airDate, List<Genre> genres) {
         this.title = title;
+        this.image = image;
+        this.trailer = trailer;
         this.description = description;
         this.status = status;
         this.airDate = airDate;
