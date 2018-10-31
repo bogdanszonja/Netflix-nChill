@@ -6,6 +6,8 @@ import com.codecool.netflixandchill.util.JsonCreator;
 import com.codecool.netflixandchill.util.RequestParser;
 import com.codecool.netflixandchill.util.SessionManager;
 import com.google.gson.JsonObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +21,8 @@ public class SearchController extends HttpServlet {
     private SessionManager sessionManager;
     private EpisodeDao episodeDao;
     private UserDao userDao;
+    private Logger logger = LoggerFactory.getLogger(LoginController.class);
+
 
 
     public SearchController(RequestParser rp, JsonCreator jc, SessionManager sm,
@@ -36,12 +40,13 @@ public class SearchController extends HttpServlet {
         JsonObject answer = new JsonObject();
         String searchTerm = request.getParameter("searchTerm");
 
-        if (jsonCreator.findSeriesBySubstring(searchTerm).size() == 0) {
-            answer.add("data", jsonCreator.findSeriesBySubstring(searchTerm));
-        } else {
+        if (jsonCreator.findSeriesBySubstring(searchTerm) == null) {
             JsonObject error = new JsonObject();
             error.addProperty("message", "Series not found");
             answer.add("error", error);
+            response.setStatus(404);
+        } else {
+            answer.add("data", jsonCreator.findSeriesBySubstring(searchTerm));
         }
 
         response.setContentType("application/json");

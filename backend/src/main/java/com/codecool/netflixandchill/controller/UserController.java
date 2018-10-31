@@ -96,6 +96,8 @@ public class UserController extends HttpServlet {
                 id = jsonObject.get("series").getAsLong();
                 userDao.addSeriesEpisodeToWatchedList(id, userId);
                 break;
+            default:
+                response.setStatus(404);
         }
 
 

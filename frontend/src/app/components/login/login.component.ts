@@ -13,12 +13,9 @@ export class LoginComponent implements OnInit {
   showPart;
 
   constructor(private userService: UserService,
-              private router: Router,
-              private route: ActivatedRoute) {
-  }
+              private router: Router) { }
 
   ngOnInit() {
-    // this.route.outlet = this.showPart;
     this.userService.loginStatus.subscribe(type => {
       this.showPart = type;
       console.log(type);

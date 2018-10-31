@@ -29,13 +29,24 @@ public class SeriesController extends HttpServlet {
         JsonObject answer = new JsonObject();
 
         if (request.getParameter("id") != null) {
-            answer.add("data", jsonCreator.getSeriesById(Long.parseLong(request.getParameter("id"))));
-            response.getWriter().write(answer.toString());
-            return;
+            if (jsonCreator.getSeriesById(Long.parseLong(request.getParameter("id"))) != null) {
+                answer.add("data", jsonCreator.getSeriesById(Long.parseLong(request.getParameter("id"))));
+                response.getWriter().write(answer.toString());
+                return;
+            } else {
+                JsonObject error = new JsonObject();
+                error.addProperty("message", "Series not found");
+                answer.add("error", error);
+                response.setStatus(404);
+            }
+        } else {
+            JsonObject error = new JsonObject();
+            error.addProperty("message", "Series not found");
+            answer.add("error", error);
+            response.setStatus(404);
         }
 
         answer.add("data", jsonCreator.getAllSeries());
-
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(answer.toString());

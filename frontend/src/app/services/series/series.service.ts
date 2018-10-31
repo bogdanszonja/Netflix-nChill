@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 import { Observable, of, Subject } from 'rxjs';
-import { tap, catchError, map } from 'rxjs/operators';
+import { tap, catchError } from 'rxjs/operators';
 
 import { Series } from '../../models/Series';
 
@@ -17,22 +17,16 @@ export class SeriesService {
   constructor(private http: HttpClient) { }
 
   getAllSeries(): Observable<Series[]> {
-    return this.http.get<Series[]>(`${this.baseUrl}/series`).pipe(
+    return this.http.get<any>(`${this.baseUrl}/series`).pipe(
       tap(_ => console.log(`Series found!`)),
-      map(response => {
-        return response['data'];
-      }),
-      catchError(this.handleError<Series[]>())
+      catchError(response => this.handleError(response, response.error['error']))
     );
   }
 
   getSingleSeries(id: number): Observable<Series> {
-    return this.http.get<Series>(`${this.baseUrl}/series?id=${id}`).pipe(
+    return this.http.get<any>(`${this.baseUrl}/series?id=${id}`).pipe(
       tap(_ => console.log(`Series id=${id} found!`)),
-      map(response => {
-        return response['data'];
-      }),
-      catchError(this.handleError<Series>())
+      catchError(response => this.handleError(response, response.error['error']))
       );
   }
 
@@ -42,21 +36,20 @@ export class SeriesService {
     this.http.get<Series[]>(`${this.baseUrl}/search?searchTerm=${searchTerm}`)
       .pipe(
         tap(_ => console.log(`More series found!`)),
-        map(response => {
-          return response['data'];
-        }),
-        catchError(this.handleError<Series[]>())
-      ).subscribe(series => {
-          this.searchResult.next(series);
+        catchError(response => this.handleError(response, response.error['error']))
+      ).subscribe(response => {
+        if (response) {
+          this.searchResult.next(response['data']);
           console.log(this.searchResult);
+        }
       });
   }
 
-  private handleError<T> (result?: T) {
-    return (error: any): Observable<T> => {
-      console.error(error);
-      return of(result as T);
-    };
+  private handleError<T> (error: HttpErrorResponse, errorMessages: HttpErrorResponse, result?: T) {
+    console.error(error);
+    console.error(errorMessages['message']);
+    console.error(errorMessages['cause']);
+    return of(result as T);
   }
 
 }
