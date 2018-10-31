@@ -101,9 +101,8 @@ public class JsonCreator {
 
     public JsonObject findUserById(long userId) {
         User user = userDao.find(userId);
-        return this.createUserJson(user);
 
-//        return (user == null) ? null : this.createUserJson(user);
+        return (user == null) ? null : this.createUserJson(user);
     }
 
     public JsonObject findUserByEmail(String email) {
