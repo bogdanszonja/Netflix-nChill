@@ -28,11 +28,17 @@ public class SeriesController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         JsonObject answer = new JsonObject();
 
-        if (request.getParameter("id") != null
-            && jsonCreator.getSeriesById(Long.parseLong(request.getParameter("id"))) != null) {
-            answer.add("data", jsonCreator.getSeriesById(Long.parseLong(request.getParameter("id"))));
-            response.getWriter().write(answer.toString());
-            return;
+        if (request.getParameter("id") != null) {
+            if (jsonCreator.getSeriesById(Long.parseLong(request.getParameter("id"))) != null) {
+                answer.add("data", jsonCreator.getSeriesById(Long.parseLong(request.getParameter("id"))));
+                response.getWriter().write(answer.toString());
+                return;
+            } else {
+                JsonObject error = new JsonObject();
+                error.addProperty("message", "Series not found");
+                answer.add("error", error);
+                response.setStatus(404);
+            }
         } else {
             JsonObject error = new JsonObject();
             error.addProperty("message", "Series not found");
