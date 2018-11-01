@@ -5,6 +5,7 @@ import { Episode } from '../../../models/Episode';
 import { Season } from '../../../models/Season';
 import { UserService } from '../../../services/user/user.service';
 import { User } from '../../../models/User';
+import { SeriesService } from '../../../services/series/series.service';
 
 @Component({
   selector: 'app-series-detail',
@@ -13,11 +14,12 @@ import { User } from '../../../models/User';
 })
 export class SeriesDetailComponent implements OnInit {
 
-  @Input() series: Series;
+  series: Series;
   user: User;
   userId: number = parseInt(localStorage.getItem('userId'));
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService,
+              private seriesService: SeriesService) { }
 
   ngOnInit() {
     this.userService.user.subscribe(response => {
@@ -71,6 +73,10 @@ export class SeriesDetailComponent implements OnInit {
     } else {
       return response['error'];
     }
+  }
+
+  selectShow(seriesId: number) {
+    this.seriesService.getSingleSeries(seriesId).subscribe(response => this.series = response['data']);
   }
 
 }

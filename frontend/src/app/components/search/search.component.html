@@ -1,6 +1,6 @@
 <div>
-  <div *ngFor="let show of searchResult" (click)="selectShow(show)">
+  <div *ngFor="let show of searchResult" (click)="seriesDetail.selectShow(show.id); selectShow(show)">
     <div>{{ show.title }}</div>
   </div>
-  <app-series-detail *ngIf="selectedShow" [series]="selectedShow"></app-series-detail>
+  <app-series-detail #seriesDetail></app-series-detail>
 </div>
