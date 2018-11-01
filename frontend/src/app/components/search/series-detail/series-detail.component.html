@@ -1,4 +1,4 @@
-<div>
+<div *ngIf="series">
   {{ series.title }}
     <i class="fas fa-plus" *ngIf="userId" (click)="addWholeSeries(series)"></i>
     <i class="fas fa-list" *ngIf="userId" (click)="addToWatchlist(series)"></i>
