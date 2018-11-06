@@ -27,7 +27,7 @@ public class Episode {
     @ToString.Exclude
     private Date releaseDate;
 
-    @Column(nullable = false, name = "run_time")
+    @Column(nullable = false, name = "runtime")
     private int runtime;
 
     @Column(nullable = false, name = "episode_number")
