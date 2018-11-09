@@ -1,0 +1,9 @@
+.fa-heart:hover {
+  color: red;
+}
+
+/*:host {*/
+  /*display: inline-block;*/
+  /*width: 800px;*/
+  /*height: 800px;*/
+/*}*/

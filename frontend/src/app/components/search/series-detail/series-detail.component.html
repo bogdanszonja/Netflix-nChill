@@ -1,18 +1,17 @@
-<div *ngIf="series">
-  {{ series.title }}
+<div class="series-detail" *ngIf="series">
+  <!--{{ series.title }}-->
     <i class="fas fa-plus" *ngIf="userId" (click)="addWholeSeries(series)"></i>
     <i class="fas fa-list" *ngIf="userId" (click)="addToWatchlist(series)"></i>
     <i class="far fa-heart" *ngIf="userId" (click)="addToFavourites(series)"></i>
-  {{ series.description }}
-  <div>
-    Genres:
+  <label class="description">{{ series.description }}</label>
+  <div class="genres">
     <span *ngFor="let genre of series.genres">
       {{ genre.name | lowercase }}
     </span>
   </div>
-  <div *ngFor="let season of series.seasons">
+  <div class="seasons" *ngFor="let season of series.seasons">
     Season {{ season.seasonNumber }}<i class="fas fa-check" *ngIf="userId" (click)="addSingleSeason(season)"></i>
-    <div *ngFor="let episode of season.episodes">
+    <div class="episodes" *ngFor="let episode of season.episodes">
       {{ episode.episodeNumber }}
       {{ episode.title }}<i class="fas fa-check" *ngIf="userId" (click)="addSingleEpisode(episode)"></i>
       {{ episode.releaseDate }}
