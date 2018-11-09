@@ -1,5 +1,6 @@
 package com.codecool.netflixandchill.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -44,6 +45,7 @@ public class Series {
     @LazyCollection(LazyCollectionOption.FALSE)
     @Column(nullable = false)
     @ToString.Exclude
+    @JsonManagedReference
     private List<Season> seasons = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)

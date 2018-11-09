@@ -12,6 +12,7 @@ import com.codecool.netflixandchill.dao.implementation.UserDaoDB;
 import com.codecool.netflixandchill.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.ServletContext;
@@ -20,56 +21,56 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 import java.io.IOException;
 
-@WebListener
-public class Initializer implements ServletContextListener {
+//@Component
+public class Initializer {
 
     private static final Logger logger = LoggerFactory.getLogger(Initializer.class);
 
-    @Override
-    public void contextInitialized(ServletContextEvent sce) {
-        EntityManagerFactory emf = EMFManager.getInstance();
-        RemoteURLReader remoteURLReader = new RemoteURLReader();
-
-        InitializerDB initializerDB = new InitializerDB(remoteURLReader, emf);
+    public Initializer() {
+//        EntityManagerFactory emf = EMFManager.getInstance();
+//        RemoteURLReader remoteURLReader = new RemoteURLReader();
+//
+        InitializerDB initializerDB = new InitializerDB();
 
         try {
             initializerDB.populateDB();
+            logger.info("Database initialized successfully!");
         } catch (IOException e) {
-            logger.info("Error in InitializerDB!");
+            logger.info("Error in initializing the Database!");
             e.printStackTrace();
         }
 
-        SessionManager sessionManager = new SessionManager();
-        RequestParser requestParser = new RequestParser();
-        TransactionManager transactionManager = new TransactionManager();
-
-        EpisodeDao episodeDao = new EpisodeDaoDB(transactionManager, emf);
-        SeasonDao seasonDao = new SeasonDaoDB(transactionManager, emf);
-        SeriesDao seriesDao = new SeriesDaoDB(transactionManager, emf);
-        UserDao userDao = new UserDaoDB(transactionManager, emf);
-
-        JsonCreator jsonCreator = new JsonCreator(episodeDao, seasonDao, seriesDao, userDao);
-
-        ServletContext context = sce.getServletContext();
-        context.addServlet("Join",
-                new JoinController(requestParser, jsonCreator, sessionManager, userDao))
-                .addMapping("/join");
-        context.addServlet("Login",
-                new LoginController(requestParser, jsonCreator, sessionManager, userDao))
-                .addMapping("/login");
-        context.addServlet("Search",
-                new SearchController(requestParser, jsonCreator, sessionManager, episodeDao, userDao))
-                .addMapping("/search");
-        context.addServlet("Series",
-                new SeriesController(requestParser, jsonCreator, sessionManager))
-                .addMapping("/series");
-        context.addServlet("User",
-                new UserController(requestParser, jsonCreator, sessionManager, userDao))
-                .addMapping("/user");
-    }
-
-    @Override
-    public void contextDestroyed(ServletContextEvent sce) {
-        logger.warn("Modification happened, server restarting...");
+//        SessionManager sessionManager = new SessionManager();
+//        RequestParser requestParser = new RequestParser();
+//        TransactionManager transactionManager = new TransactionManager();
+//
+//        EpisodeDao episodeDao = new EpisodeDaoDB(transactionManager, emf);
+//        SeasonDao seasonDao = new SeasonDaoDB(transactionManager, emf);
+//        SeriesDao seriesDao = new SeriesDaoDB(transactionManager, emf);
+//        UserDao userDao = new UserDaoDB(transactionManager, emf);
+//
+//        JsonCreator jsonCreator = new JsonCreator(episodeDao, seasonDao, seriesDao, userDao);
+//
+//        ServletContext context = sce.getServletContext();
+//        context.addServlet("Join",
+//                new JoinController(requestParser, jsonCreator, sessionManager, userDao))
+//                .addMapping("/join");
+//        context.addServlet("Login",
+//                new LoginController(requestParser, jsonCreator, sessionManager, userDao))
+//                .addMapping("/login");
+//        context.addServlet("Search",
+//                new SearchController(requestParser, jsonCreator, sessionManager, episodeDao, userDao))
+//                .addMapping("/search");
+//        context.addServlet("Series",
+//                new SeriesController(requestParser, jsonCreator, sessionManager))
+//                .addMapping("/series");
+//        context.addServlet("User",
+//                new UserController(requestParser, jsonCreator, sessionManager, userDao))
+//                .addMapping("/user");
+//    }
+//
+//    @Override
+//    public void contextDestroyed(ServletContextEvent sce) {
+//        logger.warn("Modification happened, server restarting...");
     }
 }

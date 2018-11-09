@@ -12,13 +12,13 @@ export class AuthService {
 
   constructor(private myRoute: Router) { }
 
-  sendToken(token: number) {
-    localStorage.setItem('userId', token.toString());
+  sendToken(token: string) {
+    sessionStorage.setItem('token', token);
     this.loggedIn.next(true);
   }
 
   getToken() {
-    return localStorage.getItem('userId');
+    return sessionStorage.getItem('token');
   }
 
   isLoggedIn() {
@@ -26,7 +26,7 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem('userId');
+    sessionStorage.removeItem('token');
     this.loggedIn.next(false);
     this.myRoute.navigate(['/']);
   }

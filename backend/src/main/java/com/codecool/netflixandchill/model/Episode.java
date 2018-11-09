@@ -1,5 +1,6 @@
 package com.codecool.netflixandchill.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -34,6 +35,7 @@ public class Episode {
     private int episodeNumber;
 
     @ManyToOne
+    @JsonBackReference
     private Season season;
 
     @ManyToMany(mappedBy = "watchedEpisodes")

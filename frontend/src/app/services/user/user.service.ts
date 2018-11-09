@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import {HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse} from '@angular/common/http';
 
 import { Subject } from 'rxjs/internal/Subject';
 import { catchError, tap } from 'rxjs/operators';
@@ -84,7 +84,7 @@ export class UserService {
   validateJoin(username: string, email: string, password: string, confirmPassword: string): Observable<any> {
     if (!username.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()) { return of(); }
 
-    this.http.post<any>(`${this.baseUrl}/join`, {
+    this.http.post<any>(`${this.baseUrl}/users/join`, {
       'username': username, 'email': email, 'password': password, 'confirmPassword': confirmPassword}, httpOptions)
       .pipe(
         tap(_ => console.log(`User join`)),
@@ -97,13 +97,19 @@ export class UserService {
   validateLogin(username: string, password: string): Observable<User> {
     if (!username.trim() || !password.trim()) { return of(); }
 
-    this.http.post(`${this.baseUrl}/login`, {'username': username, 'password': password}, httpOptions)
+    this.http.post(`${this.baseUrl}/login`, {'username': username, 'password': password}, {
+      headers: new HttpHeaders({'Content-Type': 'application/json'}),
+      observe: 'response'
+    })
       .pipe(
         tap(_ => console.log(`User login, should get back User`)),
         catchError(response => this.handleError(response, response.error['error']))
-      ).subscribe(response => {
-        if (response) {
-          this.auth.sendToken(response['data']['id']);
+      ).subscribe((response: HttpResponse<any>) => {
+        console.log(response);
+        console.log(response.headers.get('Authorization'));
+        this.auth.sendToken(response.headers.get('Authorization'));
+        if (response.body) {
+          console.log(response.body);
           this.user.next(response['data']);
         }
     });

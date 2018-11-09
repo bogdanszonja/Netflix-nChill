@@ -1,18 +1,22 @@
 package com.codecool.netflixandchill.config;
 
 import com.codecool.netflixandchill.model.*;
+import com.codecool.netflixandchill.service.EpisodeService;
+import com.codecool.netflixandchill.service.SeasonService;
+import com.codecool.netflixandchill.service.SeriesService;
 import com.codecool.netflixandchill.util.RemoteURLReader;
 import com.google.gson.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@Component
 class InitializerDB {
 
     private static final int NUMBER_OF_PAGES_TO_DOWNLOAD = 1;
@@ -21,13 +25,23 @@ class InitializerDB {
     private static final DateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private static final DateFormat FORMAT_2 = new SimpleDateFormat("MMM/dd/yyyy");
 
+    @Autowired
     private RemoteURLReader urlReader;
-    private EntityManagerFactory emf;
 
-    InitializerDB(RemoteURLReader urlReader, EntityManagerFactory emf) {
-        this.urlReader = urlReader;
-        this.emf = emf;
-    }
+    @Autowired
+    private SeriesService seriesService;
+
+    @Autowired
+    private SeasonService seasonService;
+
+    @Autowired
+    private EpisodeService episodeService;
+//    private EntityManagerFactory emf;
+
+//    InitializerDB() {
+//        this.urlReader = urlReader;
+//        this.emf = emf;
+//    }
 
     private JsonArray getAllSeriesJson() throws IOException {
         JsonArray seriesArray = new JsonArray();
@@ -64,12 +78,13 @@ class InitializerDB {
         return seriesArray;
     }
 
+    @PostConstruct
     void populateDB() throws IOException {
-        EntityManager em = emf.createEntityManager();
+//        EntityManager em = emf.createEntityManager();
 
         for (JsonElement element : getAllSeriesWithSeasonAndEpisodeJson()) {
-            EntityTransaction transaction = em.getTransaction();
-            transaction.begin();
+//            EntityTransaction transaction = em.getTransaction();
+//            transaction.begin();
 
             Episode episode;
             Season season;
@@ -114,16 +129,19 @@ class InitializerDB {
                                 .build();
 
                         season.addEpisode(episode);
-                        em.persist(episode);
+//                        episodeService.addSeries(episode);
+//                        em.persist(episode);
                     }
                 }
-                em.persist(season);
+//                seasonService.addSeries(season);
+//                em.persist(season);
             }
-            em.persist(series);
-            transaction.commit();
+            seriesService.addSeries(series);
+//            em.persist(series);
+//            transaction.commit();
         }
-        em.clear();
-        em.close();
+//        em.clear();
+//        em.close();
     }
 
     private List<Genre> convertJsonArrayToEnumGenre(JsonArray genreList) {
