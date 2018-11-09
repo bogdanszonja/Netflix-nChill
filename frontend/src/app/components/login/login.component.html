@@ -1,20 +1,30 @@
-<div>
-  <div [style.font-size]="showPart === 'join'? 'large': 'small'" class="join">
-    <label>Username</label>
-    <input type="text" required #username>
-    <label>Email</label>
-    <input type="text" required #email>
-    <label>Password</label>
-    <input type="password" required #password>
-    <label>Confirm Password</label>
-    <input type="password" required #confirmPassword>
-    <button (click)="join(username.value, email.value, password.value, confirmPassword.value)">Join</button>
+<div class="forms">
+  <div class="join pure-form pure-form-stacked">
+    <fieldset>
+      <div [style.opacity]="showPart === 'join'? '1': '0.4'" class="join">
+        <label>Username</label>
+        <input placeholder="Username" type="text" required #username>
+        <label>Email</label>
+        <input placeholder="Email" type="text" required #email>
+        <label>Password</label>
+        <input placeholder="Password" type="password" required #password>
+        <label>Confirm Password</label>
+        <input placeholder="Confirm Password" type="password" required #confirmPassword>
+        <button class="pure-button pure-button-secondary"
+            (click)="join(username.value, email.value, password.value, confirmPassword.value)">Join</button>
+      </div>
+    </fieldset>
   </div>
-  <div [style.font-size]="showPart === 'login'? 'large': 'small'" class="login">
-    <label>Username</label>
-    <input type="text" required #usernameLogin>
-    <label>Password</label>
-    <input type="password" required #passwordLogin>
-    <button (click)="login(usernameLogin.value, passwordLogin.value)">Login</button>
+  <div class="login-form pure-form pure-form-stacked">
+    <fieldset>
+      <div [style.opacity]="showPart === 'login'? '1': '0.4'" class="login">
+        <label>Username</label>
+        <input placeholder="Username" type="text" required #usernameLogin>
+        <label>Password</label>
+        <input placeholder="Password" type="password" required #passwordLogin>
+        <button class="pure-button pure-button-secondary"
+            (click)="login(usernameLogin.value, passwordLogin.value)">Login</button>
+      </div>
+    </fieldset>
   </div>
 </div>
