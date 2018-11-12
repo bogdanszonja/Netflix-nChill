@@ -27,4 +27,12 @@ public class UserService {
         return this.userRepository.findByUserName(username);
     }
 
+    public boolean checkIfEmailAlreadyExists(String email) {
+        return userRepository.findUserByEmailAddress(email) != null;
+    }
+
+    public boolean checkIfUserNameAlreadyExists(String userName) {
+        return userRepository.findByUserName(userName) != null;
+    }
+
 }
