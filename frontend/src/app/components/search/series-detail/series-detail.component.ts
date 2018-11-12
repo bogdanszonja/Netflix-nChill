@@ -17,8 +17,8 @@ export class SeriesDetailComponent implements OnInit {
 
   series: Series;
   user: User;
-  userId: number = parseInt(localStorage.getItem('userId'));
-  showEpisodes = false;
+  token: string = sessionStorage.getItem('token');
+  showEpisodes = 0;
   hearted = false;
   isChecked: boolean;
 
@@ -28,18 +28,18 @@ export class SeriesDetailComponent implements OnInit {
 
   ngOnInit() {
     this.userService.user.subscribe(response => {
-      if (response['data']) {
-        this.user = response['data'];
+      // if (response['data']) {
+        this.user = response;
         console.log(this.user);
-      } else {
-        console.log(response['error']);
-      }
+      // } else {
+      //   console.log(response['error']);
+      // }
     });
   }
 
   addWholeSeries(series: Series): void {
     console.log('all seasons added');
-    this.userService.addWholeSeries(series).subscribe(response => {
+    this.userService.addWholeSeries(this.user.username, series).subscribe(response => {
       console.log(this.handleResponse(response));
       this.toastr.success(series.title + ' added to your list!');
       this.isChecked = true;
@@ -48,7 +48,7 @@ export class SeriesDetailComponent implements OnInit {
 
   addSingleSeason(season: Season): void {
     console.log('season added');
-    this.userService.addSingleSeason(season).subscribe(response => {
+    this.userService.addSingleSeason(this.user.username, season).subscribe(response => {
       console.log(this.handleResponse(response));
       this.toastr.success('Season ' + season.seasonNumber + ' added to your list!');
     });
@@ -56,15 +56,16 @@ export class SeriesDetailComponent implements OnInit {
 
   addSingleEpisode(episode: Episode): void {
     console.log('episode added');
-    this.userService.addSingleEpisode(episode).subscribe(response => {
+    this.userService.addSingleEpisode(this.user.username, episode).subscribe(response => {
       console.log(this.handleResponse(response));
       this.toastr.success('Episode ' + episode.episodeNumber + ': ' + episode.title + ' added to your list!');
     });
   }
 
   addToFavourites(series: Series): void {
+    console.log(this.user);
     console.log('added to favourites');
-    this.userService.addToFavourites(series).subscribe(response => {
+    this.userService.addToFavourites('oli', series).subscribe(response => {
       console.log(this.handleResponse(response));
       this.toastr.success(series.title + ' added to your favourites!');
       this.hearted = !this.hearted;
@@ -73,26 +74,29 @@ export class SeriesDetailComponent implements OnInit {
 
   addToWatchlist(series: Series): void {
     console.log('added to watchlist');
-    this.userService.addToWatchlist(series).subscribe(response => {
+    this.userService.addToWatchlist(this.user.username, series).subscribe(response => {
       console.log(this.handleResponse(response));
       this.toastr.success(series.title + ' added to your watchlist!');
     });
   }
 
   handleResponse(response) {
-    if (response['data']) {
-      return response['data'];
-    } else {
-      return response['error'];
-    }
+    // if (response['data']) {
+      return response;
+    // } else {
+    //   return response['error'];
+    // }
   }
 
   selectShow(seriesId: number) {
-    this.seriesService.getSingleSeries(seriesId).subscribe(response => this.series = response['data']);
+    this.seriesService.getSingleSeries(seriesId).subscribe(response => {
+      console.log(response);
+      this.series = response;
+    });
   }
 
-  toggleEpisodes() {
-    this.showEpisodes = !this.showEpisodes;
+  toggleEpisodes(seasonId: number) {
+    this.showEpisodes = seasonId;
   }
 
 }

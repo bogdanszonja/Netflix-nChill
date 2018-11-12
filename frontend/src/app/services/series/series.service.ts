@@ -32,7 +32,7 @@ export class SeriesService {
   }
 
   getSingleSeries(id: number): Observable<Series> {
-    return this.http.get<any>(`${this.baseUrl}/series?id=${id}`).pipe(
+    return this.http.get<any>(`${this.baseUrl}/series/${id}`).pipe(
       tap(_ => console.log(`Series id=${id} found!`)),
       catchError(response => this.handleError(response))
       );
@@ -45,10 +45,10 @@ export class SeriesService {
       .pipe(
         tap(_ => console.log(`More series found!`)),
         catchError(response => this.handleError(response))
-      ).subscribe(response => {
+      ).subscribe((response: Series[]) => {
         console.log(response);
         if (response) {
-          this.searchResult.next(response['data']);
+          this.searchResult.next(response);
           console.log(this.searchResult);
         }
       });
