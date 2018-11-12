@@ -14,4 +14,8 @@ public class SeasonService {
     public void add(Season season) {
         this.seasonRepository.save(season);
     }
+
+    public Season getSeasonBySeriesId(long id) {
+        return seasonRepository.findSeasonBySeries(id);
+    }
 }

@@ -14,4 +14,8 @@ public class EpisodeService {
     public void add(Episode episode) {
         this.episodeRepository.save(episode);
     }
+
+    public Episode getSingleEpisodeBySeasonId(long id) {
+        return episodeRepository.findEpisodeBySeason(id);
+    }
 }
