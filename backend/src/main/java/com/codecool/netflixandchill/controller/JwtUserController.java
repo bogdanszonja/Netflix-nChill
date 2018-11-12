@@ -8,14 +8,12 @@ import com.codecool.netflixandchill.service.SeasonService;
 import com.codecool.netflixandchill.service.SeriesService;
 import com.codecool.netflixandchill.service.UserService;
 import com.google.gson.JsonObject;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.ws.Response;
 import java.util.List;
 import java.util.Map;
 
@@ -42,8 +40,11 @@ public class JwtUserController {
     @PostMapping("/join")
     public ResponseEntity join(@RequestBody Map<String, String> requestJson) {
         if (userService.checkIfEmailAlreadyExists(requestJson.get("email")) || userService.checkIfUserNameAlreadyExists("username")) {
+            JsonObject error = new JsonObject();
+            error.addProperty("error", "already exist");
+            error.addProperty("message", "This username or email already exist");
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("email or username already exists");
+                    .body(error);
         } else {
             this.userService.addUser(requestJson.get("username"),
                     requestJson.get("email"),
@@ -72,71 +73,71 @@ public class JwtUserController {
         return this.userService.getWatchedEpisodesForUser(username);
     }
 
-    @PutMapping("/{username}/add-episode-to-watched/episode/{id}")
+    @PostMapping("/{username}/add-episode-to-watched/episode/{id}")
     public ResponseEntity addEpisodeToWatched(@PathVariable String username, @PathVariable Long id) {
         if (!this.userService.getWatchedEpisodesForUser(username).contains(episodeService.getSingleEpisodeBySeasonId(id))) {
             this.userService.addEpisodeToWatched(username, id);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(userService.getWatchedEpisodesForUser(username));
         } else {
-            JSONObject error = new JSONObject();
-            error.put("error", "already exist");
-            error.put("message", "This episode already in watched list");
+            JsonObject error = new JsonObject();
+            error.addProperty("error", "already exist");
+            error.addProperty("message", "This episode already in watched list");
 
             return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
                     .body(error);
         }
     }
 
-    @PutMapping("/{username}/add-season-to-watched/season/{id}")
+    @PostMapping("/{username}/add-season-to-watched/season/{id}")
     public ResponseEntity addSeasonToWatched(@PathVariable String username, @PathVariable Long id) {
         if (!this.userService.getWatchedEpisodesForUser(username).contains(episodeService.getSingleEpisodeBySeasonId(id))) {
             this.userService.addSeasonToWatched(username, id);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(userService.getWatchedEpisodesForUser(username));
         } else {
-            JSONObject error = new JSONObject();
-            error.put("error", "already exist");
-            error.put("message", "This season already in watched list");
+            JsonObject error = new JsonObject();
+            error.addProperty("error", "already exist");
+            error.addProperty("message", "This season already in watched list");
 
             return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
                     .body(error);
         }
     }
 
-    @PutMapping("/{username}/add-series-to-watched/series/{id}")
+    @PostMapping("/{username}/add-series-to-watched/series/{id}")
     public ResponseEntity addSeriesToWatched(@PathVariable String username, @PathVariable Long id) {
         if (!this.userService.getWatchedEpisodesForUser(username).contains(episodeService.getSingleEpisodeBySeasonId(seasonService.getSeasonBySeriesId(id).getId()))) {
             this.userService.addSeriesToWatched(username, id);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(userService.getWatchedEpisodesForUser(username));
         } else {
-            JSONObject error = new JSONObject();
-            error.put("error", "already exist");
-            error.put("message", "This series already in watched list");
+            JsonObject error = new JsonObject();
+            error.addProperty("error", "already exist");
+            error.addProperty("message", "This series already in watched list");
 
             return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
                     .body(error);
         }
     }
 
-    @PutMapping("/{username}/add-series-to-favourites/series/{id}")
+    @PostMapping("/{username}/add-series-to-favourites/series/{id}")
     public ResponseEntity addSeriesToFavourites(@PathVariable String username, @PathVariable Long id) {
         if(!this.userService.getFavouritesForUser(username).contains(seriesService.getSingleSeriesById(id))) {
             this.userService.addSeriesToFavourites(username, id);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(userService.getFavouritesForUser(username));
         } else {
-            JSONObject error = new JSONObject();
-            error.put("error", "already exist");
-            error.put("message", "This series already in favourite list");
+            JsonObject error = new JsonObject();
+            error.addProperty("error", "already exist");
+            error.addProperty("message", "This series already in favourite list");
 
             return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
                     .body(error);
         }
     }
 
-    @PutMapping("/{username}/add-series-to-watchlist/series/{id}")
+    @PostMapping("/{username}/add-series-to-watchlist/series/{id}")
     public ResponseEntity addSeriesToWatchlist(@PathVariable String username, @PathVariable Long id) {
         if (!this.userService.getWatchlistForUser(username).contains(seriesService.getSingleSeriesById(id))) {
             this.userService.addSeriesToWatchlist(username, id);
@@ -144,9 +145,9 @@ public class JwtUserController {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(userService.getWatchlistForUser(username));
         } else {
-            JSONObject error = new JSONObject();
-            error.put("error", "already exist");
-            error.put("message", "This series already in watchlist");
+            JsonObject error = new JsonObject();
+            error.addProperty("error", "already exist");
+            error.addProperty("message", "This series already in watchlist");
 
             return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
                     .body(error);
