@@ -1,17 +1,10 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 import { Observable, of, Subject } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 
 import { Series } from '../../models/Series';
-
-const httpOptions = {
-  headers: new HttpHeaders({
-    'Content-Type': 'application/json',
-    'Authorization': sessionStorage.getItem('token')
-  })
-};
 
 @Injectable({
   providedIn: 'root'
@@ -26,10 +19,10 @@ export class SeriesService {
   getAllSeries(): Observable<Series[]> {
     if ('azta') { return of([]); }
 
-    this.http.get<any>(`${this.baseUrl}/series`, httpOptions)
+    this.http.get<any>(`${this.baseUrl}/series`)
       .pipe(
       tap(_ => console.log(`Series found!`)),
-      catchError(response => this.handleError(response, response.error['error']))
+      catchError(response => this.handleError(response))
     ).subscribe(response => {
       if (response) {
         this.searchResult.next(response['data']);
@@ -41,18 +34,17 @@ export class SeriesService {
   getSingleSeries(id: number): Observable<Series> {
     return this.http.get<any>(`${this.baseUrl}/series?id=${id}`).pipe(
       tap(_ => console.log(`Series id=${id} found!`)),
-      catchError(response => this.handleError(response, response.error['error']))
+      catchError(response => this.handleError(response))
       );
   }
 
   searchSeries(searchTerm: string): Observable<Series[]> {
     if (!searchTerm.trim()) { return of([]); }
 
-    this.http.get<Series[]>(`${this.baseUrl}/series`,
-      { headers: {'Authorization': sessionStorage.getItem('token')} })
+    this.http.get<Series[]>(`${this.baseUrl}/series/search?searchTerm=${searchTerm}`)
       .pipe(
         tap(_ => console.log(`More series found!`)),
-        catchError(response => this.handleError(response, response.error['error']))
+        catchError(response => this.handleError(response))
       ).subscribe(response => {
         console.log(response);
         if (response) {
@@ -62,10 +54,10 @@ export class SeriesService {
       });
   }
 
-  private handleError<T> (error: HttpErrorResponse, errorMessages: HttpErrorResponse, result?: T) {
+  private handleError<T> (error: HttpErrorResponse, result?: T) {
     console.error(error);
-    console.error(errorMessages['message']);
-    console.error(errorMessages['cause']);
+    console.error(error.error['error']);
+    console.error(error.error['message']);
     return of(result as T);
   }
 

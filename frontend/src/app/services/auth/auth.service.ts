@@ -10,10 +10,10 @@ export class AuthService {
 
   loggedIn = new Subject<boolean>();
 
-  constructor(private myRoute: Router) { }
+  constructor(private router: Router) { }
 
   sendToken(token: string) {
-    sessionStorage.setItem('token', token);
+    sessionStorage.setItem('token', token.substring(7));
     this.loggedIn.next(true);
   }
 
@@ -28,7 +28,7 @@ export class AuthService {
   logout() {
     sessionStorage.removeItem('token');
     this.loggedIn.next(false);
-    this.myRoute.navigate(['/']);
+    this.router.navigate(['/']);
   }
 
 }

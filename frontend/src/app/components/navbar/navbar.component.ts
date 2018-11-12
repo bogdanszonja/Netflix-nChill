@@ -30,7 +30,7 @@ export class NavbarComponent implements OnInit {
 
   search(searchInput: string): void {
     this.seriesService.searchSeries(searchInput);
-    this.router.navigate(['/search']);
+    this.router.navigate(['/search'], { queryParams: { 'searchTerm': searchInput} });
     this.searchToggle = !this.searchToggle;
   }
 
