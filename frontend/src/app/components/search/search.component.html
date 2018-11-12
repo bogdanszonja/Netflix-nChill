@@ -1,6 +1,10 @@
-<div>
-  <div *ngFor="let show of searchResult" (click)="seriesDetail.selectShow(show.id); selectShow(show)">
-    <div>{{ show.title }}</div>
+<div class="menu">
+  <div class="search-result">
+    <div class="search-item" *ngFor="let show of searchResult" (click)="seriesDetail.selectShow(show.id); selectShow(show)">
+      <div class="search-title">{{ show.title }}</div>
+    </div>
   </div>
-  <app-series-detail #seriesDetail></app-series-detail>
+  <div class="detail">
+    <app-series-detail #seriesDetail></app-series-detail>
+  </div>
 </div>
