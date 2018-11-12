@@ -18,6 +18,9 @@ export class SeriesDetailComponent implements OnInit {
   series: Series;
   user: User;
   userId: number = parseInt(localStorage.getItem('userId'));
+  showEpisodes = false;
+  hearted = false;
+  isChecked: boolean;
 
   constructor(private userService: UserService,
               private seriesService: SeriesService,
@@ -39,6 +42,7 @@ export class SeriesDetailComponent implements OnInit {
     this.userService.addWholeSeries(series).subscribe(response => {
       console.log(this.handleResponse(response));
       this.toastr.success(series.title + ' added to your list!');
+      this.isChecked = true;
     });
   }
 
@@ -63,6 +67,7 @@ export class SeriesDetailComponent implements OnInit {
     this.userService.addToFavourites(series).subscribe(response => {
       console.log(this.handleResponse(response));
       this.toastr.success(series.title + ' added to your favourites!');
+      this.hearted = !this.hearted;
     });
   }
 
@@ -84,6 +89,10 @@ export class SeriesDetailComponent implements OnInit {
 
   selectShow(seriesId: number) {
     this.seriesService.getSingleSeries(seriesId).subscribe(response => this.series = response['data']);
+  }
+
+  toggleEpisodes() {
+    this.showEpisodes = !this.showEpisodes;
   }
 
 }
