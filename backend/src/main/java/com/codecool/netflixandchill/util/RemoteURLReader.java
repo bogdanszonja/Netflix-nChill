@@ -1,5 +1,6 @@
 package com.codecool.netflixandchill.util;
 
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -8,6 +9,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 
 @Component
+@Scope("singleton")
 public class RemoteURLReader {
 
     public String readFromUrl(String endpoint) throws IOException {

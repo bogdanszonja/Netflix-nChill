@@ -1,8 +1,6 @@
 package com.codecool.netflixandchill.config;
 
 import com.codecool.netflixandchill.model.*;
-import com.codecool.netflixandchill.service.EpisodeService;
-import com.codecool.netflixandchill.service.SeasonService;
 import com.codecool.netflixandchill.service.SeriesService;
 import com.codecool.netflixandchill.util.RemoteURLReader;
 import com.google.gson.*;
@@ -31,17 +29,6 @@ class InitializerDB {
     @Autowired
     private SeriesService seriesService;
 
-    @Autowired
-    private SeasonService seasonService;
-
-    @Autowired
-    private EpisodeService episodeService;
-//    private EntityManagerFactory emf;
-
-//    InitializerDB() {
-//        this.urlReader = urlReader;
-//        this.emf = emf;
-//    }
 
     private JsonArray getAllSeriesJson() throws IOException {
         JsonArray seriesArray = new JsonArray();
@@ -80,12 +67,7 @@ class InitializerDB {
 
     @PostConstruct
     void populateDB() throws IOException {
-//        EntityManager em = emf.createEntityManager();
-
         for (JsonElement element : getAllSeriesWithSeasonAndEpisodeJson()) {
-//            EntityTransaction transaction = em.getTransaction();
-//            transaction.begin();
-
             Episode episode;
             Season season;
 
@@ -129,19 +111,11 @@ class InitializerDB {
                                 .build();
 
                         season.addEpisode(episode);
-//                        episodeService.addSeries(episode);
-//                        em.persist(episode);
                     }
                 }
-//                seasonService.addSeries(season);
-//                em.persist(season);
             }
             seriesService.addSeries(series);
-//            em.persist(series);
-//            transaction.commit();
         }
-//        em.clear();
-//        em.close();
     }
 
     private List<Genre> convertJsonArrayToEnumGenre(JsonArray genreList) {
