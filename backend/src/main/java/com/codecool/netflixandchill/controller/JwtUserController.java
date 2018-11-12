@@ -44,7 +44,7 @@ public class JwtUserController {
             error.addProperty("error", "already exist");
             error.addProperty("message", "This username or email already exist");
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(error);
+                    .body(error.toString());
         } else {
             this.userService.addUser(requestJson.get("username"),
                     requestJson.get("email"),
@@ -84,8 +84,8 @@ public class JwtUserController {
             error.addProperty("error", "already exist");
             error.addProperty("message", "This episode already in watched list");
 
-            return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
-                    .body(error);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(error.toString());
         }
     }
 
@@ -100,8 +100,8 @@ public class JwtUserController {
             error.addProperty("error", "already exist");
             error.addProperty("message", "This season already in watched list");
 
-            return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
-                    .body(error);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(error.toString());
         }
     }
 
@@ -116,14 +116,14 @@ public class JwtUserController {
             error.addProperty("error", "already exist");
             error.addProperty("message", "This series already in watched list");
 
-            return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
-                    .body(error);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(error.toString());
         }
     }
 
     @PostMapping("/{username}/add-series-to-favourites/series/{id}")
     public ResponseEntity addSeriesToFavourites(@PathVariable String username, @PathVariable Long id) {
-        if(!this.userService.getFavouritesForUser(username).contains(seriesService.getSingleSeriesById(id))) {
+        if (!this.userService.getFavouritesForUser(username).contains(seriesService.getSingleSeriesById(id))) {
             this.userService.addSeriesToFavourites(username, id);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(userService.getFavouritesForUser(username));
@@ -132,8 +132,8 @@ public class JwtUserController {
             error.addProperty("error", "already exist");
             error.addProperty("message", "This series already in favourite list");
 
-            return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
-                    .body(error);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(error.toString());
         }
     }
 
