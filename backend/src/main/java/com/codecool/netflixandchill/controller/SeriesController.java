@@ -3,6 +3,8 @@ package com.codecool.netflixandchill.controller;
 import com.codecool.netflixandchill.model.Series;
 import com.codecool.netflixandchill.service.SeriesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,8 +28,11 @@ public class SeriesController {
     }
 
     @GetMapping("/search")
-    public List<Series> getSeriesBySubstring(@RequestParam("searchTerm") String substring) {
-        return this.seriesService.getSeriesBySubstring(substring);
+    public ResponseEntity getSeriesBySubstring(@RequestParam("searchTerm") String substring) {
+        if ( this.seriesService.getSeriesBySubstring(substring).isEmpty()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Cannot find series");
+        }
+        return new ResponseEntity<>(this.seriesService.getSeriesBySubstring(substring), HttpStatus.OK);
     }
 
     @GetMapping("/trending")
