@@ -91,7 +91,8 @@ export class UserService {
   validateLogin(username: string, password: string): Observable<User> {
     if (!username.trim() || !password.trim()) { return of(); }
 
-    this.http.post(`${this.baseUrl}/login`, {'username': username, 'password': password})
+    this.http.post(`${this.baseUrl}/login`, {'username': username, 'password': password},
+      { observe: 'response'})
       .pipe(
         tap(_ => console.log(`User login, should get back User`)),
         catchError(response => this.handleError(response))
