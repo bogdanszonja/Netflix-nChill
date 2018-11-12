@@ -52,17 +52,9 @@ public class User {
     @ToString.Exclude
     private Collection<Episode> watchedEpisodes = new ArrayList<>();
 
-    @Column(name = "registraion_date")
+    @Column(name = "registration_date")
     @Temporal(TemporalType.DATE)
     private Date registrationDate;
-
-//    @Builder
-//    public User(String userName, String emailAddress, String password, Date registrationDate) {
-//        this.userName = userName;
-//        this.emailAddress = emailAddress;
-//        this.password = password;
-//        this.registrationDate = registrationDate;
-//    }
 
     @Builder
     public User(String userName, String emailAddress, String password, Collection<Series> watchlist,

@@ -1,5 +1,6 @@
 package com.codecool.netflixandchill.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -27,13 +28,14 @@ public class Episode {
     @ToString.Exclude
     private Date releaseDate;
 
-    @Column(nullable = false, name = "run_time")
+    @Column(nullable = false, name = "runtime")
     private int runtime;
 
     @Column(nullable = false, name = "episode_number")
     private int episodeNumber;
 
     @ManyToOne
+    @JsonBackReference
     private Season season;
 
     @ManyToMany(mappedBy = "watchedEpisodes")

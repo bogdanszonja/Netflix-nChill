@@ -12,9 +12,10 @@ import { SearchComponent } from './components/search/search.component';
 import { SeriesDetailComponent } from './components/search/series-detail/series-detail.component';
 import { TrendingComponent } from './components/trending/trending.component';
 import { AppRoutingModule } from './modules/app-routing/app-routing.module';
-import { HttpClientModule } from '@angular/common/http';
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { ToastrModule } from "ngx-toastr";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { AuthInterceptor } from './interceptors/auth-interceptor';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,7 @@ import { ToastrModule } from "ngx-toastr";
     BrowserAnimationsModule,
     ToastrModule.forRoot()
   ],
-  providers: [],
+  providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule {

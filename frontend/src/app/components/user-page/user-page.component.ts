@@ -17,12 +17,12 @@ export class UserPageComponent implements OnInit {
 
   ngOnInit() {
     console.log('User-page-constructor');
-    this.getUser(parseInt(localStorage.getItem('userId')));
+    this.getUser(this.user.username);
     this.tabNum = 1;
   }
 
-  getUser(userId: number): void {
-    this.userService.getUser(userId)
+  getUser(username: string): void {
+    this.userService.getUser(username)
     .subscribe(user => {
       console.log(user);
       this.user = user;

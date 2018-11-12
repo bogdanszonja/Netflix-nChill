@@ -17,27 +17,36 @@ export class SeriesService {
   constructor(private http: HttpClient) { }
 
   getAllSeries(): Observable<Series[]> {
-    return this.http.get<any>(`${this.baseUrl}/series`).pipe(
+    if ('azta') { return of([]); }
+
+    this.http.get<any>(`${this.baseUrl}/series`)
+      .pipe(
       tap(_ => console.log(`Series found!`)),
-      catchError(response => this.handleError(response, response.error['error']))
-    );
+      catchError(response => this.handleError(response))
+    ).subscribe(response => {
+      if (response) {
+        this.searchResult.next(response['data']);
+        console.log(this.searchResult);
+      }
+    });
   }
 
   getSingleSeries(id: number): Observable<Series> {
     return this.http.get<any>(`${this.baseUrl}/series?id=${id}`).pipe(
       tap(_ => console.log(`Series id=${id} found!`)),
-      catchError(response => this.handleError(response, response.error['error']))
+      catchError(response => this.handleError(response))
       );
   }
 
   searchSeries(searchTerm: string): Observable<Series[]> {
     if (!searchTerm.trim()) { return of([]); }
 
-    this.http.get<Series[]>(`${this.baseUrl}/search?searchTerm=${searchTerm}`)
+    this.http.get<Series[]>(`${this.baseUrl}/series/search?searchTerm=${searchTerm}`)
       .pipe(
         tap(_ => console.log(`More series found!`)),
-        catchError(response => this.handleError(response, response.error['error']))
+        catchError(response => this.handleError(response))
       ).subscribe(response => {
+        console.log(response);
         if (response) {
           this.searchResult.next(response['data']);
           console.log(this.searchResult);
@@ -45,10 +54,10 @@ export class SeriesService {
       });
   }
 
-  private handleError<T> (error: HttpErrorResponse, errorMessages: HttpErrorResponse, result?: T) {
+  private handleError<T> (error: HttpErrorResponse, result?: T) {
     console.error(error);
-    console.error(errorMessages['message']);
-    console.error(errorMessages['cause']);
+    console.error(error.error['error']);
+    console.error(error.error['message']);
     return of(result as T);
   }
 
