@@ -30,44 +30,44 @@ export class UserService {
     this.loginStatus.next(type);
   }
 
-  addWholeSeries(series: Series): Observable<Series> {
-    return this.http.post<any>(`${this.baseUrl}/user`,
-      {'userId': localStorage.getItem('userId'), 'series': series.id})
+  addWholeSeries(username: string, series: Series): Observable<Series> {
+    return this.http.post<any>(`${this.baseUrl}/users/${username}/add-series-to-watched/series/${series.id}`,
+      {'series': series.id})
       .pipe(
         tap(_ => console.log(`Series added`)),
         catchError(response => this.handleError(response))
       );
   }
 
-  addSingleSeason(season: Season): Observable<Season> {
-    return this.http.post<any>(`${this.baseUrl}/user`,
-      {'userId': localStorage.getItem('userId'), 'season': season.id})
+  addSingleSeason(username: string, season: Season): Observable<Season> {
+    return this.http.post<any>(`${this.baseUrl}/users/${username}/add-season-to-watched/season/${season.id}`,
+      {'season': season.id})
       .pipe(
         tap(_ => console.log(`Season added`)),
         catchError(response => this.handleError(response))
       );
   }
 
-  addSingleEpisode(episode: Episode): Observable<Episode> {
-    return this.http.post<any>(`${this.baseUrl}/user`,
-      {'userId': localStorage.getItem('userId'), 'episode': episode.id})
+  addSingleEpisode(username: string, episode: Episode): Observable<Episode> {
+    return this.http.post<any>(`${this.baseUrl}/users/${username}/add-episode-to-watched/episode/${episode.id}`,
+      {'episode': episode.id})
       .pipe(
         tap(_ => console.log(`Episode added`)),
         catchError(response => this.handleError(response))
       );
   }
 
-  addToFavourites(series: Series): Observable<Series> {
-    return this.http.post<any>(`${this.baseUrl}/user`,
-      {'userId': localStorage.getItem('userId'), 'favourite': series.id})
+  addToFavourites(username: string, series: Series): Observable<Series> {
+    return this.http.post<any>(`${this.baseUrl}/users/${username}/add-series-to-favourites/series/${series.id}`,
+      {'favourite': series.id})
       .pipe(
         tap(_ => console.log(`Series added to favourites`)),
         catchError(response => this.handleError(response))
       );
   }
 
-  addToWatchlist(series: Series): Observable<Series> {
-    return this.http.post<any>(`${this.baseUrl}/user`,
+  addToWatchlist(username: string, series: Series): Observable<Series> {
+    return this.http.post<any>(`${this.baseUrl}/users/${username}/add-series-to-watchlist/series/${series.id}`,
       {'userId': localStorage.getItem('userId'), 'watchlist': series.id})
       .pipe(
         tap(_ => console.log(`Series added to watchlist`)),

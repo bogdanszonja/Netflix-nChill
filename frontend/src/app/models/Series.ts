@@ -9,5 +9,6 @@ export class Series {
   airDate: Date;
   seasons: Season[];
   genres: string[];
+  image: string;
 
 }

@@ -1,7 +1,8 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { UserService } from '../../services/user/user.service';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +14,8 @@ export class LoginComponent implements OnInit {
   showPart;
 
   constructor(private userService: UserService,
-              private router: Router) { }
+              private router: Router,
+              private toastr: ToastrService) { }
 
   ngOnInit() {
     this.userService.loginStatus.subscribe(type => {
@@ -23,6 +25,10 @@ export class LoginComponent implements OnInit {
   }
 
   join(username: string, email: string, password: string, confirmPassword: string) {
+    if (password !== confirmPassword) {
+      this.toastr.error('Passwords do not match!', 'Pina');
+      return;
+    }
     console.log(username, email, password, confirmPassword);
     this.userService.validateJoin(username, email, password, confirmPassword);
   }
