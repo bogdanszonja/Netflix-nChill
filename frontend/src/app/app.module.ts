@@ -12,7 +12,9 @@ import { SearchComponent } from './components/search/search.component';
 import { SeriesDetailComponent } from './components/search/series-detail/series-detail.component';
 import { TrendingComponent } from './components/trending/trending.component';
 import { AppRoutingModule } from './modules/app-routing/app-routing.module';
-import {HttpClientModule} from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { ToastrModule } from "ngx-toastr";
 
 @NgModule({
   declarations: [
@@ -30,7 +32,9 @@ import {HttpClientModule} from '@angular/common/http';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

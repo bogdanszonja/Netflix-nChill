@@ -1,23 +1,24 @@
 .search-result {
+  width: 22%;
+  float: left;
+}
+
+.search-item {
   font-size: 140%;
-  margin: 10px;
+  margin: 20px;
   padding: 20px;
+  background: #eeeeee0d;
 }
 
-:host {
-  display: inline-block;
-  width: 500px;
-  height: 800px;
+.search-item:hover {
+  color: #919191;
 }
 
-/*.menu {*/
-  /*display: inline-block;*/
-  /*width: 500px;*/
-  /*height: 800px;*/
-/*}*/
+.search-title {
+  padding-left: 20px;
+}
 
 .detail {
-  display: inline-block;
-  width: 500px;
-  height: 800px;
+  width: 70%;
+  overflow: auto;
 }
