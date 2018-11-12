@@ -14,6 +14,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import static com.codecool.netflixandchill.security.SecurityConstants.JOIN_URL;
+import static com.codecool.netflixandchill.security.SecurityConstants.PUBLIC_URLS;
 
 @EnableWebSecurity
 public class WebSecurity extends WebSecurityConfigurerAdapter {
@@ -30,6 +31,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, JOIN_URL).permitAll()
+                .antMatchers(HttpMethod.GET, PUBLIC_URLS).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))

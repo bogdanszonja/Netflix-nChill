@@ -3,6 +3,7 @@ package com.codecool.netflixandchill.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,10 +35,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         logger.info(header);
         if (header == null || !header.startsWith(TOKEN_PREFIX)) {
+            logger.info("Json Web Token is not present of has wrong prefix!");
             chain.doFilter(request, response);
             return;
         }
-        logger.info(header);
 
         UsernamePasswordAuthenticationToken authenticationToken = getAuthentication(request);
 
@@ -64,8 +65,9 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                 return null;
             }
         } catch (ExpiredJwtException e) {
-            logger.info("JWT expired!");
-//            e.printStackTrace();
+            logger.info("Json Web Token expired!");
+        } catch (MalformedJwtException e) {
+            logger.info("Malformed Json Web Token!");
         }
 
         return null;
