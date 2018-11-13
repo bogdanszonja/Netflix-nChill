@@ -26,7 +26,7 @@ public class SeriesService {
     }
 
     public List<Series> getSeriesBySubstring(String substring) {
-        return this.seriesRepository.findByTitleContaining(substring);
+        return this.seriesRepository.findByTitleContainingIgnoreCase(substring);
     }
 
     public List<Series> getTrendingSeries() {
