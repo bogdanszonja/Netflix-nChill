@@ -18,7 +18,7 @@ export class SeriesDetailComponent implements OnInit {
   series: Series;
   user: User;
   token: string = sessionStorage.getItem('token');
-  showEpisodes = 0;
+  showSeasons: number[] = [];
   hearted = false;
   isChecked: boolean;
 
@@ -29,7 +29,7 @@ export class SeriesDetailComponent implements OnInit {
   ngOnInit() {
     this.userService.getUser(localStorage.getItem('username')).subscribe(response => {
       // if (response['data']) {
-      console.log(response);
+        console.log(response);
         this.user = response;
         console.log(this.user);
       // } else {
@@ -97,7 +97,15 @@ export class SeriesDetailComponent implements OnInit {
   }
 
   toggleEpisodes(seasonId: number) {
-    this.showEpisodes = seasonId;
+    if (this.showSeasons.includes(seasonId)) {
+      this.showSeasons = this.showSeasons.filter(currentId => currentId !== seasonId);
+      return;
+    }
+
+    this.showSeasons.push(seasonId);
   }
 
+  alreadyOpened(seasonId: number): boolean {
+    return this.showSeasons.includes(seasonId);
+  }
 }
