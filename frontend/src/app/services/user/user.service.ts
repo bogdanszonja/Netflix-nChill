@@ -31,7 +31,7 @@ export class UserService {
   }
 
   addWholeSeries(username: string, series: Series): Observable<Series> {
-    return this.http.post<any>(`${this.baseUrl}/users/${username}/add-series-to-watched/series/${series.id}`,
+    return this.http.put<any>(`${this.baseUrl}/users/${username}/add-series-to-watched/series/${series.id}`,
       {'series': series.id})
       .pipe(
         tap(_ => console.log(`Series added`)),
@@ -48,7 +48,7 @@ export class UserService {
   }
 
   addSingleSeason(username: string, season: Season): Observable<Season> {
-    return this.http.post<any>(`${this.baseUrl}/users/${username}/add-season-to-watched/season/${season.id}`,
+    return this.http.put<any>(`${this.baseUrl}/users/${username}/add-season-to-watched/season/${season.id}`,
       {'season': season.id})
       .pipe(
         tap(_ => console.log(`Season added`)),
@@ -65,7 +65,7 @@ export class UserService {
   }
 
   addSingleEpisode(username: string, episode: Episode): Observable<Episode> {
-    return this.http.post<any>(`${this.baseUrl}/users/${username}/add-episode-to-watched/episode/${episode.id}`,
+    return this.http.put<any>(`${this.baseUrl}/users/${username}/add-episode-to-watched/episode/${episode.id}`,
       {'episode': episode.id})
       .pipe(
         tap(_ => console.log(`Episode added`)),
@@ -82,7 +82,7 @@ export class UserService {
   }
 
   addToFavourites(username: string, series: Series): Observable<Series> {
-    return this.http.post<any>(`${this.baseUrl}/users/${username}/add-series-to-favourites/series/${series.id}`,
+    return this.http.put<any>(`${this.baseUrl}/users/${username}/add-series-to-favourites/series/${series.id}`,
       {'favourite': series.id})
       .pipe(
         tap(_ => console.log(`Series added to favourites`)),
@@ -99,8 +99,8 @@ export class UserService {
   }
 
   addToWatchlist(username: string, series: Series): Observable<Series> {
-    return this.http.post<any>(`${this.baseUrl}/users/${username}/add-series-to-watchlist/series/${series.id}`,
-      {'userId': localStorage.getItem('userId'), 'watchlist': series.id})
+    return this.http.put<any>(`${this.baseUrl}/users/${username}/add-series-to-watchlist/series/${series.id}`,
+      {'watchlist': series.id})
       .pipe(
         tap(_ => console.log(`Series added to watchlist`)),
         catchError(response => this.handleError(response))

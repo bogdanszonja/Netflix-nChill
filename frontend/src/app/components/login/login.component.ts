@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
 
   join(username, password, email, confirmPassword) {
     if (password.value !== confirmPassword.value) {
-      this.toastr.error('Passwords do not match!', 'Pina');
+      this.toastr.error('Passwords do not match!', 'Wrong');
       return;
     }
     console.log(username.value, password.value, email.value, confirmPassword.value);
