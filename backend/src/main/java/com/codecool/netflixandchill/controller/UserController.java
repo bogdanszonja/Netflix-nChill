@@ -1,6 +1,6 @@
 package com.codecool.netflixandchill.controller;
 
-import com.codecool.netflixandchill.model.Episode;
+import com.codecool.netflixandchill.dto.WatchListDTO;
 import com.codecool.netflixandchill.model.Series;
 import com.codecool.netflixandchill.model.User;
 import com.codecool.netflixandchill.service.EpisodeService;
@@ -63,7 +63,7 @@ public class UserController {
 
     @GetMapping("/{username}/watchlist")
     public List<Series> getWatchlistForUser(@PathVariable String username) {
-        return this.userService.getWatchlistForUser(username);
+        return userService.getWatchlistForUser(username);
     }
 
     @GetMapping("/{username}/favourites")
@@ -72,8 +72,8 @@ public class UserController {
     }
 
     @GetMapping("/{username}/already-watched")
-    public List<Episode> getWatchedEpisodesForUser(@PathVariable String username) {
-        return this.userService.getWatchedEpisodesForUser(username);
+    public WatchListDTO getWatchedEpisodesForUser(@PathVariable String username) {
+        return new WatchListDTO(this.userService.getWatchedEpisodesForUser(username), userService.getWastedTime(username));
     }
 
     @PostMapping("/{username}/add-episode-to-watched/episode/{id}")

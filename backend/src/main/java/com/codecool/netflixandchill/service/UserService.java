@@ -94,4 +94,10 @@ public class UserService {
         user.addSeriesToWatchList(this.seriesRepository.findById(id).get());
         this.userRepository.save(user);
     }
+
+    public int getWastedTime(String username) {
+        return getWatchedEpisodesForUser(username).stream()
+                .mapToInt(Episode::getRuntime)
+                .sum();
+    }
 }
