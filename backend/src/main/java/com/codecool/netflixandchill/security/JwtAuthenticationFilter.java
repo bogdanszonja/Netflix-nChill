@@ -27,8 +27,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private AuthenticationManager authenticationManager;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
+    private JwtAuthenticationSuccessHandler successHandler;
+
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager,
+                                   JwtAuthenticationSuccessHandler successHandler) {
         this.authenticationManager = authenticationManager;
+        this.successHandler = successHandler;
     }
 
 
@@ -68,6 +72,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .compact();
         response.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
         response.addHeader("Access-Control-Expose-Headers", HEADER_STRING);
+
+        this.successHandler.onAuthenticationSuccess(request, response, authResult);
     }
 
 }

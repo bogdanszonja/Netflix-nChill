@@ -102,7 +102,11 @@ export class UserService {
         this.auth.sendToken(response.headers.get('Authorization'));
         if (response.body) {
           console.log(response.body);
-          this.user.next(response['data']);
+          localStorage.setItem('username', response.body['username']);
+          // this.getUser(response.body['username']).subscribe(responseUser => {
+          //   console.log(responseUser);
+          //   return this.user.next(responseUser);
+          // });
         }
     });
   }
