@@ -7,6 +7,7 @@ import { UserService } from '../../../services/user/user.service';
 import { User } from '../../../models/User';
 import { SeriesService } from '../../../services/series/series.service';
 import { ToastrService } from 'ngx-toastr';
+import {e} from "@angular/core/src/render3";
 
 @Component({
   selector: 'app-series-detail',
@@ -20,7 +21,7 @@ export class SeriesDetailComponent implements OnInit {
   token: string = sessionStorage.getItem('token');
   showSeasons: number[] = [];
   hearted = false;
-  isChecked: boolean;
+  checkedEpisodes: number[] = [];
 
   constructor(private userService: UserService,
               private seriesService: SeriesService,
@@ -43,7 +44,8 @@ export class SeriesDetailComponent implements OnInit {
     this.userService.addWholeSeries(localStorage.getItem('username'), series).subscribe(response => {
       console.log(this.handleResponse(response));
       this.toastr.success(series.title + ' added to your list!');
-      this.isChecked = true;
+      series.seasons.forEach(season => season.episodes
+        .forEach(episode => this.toggleEpisode(episode.id)));
     });
   }
 
@@ -53,6 +55,7 @@ export class SeriesDetailComponent implements OnInit {
       console.log(this.handleResponse(response));
       this.toastr.success('Season ' + season.seasonNumber + ' added to your list!');
     });
+    season.episodes.forEach(episode => this.toggleEpisode(episode.id));
   }
 
   addSingleEpisode(episode: Episode): void {
@@ -60,6 +63,7 @@ export class SeriesDetailComponent implements OnInit {
     this.userService.addSingleEpisode(localStorage.getItem('username'), episode).subscribe(response => {
       console.log(this.handleResponse(response));
       this.toastr.success('Episode ' + episode.episodeNumber + ': ' + episode.title + ' added to your list!');
+      this.toggleEpisode(episode.id);
     });
   }
 
@@ -96,7 +100,7 @@ export class SeriesDetailComponent implements OnInit {
     });
   }
 
-  toggleEpisodes(seasonId: number) {
+  toggleSeason(seasonId: number) {
     if (this.showSeasons.includes(seasonId)) {
       this.showSeasons = this.showSeasons.filter(currentId => currentId !== seasonId);
       return;
@@ -108,4 +112,31 @@ export class SeriesDetailComponent implements OnInit {
   alreadyOpened(seasonId: number): boolean {
     return this.showSeasons.includes(seasonId);
   }
+
+  toggleEpisode(episodeId: number) {
+    if (this.checkedEpisodes.includes(episodeId)) {
+      this.checkedEpisodes = this.checkedEpisodes.filter(currentId => currentId !== episodeId);
+      return;
+    }
+
+    this.checkedEpisodes.push(episodeId);
+  }
+
+  alreadyCheckedEpisode(episodeId: number): boolean {
+    return this.checkedEpisodes.includes(episodeId);
+  }
+
+  alreadyCheckedSeason(season: Season): boolean {
+    let episodesIds: number[] = [];
+    season.episodes.forEach(episode => episodesIds.push(episode.id));
+    for (let id of episodesIds) {
+      if (!this.checkedEpisodes.includes(id)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+
+
 }

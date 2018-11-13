@@ -1,34 +1,37 @@
 <div class="series-detail" *ngIf="series">
   <!--{{ series.title }}-->
-    <i class="fas fa-plus" *ngIf="token" (click)="addWholeSeries(series)"></i>
-    <i class="fas fa-list" *ngIf="token" (click)="addToWatchlist(series)"></i>
-    <i class="heart far fa-heart" *ngIf="token" (click)="addToFavourites(series)"
-       [ngClass]="hearted ? 'hearted fas fa-heart' : 'far fa-heart'"></i>
-  <label class="description">{{ series.description }}</label>
-  <div class="genres">
-    <span *ngFor="let genre of series.genres">
-      #{{ genre | lowercase }}
-    </span>
-  </div>
-  <div>
+  <div id="image">
     <img src="{{ series.image }}">
+  </div>
+  <div class="series-summary">
+    <div class="icons">
+      <i class="plus fas fa-plus" *ngIf="token" (click)="addWholeSeries(series)"></i>
+      <i class="list fas fa-list" *ngIf="token" (click)="addToWatchlist(series)"></i>
+      <i class="heart" *ngIf="token" (click)="addToFavourites(series)"
+         [ngClass]="hearted ? 'hearted fas fa-heart' : 'far fa-heart'"></i>
+    </div>
+    <div class="description">
+      <label>{{ series.description }}</label>
+    </div>
+    <div class="genres">
+      <span *ngFor="let genre of series.genres">
+        #{{ genre | lowercase }}
+      </span>
+    </div>
   </div>
   <div class="all-seasons">
     <div class="single-season" *ngFor="let season of series.seasons">
       <label class="season-title">Season {{ season.seasonNumber }}</label>
-      <label class="checkbox">
-        <input class="season-check" type="checkbox" *ngIf="token" (click)="addSingleSeason(season)">
-      </label>
-      <i class="fas fa-angle-double-down" *ngIf="token" (click)="toggleEpisodes(season.id)"></i>
+      <i class="season-check" *ngIf="token" (click)="addSingleSeason(season)"
+         [ngClass]="alreadyCheckedSeason(season) ? 'checked fas fa-check-square' : 'far fa-square'"></i>
+      <i class="fas fa-angle-double-down" *ngIf="token" (click)="toggleSeason(season.id)"></i>
       <div class="all-episodes">
         <div *ngFor="let episode of season.episodes">
           <div class="single-episode" *ngIf="alreadyOpened(season.id)">
             <label class="episode-number">{{ episode.episodeNumber }} </label>
             <label class="episode-title">{{ episode.title }}</label>
-            <label class="checkbox">
-              <input class="episode-check" type="checkbox" *ngIf="token" (click)="addSingleEpisode(episode)"
-                     [checked]="isChecked">
-            </label>
+            <i class="episode-check" *ngIf="token" (click)="addSingleEpisode(episode)"
+               [ngClass]="alreadyCheckedEpisode(episode.id) ? 'checked fas fa-check-square' : 'far fa-square'"></i>
             <label class="episode-date">{{ episode.releaseDate }}</label>
           </div>
         </div>
