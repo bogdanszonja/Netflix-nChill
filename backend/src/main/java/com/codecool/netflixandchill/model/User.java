@@ -87,4 +87,16 @@ public class User {
         watchlist.add(series);
     }
 
+    public void removeFromWatchedEpisode(Episode episode) {
+        watchedEpisodes.remove(episode);
+    }
+
+    public void removeFromFavouriteList(Series series) {
+        favourites.remove(series);
+    }
+
+    public void removeFromWatchList(Series series) {
+        watchlist.remove(series);
+    }
+
 }

@@ -58,7 +58,6 @@ public class UserController {
         System.out.println("****************************************");
         System.out.println(authentication.getName());
         System.out.println(this.userService.findByUsername(authentication.getName()));
-        this.userService.findByUsername(username).setPassword("pina");
         return this.userService.findByUsername(username);
     }
 
@@ -77,7 +76,7 @@ public class UserController {
         return this.userService.getWatchedEpisodesForUser(username);
     }
 
-    @PostMapping("/{username}/add-episode-to-watched/episode/{id}")
+    @PutMapping("/{username}/add-episode-to-watched/episode/{id}")
     public ResponseEntity addEpisodeToWatched(@PathVariable String username, @PathVariable Long id) {
         if (!this.userService.getWatchedEpisodesForUser(username).contains(episodeService.getSingleEpisodeBySeasonId(id))) {
             this.userService.addEpisodeToWatched(username, id);
@@ -93,7 +92,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/{username}/add-season-to-watched/season/{id}")
+    @PutMapping("/{username}/add-season-to-watched/season/{id}")
     public ResponseEntity addSeasonToWatched(@PathVariable String username, @PathVariable Long id) {
         if (!this.userService.getWatchedEpisodesForUser(username).contains(episodeService.getSingleEpisodeBySeasonId(id))) {
             this.userService.addSeasonToWatched(username, id);
@@ -109,7 +108,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/{username}/add-series-to-watched/series/{id}")
+    @PutMapping("/{username}/add-series-to-watched/series/{id}")
     public ResponseEntity addSeriesToWatched(@PathVariable String username, @PathVariable Long id) {
         if (!this.userService.getWatchedEpisodesForUser(username).contains(episodeService.getSingleEpisodeBySeasonId(seasonService.getSeasonBySeriesId(id).getId()))) {
             this.userService.addSeriesToWatched(username, id);
@@ -125,7 +124,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/{username}/add-series-to-favourites/series/{id}")
+    @PutMapping("/{username}/add-series-to-favourites/series/{id}")
     public ResponseEntity addSeriesToFavourites(@PathVariable String username, @PathVariable Long id) {
         if (!this.userService.getFavouritesForUser(username).contains(seriesService.getSingleSeriesById(id))) {
             this.userService.addSeriesToFavourites(username, id);
@@ -141,7 +140,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/{username}/add-series-to-watchlist/series/{id}")
+    @PutMapping("/{username}/add-series-to-watchlist/series/{id}")
     public ResponseEntity addSeriesToWatchlist(@PathVariable String username, @PathVariable Long id) {
         if (!this.userService.getWatchlistForUser(username).contains(seriesService.getSingleSeriesById(id))) {
             this.userService.addSeriesToWatchlist(username, id);
@@ -154,7 +153,39 @@ public class UserController {
             error.addProperty("message", "This series already in watchlist");
 
             return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
-                    .body(error);
+                    .body(error.toString());
         }
     }
+
+    @DeleteMapping("/{username}/remove-episode-from-watched/episode/{id}")
+    public void removeEpisodeFromWatched(@PathVariable String username, @PathVariable Long id) {
+        userService.removeEpisodeFromWatched(username, id);
+    }
+
+    @DeleteMapping("/{username}/remove-season-from-watched/season/{id}")
+    public void removeSeasonFromWatched(@PathVariable String username, @PathVariable Long id) {
+        userService.removeSeasonFromWatched(username, id);
+    }
+
+    @DeleteMapping("/{username}/remove-series-from-watched/series/{id}")
+    public void removeSeriesFromWatched(@PathVariable String username, @PathVariable Long id) {
+        userService.removeSeriesFromWatched(username, id);
+    }
+
+    @DeleteMapping("/{username}/remove-series-from-favourites/series/{id}")
+    public void removeSeriesFromFavourite(@PathVariable String username, @PathVariable Long id) {
+        System.out.println("punci");
+        System.out.println("cunci" + userService.getFavouritesForUser(username).toString());
+
+        userService.removeSeriesFromFavourite(username, id);
+
+    }
+
+    @DeleteMapping("/{username}/remove-series-from-watchlist/series/{id}")
+    public void removeSeriesFromWatchlist(@PathVariable String username, @PathVariable Long id) {
+        userService.removeSeriesFromWatchlist(username, id);
+    }
+
+
+
 }
