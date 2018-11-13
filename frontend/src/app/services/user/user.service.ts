@@ -42,7 +42,7 @@ export class UserService {
   removeWholeSeries(username: string, series: Series): Observable<Series> {
     return this.http.delete<any>(`${this.baseUrl}/users/${username}/remove-series-from-watched/series/${series.id}`)
       .pipe(
-        tap(_ => console.log(`Series added`)),
+        tap(_ => console.log(`Series removed`)),
         catchError(response => this.handleError(response))
       );
   }
@@ -76,7 +76,7 @@ export class UserService {
   removeSingleEpisode(username: string, episode: Episode): Observable<Episode> {
     return this.http.delete<any>(`${this.baseUrl}/users/${username}/remove-episode-from-watched/episode/${episode.id}`)
       .pipe(
-        tap(_ => console.log(`Episode added`)),
+        tap(_ => console.log(`Episode removed`)),
         catchError(response => this.handleError(response))
       );
   }

@@ -1,17 +1,23 @@
-<div *ngFor="let series of watchedEpisodes">
-  {{ series.title }}
-  {{ series.description }}
-  <span *ngFor="let genre of series.genres">
-    {{ genre.name }}
-  </span>
-  <div *ngFor="let season of series.seasons">
-    Season {{ season.seasonNumber }}
-    <div *ngFor="let episode of season.episodes">
-      {{ episode.episodeNumber }}
-      {{ episode.title }}
-      {{ episode.releaseDate }}
-      {{ episode.runtime }}
-    </div>
-  </div>
+<!--<div *ngFor="let series of watchedEpisodes">-->
+  <!--{{ series.title }}-->
+  <!--{{ series.description }}-->
+  <!--<span *ngFor="let genre of series.genres">-->
+    <!--{{ genre.name }}-->
+  <!--</span>-->
+  <!--<div *ngFor="let season of series.seasons">-->
+    <!--Season {{ season.seasonNumber }}-->
+    <!--<div *ngFor="let episode of season.episodes">-->
+      <!--{{ episode.episodeNumber }}-->
+      <!--{{ episode.title }}-->
+      <!--{{ episode.releaseDate }}-->
+      <!--{{ episode.runtime }}-->
+    <!--</div>-->
+  <!--</div>-->
+<!--</div>-->
+<div *ngFor="let episode of watchedEpisodes">
+  {{ episode.title }}
+  {{ episode.episodeNumber }}
+  {{ episode.releaseDate }}
+  {{ episode.runtime }}
 </div>
 <label>Time wasted: {{ timeWasted }}</label>

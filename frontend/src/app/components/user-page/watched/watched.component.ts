@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Series } from '../../../models/Series';
+
+import { Episode } from '../../../models/Episode';
 
 @Component({
   selector: 'app-watched',
@@ -8,7 +9,7 @@ import { Series } from '../../../models/Series';
 })
 export class WatchedComponent implements OnInit {
 
-  @Input() watchedEpisodes: Series[];
+  @Input() watchedEpisodes: Episode[];
   @Input() timeWasted;
 
   constructor() {
