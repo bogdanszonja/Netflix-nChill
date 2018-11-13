@@ -1,17 +1,23 @@
 <div class="series-detail" *ngIf="series">
   <!--{{ series.title }}-->
-    <i class="fas fa-plus" *ngIf="token" (click)="addWholeSeries(series)"></i>
-    <i class="fas fa-list" *ngIf="token" (click)="addToWatchlist(series)"></i>
-    <i class="heart far fa-heart" *ngIf="token" (click)="addToFavourites(series)"
-       [ngClass]="hearted ? 'hearted fas fa-heart' : 'far fa-heart'"></i>
-  <label class="description">{{ series.description }}</label>
-  <div class="genres">
-    <span *ngFor="let genre of series.genres">
-      #{{ genre | lowercase }}
-    </span>
-  </div>
-  <div>
+  <div id="image">
     <img src="{{ series.image }}">
+  </div>
+  <div class="series-summary">
+    <div class="icons">
+      <i class="plus fas fa-plus" *ngIf="token" (click)="addWholeSeries(series)"></i>
+      <i class="list fas fa-list" *ngIf="token" (click)="addToWatchlist(series)"></i>
+      <i class="heart far fa-heart" *ngIf="token" (click)="addToFavourites(series)"
+         [ngClass]="hearted ? 'hearted fas fa-heart' : 'far fa-heart'"></i>
+    </div>
+    <div class="description">
+      <label>{{ series.description }}</label>
+    </div>
+    <div class="genres">
+      <span *ngFor="let genre of series.genres">
+        #{{ genre | lowercase }}
+      </span>
+    </div>
   </div>
   <div class="all-seasons">
     <div class="single-season" *ngFor="let season of series.seasons">
