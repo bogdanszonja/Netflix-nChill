@@ -7,7 +7,8 @@
     <app-favourites [favourites]="tabNum === 2 ? user.favourites : []"></app-favourites>
   </div>
   <div [routerLink]="['watched']" (click)="changeTab(3)">My Shows
-    <app-watched [watchedEpisodes]="tabNum === 3 ? user.watchedEpisodes : []"></app-watched>
+    <app-watched [watchedEpisodes]="tabNum === 3 ? user.watchedEpisodes : []"
+                 [timeWasted]="user.timeWasted"></app-watched>
   </div>
   <router-outlet></router-outlet>
 </div>

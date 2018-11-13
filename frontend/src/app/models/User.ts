@@ -10,5 +10,6 @@ export class User {
   watchlist: Series[];
   favourites: Series[];
   watchedEpisodes: Episode[];
+  timeWasted: number;
 
 }

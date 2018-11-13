@@ -39,11 +39,27 @@ export class UserService {
       );
   }
 
+  removeWholeSeries(username: string, series: Series): Observable<Series> {
+    return this.http.delete<any>(`${this.baseUrl}/users/${username}/add-series-to-watched/series/${series.id}`)
+      .pipe(
+        tap(_ => console.log(`Series added`)),
+        catchError(response => this.handleError(response))
+      );
+  }
+
   addSingleSeason(username: string, season: Season): Observable<Season> {
     return this.http.post<any>(`${this.baseUrl}/users/${username}/add-season-to-watched/season/${season.id}`,
       {'season': season.id})
       .pipe(
         tap(_ => console.log(`Season added`)),
+        catchError(response => this.handleError(response))
+      );
+  }
+
+  removeSingleSeason(username: string, season: Season): Observable<Season> {
+    return this.http.delete<any>(`${this.baseUrl}/users/${username}/remove-season-from-watched/season/${season.id}`)
+      .pipe(
+        tap(_ => console.log('Season removed')),
         catchError(response => this.handleError(response))
       );
   }
@@ -57,11 +73,27 @@ export class UserService {
       );
   }
 
+  removeSingleEpisode(username: string, episode: Episode): Observable<Episode> {
+    return this.http.delete<any>(`${this.baseUrl}/users/${username}/add-episode-to-watched/episode/${episode.id}`)
+      .pipe(
+        tap(_ => console.log(`Episode added`)),
+        catchError(response => this.handleError(response))
+      );
+  }
+
   addToFavourites(username: string, series: Series): Observable<Series> {
     return this.http.post<any>(`${this.baseUrl}/users/${username}/add-series-to-favourites/series/${series.id}`,
       {'favourite': series.id})
       .pipe(
         tap(_ => console.log(`Series added to favourites`)),
+        catchError(response => this.handleError(response))
+      );
+  }
+
+  removeFromFavourites(username: string, series: Series): Observable<Series> {
+    return this.http.delete<any>(`${this.baseUrl}/users/${username}/add-series-to-favourites/series/${series.id}`)
+      .pipe(
+        tap(_ => console.log(`Series removed from favourites`)),
         catchError(response => this.handleError(response))
       );
   }

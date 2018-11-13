@@ -7,7 +7,6 @@ import { UserService } from '../../../services/user/user.service';
 import { User } from '../../../models/User';
 import { SeriesService } from '../../../services/series/series.service';
 import { ToastrService } from 'ngx-toastr';
-import {e} from "@angular/core/src/render3";
 
 @Component({
   selector: 'app-series-detail',
@@ -20,7 +19,7 @@ export class SeriesDetailComponent implements OnInit {
   user: User;
   token: string = sessionStorage.getItem('token');
   showSeasons: number[] = [];
-  hearted = false;
+  hearted: number[] = [];
   checkedEpisodes: number[] = [];
 
   constructor(private userService: UserService,
@@ -49,13 +48,28 @@ export class SeriesDetailComponent implements OnInit {
     });
   }
 
+  removeWholeSeries(series: Series): void {
+    console.log('all series removed');
+    this.userService.removeWholeSeries(localStorage.getItem('username'), series).subscribe(response => {
+      console.log(this.handleResponse(response));
+      this.toastr.info(series.title + ' removed from your list!');
+    });
+  }
+
   addSingleSeason(season: Season): void {
     console.log('season added');
     this.userService.addSingleSeason(localStorage.getItem('username'), season).subscribe(response => {
       console.log(this.handleResponse(response));
       this.toastr.success('Season ' + season.seasonNumber + ' added to your list!');
     });
-    season.episodes.forEach(episode => this.toggleEpisode(episode.id));
+  }
+
+  removeSingleSeason(season: Season): void {
+    console.log('season removed');
+    this.userService.removeSingleSeason(localStorage.getItem('username'), season).subscribe(response => {
+      console.log(this.handleResponse(response));
+      this.toastr.info('Season ' + season.seasonNumber + ' removed from your list!');
+    });
   }
 
   addSingleEpisode(episode: Episode): void {
@@ -63,17 +77,30 @@ export class SeriesDetailComponent implements OnInit {
     this.userService.addSingleEpisode(localStorage.getItem('username'), episode).subscribe(response => {
       console.log(this.handleResponse(response));
       this.toastr.success('Episode ' + episode.episodeNumber + ': ' + episode.title + ' added to your list!');
-      this.toggleEpisode(episode.id);
+    });
+  }
+
+  removeSingleEpisode(episode: Episode): void {
+    console.log('episode removed');
+    this.userService.removeSingleEpisode(localStorage.getItem('username'), episode).subscribe(response => {
+      console.log(this.handleResponse(response));
+      this.toastr.info('Episode ' + episode.episodeNumber + ' removed from your list!');
     });
   }
 
   addToFavourites(series: Series): void {
-    console.log(this.user);
     console.log('added to favourites');
     this.userService.addToFavourites(localStorage.getItem('username'), series).subscribe(response => {
       console.log(this.handleResponse(response));
       this.toastr.success(series.title + ' added to your favourites!');
-      this.hearted = !this.hearted;
+    });
+  }
+
+  removeFromFavourites(series: Series): void {
+    console.log('removed from favourites');
+    this.userService.removeFromFavourites(localStorage.getItem('username'), series).subscribe(response => {
+      console.log(this.handleResponse(response));
+      this.toastr.info(series.title + ' removed from your favourites!');
     });
   }
 
@@ -137,6 +164,59 @@ export class SeriesDetailComponent implements OnInit {
     return true;
   }
 
+  handleWatchedSeries(series: Series, checkbox) {
+    series.seasons.forEach(season => season.episodes
+      .forEach(episode => this.toggleEpisode(episode.id)));
+    if (checkbox.classList.contains('checked')) {
+      this.removeWholeSeries(series);
+      return;
+    }
 
+    this.addWholeSeries(series);
+  }
+
+  handleWatchedSeason(season: Season, checkbox) {
+    season.episodes.forEach(episode => this.toggleEpisode(episode.id));
+    if (checkbox.classList.contains('checked')) {
+      this.removeSingleSeason(season);
+      return;
+    }
+
+    this.addSingleSeason(season);
+  }
+
+  handleWatchedEpisode(episode: Episode, checkbox) {
+    this.toggleEpisode(episode.id);
+    if (checkbox.classList.contains('checked')) {
+      this.removeSingleEpisode(episode);
+      return;
+    }
+
+    this.addSingleEpisode(episode);
+  }
+
+  toggleFavourite(seriesId: number) {
+    if (this.hearted.includes(seriesId)) {
+      this.hearted = this.hearted.filter(currentId => currentId !== seriesId);
+      return;
+    }
+
+    this.hearted.push(seriesId);
+  }
+
+  alreadyFavourite(series: Series): boolean {
+    console.log(this.hearted.includes(series.id));
+    return this.hearted.includes(series.id);
+  }
+
+  handleFavourites(series: Series, checkbox) {
+    this.toggleFavourite(series.id);
+    if (checkbox.classList.contains('hearted')) {
+      this.removeFromFavourites(series);
+      return;
+    }
+
+    this.addToFavourites(series);
+  }
 
 }
