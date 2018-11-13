@@ -24,18 +24,39 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  join(username: string, email: string, password: string, confirmPassword: string) {
-    if (password !== confirmPassword) {
+  join(username, password, email, confirmPassword) {
+    if (password.value !== confirmPassword.value) {
       this.toastr.error('Passwords do not match!', 'Pina');
       return;
     }
-    console.log(username, email, password, confirmPassword);
-    this.userService.validateJoin(username, email, password, confirmPassword);
+    console.log(username.value, password.value, email.value, confirmPassword.value);
+    this.userService.validateJoin(username.value, password.value, email.value, confirmPassword.value);
+    this.resetCredentials(username, password, email, confirmPassword);
   }
 
-  login(username: string, password: string) {
-    this.userService.validateLogin(username, password);
+  login(username, password) {
+    this.userService.validateLogin(username.value, password.value);
+    this.resetCredentials(username, password);
     this.router.navigate(['/']);
+  }
+
+  handleLogin(type: string, username, password, email, confirmPassword) {
+    this.userService.handleLogin(type);
+    this.resetCredentials(username, password, email, confirmPassword);
+  }
+
+  handleJoin(type: string, username, password) {
+    this.userService.handleLogin(type);
+    this.resetCredentials(username, password);
+  }
+
+  resetCredentials(username, password, email?, confirmPassword?) {
+    username.value = '';
+    password.value = '';
+    if (email && confirmPassword) {
+      email.value = '';
+      confirmPassword.value = '';
+    }
   }
 
 }

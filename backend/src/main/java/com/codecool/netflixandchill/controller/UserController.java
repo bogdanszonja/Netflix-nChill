@@ -58,12 +58,13 @@ public class UserController {
         System.out.println("****************************************");
         System.out.println(authentication.getName());
         System.out.println(this.userService.findByUsername(authentication.getName()));
+        this.userService.findByUsername(username).setPassword("pina");
         return this.userService.findByUsername(username);
     }
 
     @GetMapping("/{username}/watchlist")
     public List<Series> getWatchlistForUser(@PathVariable String username) {
-        return this.userService.getWatchlistForUser(username);
+        return userService.getWatchlistForUser(username);
     }
 
     @GetMapping("/{username}/favourites")
@@ -144,7 +145,7 @@ public class UserController {
     public ResponseEntity addSeriesToWatchlist(@PathVariable String username, @PathVariable Long id) {
         if (!this.userService.getWatchlistForUser(username).contains(seriesService.getSingleSeriesById(id))) {
             this.userService.addSeriesToWatchlist(username, id);
-
+            this.userService.addRunTimeToTimeWasted(username, seriesService.getSingleSeriesById(id));
             return ResponseEntity.status(HttpStatus.OK)
                     .body(userService.getWatchlistForUser(username));
         } else {

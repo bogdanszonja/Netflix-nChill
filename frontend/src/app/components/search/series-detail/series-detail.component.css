@@ -6,6 +6,19 @@
   color: red;
 }
 
+.season-check {
+  font-size: 110%;
+}
+
+.checked {
+  color: lightblue;
+}
+
+.plus:hover, .list:hover {
+  color: #888888;
+}
+
+
 body {
   line-height: 1.5;
   letter-spacing: 1.2px;
@@ -17,20 +30,26 @@ body {
   opacity: 0.7;
   font-size: 95%;
   word-spacing: 55px;
+  margin: 3% 1% 1%;
 }
 
 .all-seasons {
   display: table;
   width: 37%;
-  margin-left: 10%;
+  margin: 2%;
 }
 
 .description {
   font-size: 105%;
+  text-align: justify;
+  word-spacing: 3px;
+  letter-spacing: 1px;
+  margin: 1%;
+  background: #eeeeee0d;
 }
 
 .season-title {
-  font-size: 103%;
+  font-size: 120%;
 }
 
 .all-episodes {
@@ -41,12 +60,44 @@ body {
   font-size: 95%;
 }
 
-input.season-check {
+.season-check {
   float: right;
 }
 
-input.episode-check {
+.episode-check {
   float: right;
 }
 
+.series-summary {
+  display: inline-block;
+  width: 68%;
+  vertical-align: top;
+}
 
+#image {
+  display: inline-block;
+  margin: 1%;
+}
+
+.plus, .list, .heart {
+  margin: 4%;
+}
+
+.icons {
+  font-size: 190%;
+  margin: 1%;
+  background: #eeeeee0d;
+  width: 14%;
+}
+
+.all-episodes {
+  font-size: 110%;
+}
+
+.single-episode {
+  margin: 1%;
+}
+
+.all-seasons {
+  background: #eeeeee0d;
+}

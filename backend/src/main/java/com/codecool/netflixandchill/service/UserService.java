@@ -79,7 +79,7 @@ public class UserService {
         User user = this.userRepository.findByUserName(username);
         List<Season> seasonsToAdd = this.seriesRepository.findById(id).get().getSeasons();
         seasonsToAdd.forEach(season -> season.getEpisodes()
-            .forEach(user::addWatchedEpisodes));
+                .forEach(user::addWatchedEpisodes));
         this.userRepository.save(user);
     }
 
@@ -93,5 +93,13 @@ public class UserService {
         User user = this.userRepository.findByUserName(username);
         user.addSeriesToWatchList(this.seriesRepository.findById(id).get());
         this.userRepository.save(user);
+    }
+
+    public void addRunTimeToTimeWasted(String username, Series series) {
+
+        for (Episode episode : episodeRepository.findAllBySeasonId((seasonRepository.findFirstBySeriesId(series.getId()).getId()))) {
+            findByUsername(username).setTimeWasted(findByUsername(username).getTimeWasted() + episode.getRuntime());
+
+        }
     }
 }
