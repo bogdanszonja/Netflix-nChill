@@ -19,7 +19,6 @@ public class SeasonService {
     }
 
     public Season getSeasonBySeriesId(long id) {
-        logger.info("Sorozat " + seasonRepository.findSeasonBySeries(id).getTitle());
-        return seasonRepository.findSeasonBySeries(id);
+        return seasonRepository.findFirstBySeriesId(id);
     }
 }

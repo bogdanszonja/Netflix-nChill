@@ -1,5 +1,6 @@
 package com.codecool.netflixandchill.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -50,6 +51,7 @@ public class User {
     @JoinTable(joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "episode_id"))
     @ToString.Exclude
+    @JsonManagedReference
     private Collection<Episode> watchedEpisodes = new ArrayList<>();
 
     @Column(name = "registration_date")

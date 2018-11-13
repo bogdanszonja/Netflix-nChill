@@ -37,7 +37,6 @@ public class JwtUserController {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-
     @PostMapping("/join")
     public ResponseEntity join(@RequestBody Map<String, String> requestJson) {
         if (userService.checkIfEmailAlreadyExists(requestJson.get("email")) || userService.checkIfUserNameAlreadyExists("username")) {
