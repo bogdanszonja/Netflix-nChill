@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,7 +55,10 @@ public class JwtUserController {
     }
 
     @GetMapping("/{username}")
-    public User getUserDetails(@PathVariable String username) {
+    public User getUserDetails(@PathVariable String username, Authentication authentication) {
+        System.out.println("****************************************");
+        System.out.println(authentication.getName());
+        System.out.println(this.userService.findByUsername(authentication.getName()));
         return this.userService.findByUsername(username);
     }
 

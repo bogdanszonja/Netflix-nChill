@@ -27,8 +27,9 @@ export class SeriesDetailComponent implements OnInit {
               private toastr: ToastrService) { }
 
   ngOnInit() {
-    this.userService.user.subscribe(response => {
+    this.userService.getUser(localStorage.getItem('username')).subscribe(response => {
       // if (response['data']) {
+      console.log(response);
         this.user = response;
         console.log(this.user);
       // } else {
@@ -39,7 +40,7 @@ export class SeriesDetailComponent implements OnInit {
 
   addWholeSeries(series: Series): void {
     console.log('all seasons added');
-    this.userService.addWholeSeries(this.user.username, series).subscribe(response => {
+    this.userService.addWholeSeries(localStorage.getItem('username'), series).subscribe(response => {
       console.log(this.handleResponse(response));
       this.toastr.success(series.title + ' added to your list!');
       this.isChecked = true;
@@ -65,7 +66,7 @@ export class SeriesDetailComponent implements OnInit {
   addToFavourites(series: Series): void {
     console.log(this.user);
     console.log('added to favourites');
-    this.userService.addToFavourites('oli', series).subscribe(response => {
+    this.userService.addToFavourites(this.user.username, series).subscribe(response => {
       console.log(this.handleResponse(response));
       this.toastr.success(series.title + ' added to your favourites!');
       this.hearted = !this.hearted;
