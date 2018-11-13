@@ -18,7 +18,7 @@ export class SeriesDetailComponent implements OnInit {
   series: Series;
   user: User;
   token: string = sessionStorage.getItem('token');
-  showEpisodes = 0;
+  showSeasons: number[] = [];
   hearted = false;
   isChecked: boolean;
 
@@ -29,7 +29,7 @@ export class SeriesDetailComponent implements OnInit {
   ngOnInit() {
     this.userService.getUser(localStorage.getItem('username')).subscribe(response => {
       // if (response['data']) {
-      console.log(response);
+        console.log(response);
         this.user = response;
         console.log(this.user);
       // } else {
@@ -49,7 +49,7 @@ export class SeriesDetailComponent implements OnInit {
 
   addSingleSeason(season: Season): void {
     console.log('season added');
-    this.userService.addSingleSeason(this.user.username, season).subscribe(response => {
+    this.userService.addSingleSeason(localStorage.getItem('username'), season).subscribe(response => {
       console.log(this.handleResponse(response));
       this.toastr.success('Season ' + season.seasonNumber + ' added to your list!');
     });
@@ -57,7 +57,7 @@ export class SeriesDetailComponent implements OnInit {
 
   addSingleEpisode(episode: Episode): void {
     console.log('episode added');
-    this.userService.addSingleEpisode(this.user.username, episode).subscribe(response => {
+    this.userService.addSingleEpisode(localStorage.getItem('username'), episode).subscribe(response => {
       console.log(this.handleResponse(response));
       this.toastr.success('Episode ' + episode.episodeNumber + ': ' + episode.title + ' added to your list!');
     });
@@ -66,7 +66,7 @@ export class SeriesDetailComponent implements OnInit {
   addToFavourites(series: Series): void {
     console.log(this.user);
     console.log('added to favourites');
-    this.userService.addToFavourites(this.user.username, series).subscribe(response => {
+    this.userService.addToFavourites(localStorage.getItem('username'), series).subscribe(response => {
       console.log(this.handleResponse(response));
       this.toastr.success(series.title + ' added to your favourites!');
       this.hearted = !this.hearted;
@@ -75,7 +75,7 @@ export class SeriesDetailComponent implements OnInit {
 
   addToWatchlist(series: Series): void {
     console.log('added to watchlist');
-    this.userService.addToWatchlist(this.user.username, series).subscribe(response => {
+    this.userService.addToWatchlist(localStorage.getItem('username'), series).subscribe(response => {
       console.log(this.handleResponse(response));
       this.toastr.success(series.title + ' added to your watchlist!');
     });
@@ -97,7 +97,15 @@ export class SeriesDetailComponent implements OnInit {
   }
 
   toggleEpisodes(seasonId: number) {
-    this.showEpisodes = seasonId;
+    if (this.showSeasons.includes(seasonId)) {
+      this.showSeasons = this.showSeasons.filter(currentId => currentId !== seasonId);
+      return;
+    }
+
+    this.showSeasons.push(seasonId);
   }
 
+  alreadyOpened(seasonId: number): boolean {
+    return this.showSeasons.includes(seasonId);
+  }
 }
