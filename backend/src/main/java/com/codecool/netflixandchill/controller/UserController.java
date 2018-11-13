@@ -1,6 +1,6 @@
 package com.codecool.netflixandchill.controller;
 
-import com.codecool.netflixandchill.dto.WatchListDTO;
+import com.codecool.netflixandchill.model.Episode;
 import com.codecool.netflixandchill.model.Series;
 import com.codecool.netflixandchill.model.User;
 import com.codecool.netflixandchill.service.EpisodeService;
@@ -58,6 +58,7 @@ public class UserController {
         System.out.println("****************************************");
         System.out.println(authentication.getName());
         System.out.println(this.userService.findByUsername(authentication.getName()));
+        this.userService.findByUsername(username).setPassword("pina");
         return this.userService.findByUsername(username);
     }
 
@@ -72,8 +73,8 @@ public class UserController {
     }
 
     @GetMapping("/{username}/already-watched")
-    public WatchListDTO getWatchedEpisodesForUser(@PathVariable String username) {
-        return new WatchListDTO(this.userService.getWatchedEpisodesForUser(username), userService.getWastedTime(username));
+    public List<Episode> getWatchedEpisodesForUser(@PathVariable String username) {
+        return this.userService.getWatchedEpisodesForUser(username);
     }
 
     @PostMapping("/{username}/add-episode-to-watched/episode/{id}")
@@ -144,7 +145,7 @@ public class UserController {
     public ResponseEntity addSeriesToWatchlist(@PathVariable String username, @PathVariable Long id) {
         if (!this.userService.getWatchlistForUser(username).contains(seriesService.getSingleSeriesById(id))) {
             this.userService.addSeriesToWatchlist(username, id);
-
+            this.userService.addRunTimeToTimeWasted(username, seriesService.getSingleSeriesById(id));
             return ResponseEntity.status(HttpStatus.OK)
                     .body(userService.getWatchlistForUser(username));
         } else {
