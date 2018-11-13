@@ -103,10 +103,10 @@ export class UserService {
         if (response.body) {
           console.log(response.body);
           localStorage.setItem('username', response.body['username']);
-          // this.getUser(response.body['username']).subscribe(responseUser => {
-          //   console.log(responseUser);
-          //   return this.user.next(responseUser);
-          // });
+          this.getUser(response.body['username']).subscribe(responseUser => {
+            console.log(responseUser);
+            return this.user.next(responseUser);
+          });
         }
     });
   }
