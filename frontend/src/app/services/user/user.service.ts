@@ -40,7 +40,7 @@ export class UserService {
   }
 
   removeWholeSeries(username: string, series: Series): Observable<Series> {
-    return this.http.delete<any>(`${this.baseUrl}/users/${username}/add-series-to-watched/series/${series.id}`)
+    return this.http.delete<any>(`${this.baseUrl}/users/${username}/remove-series-from-watched/series/${series.id}`)
       .pipe(
         tap(_ => console.log(`Series added`)),
         catchError(response => this.handleError(response))
@@ -74,7 +74,7 @@ export class UserService {
   }
 
   removeSingleEpisode(username: string, episode: Episode): Observable<Episode> {
-    return this.http.delete<any>(`${this.baseUrl}/users/${username}/add-episode-to-watched/episode/${episode.id}`)
+    return this.http.delete<any>(`${this.baseUrl}/users/${username}/remove-episode-from-watched/episode/${episode.id}`)
       .pipe(
         tap(_ => console.log(`Episode added`)),
         catchError(response => this.handleError(response))
@@ -91,7 +91,7 @@ export class UserService {
   }
 
   removeFromFavourites(username: string, series: Series): Observable<Series> {
-    return this.http.delete<any>(`${this.baseUrl}/users/${username}/add-series-to-favourites/series/${series.id}`)
+    return this.http.delete<any>(`${this.baseUrl}/users/${username}/remove-series-from-favourites/series/${series.id}`)
       .pipe(
         tap(_ => console.log(`Series removed from favourites`)),
         catchError(response => this.handleError(response))
