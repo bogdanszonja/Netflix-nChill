@@ -6,12 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import javax.transaction.Transactional;
 import java.util.List;
 
+@Transactional
 public interface SeriesRepository extends JpaRepository<Series, Long> {
 
-    @Transactional
-    List<Series> findByTitleContaining(String substring);
+    List<Series> findByTitleContainingIgnoreCase(String substring);
 
-    @Transactional
     List<Series> findTop3ByOrderByAirDateDesc();
 
 }

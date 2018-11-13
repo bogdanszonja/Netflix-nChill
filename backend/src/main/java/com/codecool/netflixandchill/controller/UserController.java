@@ -1,112 +1,159 @@
 package com.codecool.netflixandchill.controller;
 
-//import com.codecool.netflixandchill.dao.UserDao;
+import com.codecool.netflixandchill.dto.WatchListDTO;
+import com.codecool.netflixandchill.model.Series;
+import com.codecool.netflixandchill.model.User;
+import com.codecool.netflixandchill.service.EpisodeService;
+import com.codecool.netflixandchill.service.SeasonService;
+import com.codecool.netflixandchill.service.SeriesService;
+import com.codecool.netflixandchill.service.UserService;
 import com.google.gson.JsonObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
-public class UserController extends HttpServlet {
-    //TODO********************************************************************************
+@RestController
+@RequestMapping("/users")
+public class UserController {
 
-//    private RequestParser requestParser;
-//    private JsonCreator jsonCreator;
-//    private SessionManager sessionManager;
-//    private UserDao userDao;
-//    private Logger logger = LoggerFactory.getLogger(UserController.class);
-//
-//
-//    public UserController(RequestParser rp, JsonCreator jc, SessionManager sm,
-//                          UserDao userDao) {
-//        this.requestParser = rp;
-//        this.jsonCreator = jc;
-//        this.sessionManager = sm;
-//        this.userDao = userDao;
-//    }
-//
-//
-//    @Override
-//    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-//        logger.info("Get request");
-//        JsonObject answer = new JsonObject();
-//        answer.add("data", jsonCreator.findUserById(Long.parseLong(request.getParameter("userId"))));
-//        logger.info("Answer to send back: " + answer);
-//
-//        response.setContentType("application/json");
-//        response.setCharacterEncoding("UTF-8");
-//        response.getWriter().write(answer.toString());
-//    }
-//
-//    @Override
-//    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-//        logger.info("Post request");
-////        HttpSession session = sessionManager.getHttpSession(request);
-//        JsonObject jsonObject = requestParser.getJsonObject(request);
-//        logger.info("Data from request: " + jsonObject);
-//        String jsonObjectKey = "";
-//        long userId = jsonObject.get("userId").getAsLong();
-//        long id;
-//
-//        for (String key : jsonObject.keySet()) {
-//            jsonObjectKey = key;
-//        }
-//        logger.info("JsonObjectKey: " + jsonObjectKey);
-//
-////        System.out.println(request.getSession().getAttribute("userId"));
-////        if (session.getAttribute("userId") == null) {
-////            System.out.println("pina");
-////            return;
-////        }
-//
-////        int userId = (Integer) session.getAttribute("userId");
-//
-//        switch (jsonObjectKey) {
-//            case "episode":
-//                logger.info("Switch-case: episode");
-//                id = jsonObject.get("episode").getAsLong();
-//                userDao.addEpisodeToWatchedList(id, userId);
-//
-//                break;
-//            case "favourite":
-//                logger.info("Switch-case: favourite");
-//                id = jsonObject.get("favourite").getAsLong();
-//                userDao.addSeriesToFavouriteList(id, userId);
-//
-//                break;
-//            case "watchlist":
-//                logger.info("Switch-case: watchlist");
-//                id = jsonObject.get("watchlist").getAsLong();
-//                userDao.addSeriesToWatchList(id, userId);
-//
-//                break;
-//            case "season":
-//                logger.info("Switch-case: season");
-//                id = jsonObject.get("season").getAsLong();
-//                userDao.addSeasonEpisodeToWatchedList(id, userId);
-//
-//                break;
-//            case "series":
-//                logger.info("Switch-case: series");
-//                id = jsonObject.get("series").getAsLong();
-//                userDao.addSeriesEpisodeToWatchedList(id, userId);
-//                break;
-//            default:
-//                response.setStatus(404);
-//        }
-//
-//
-//        JsonObject answer = new JsonObject();
-//        answer.add("data", jsonCreator.findUserById(userId));
-//        logger.info("Answer to send back: " + answer);
-////        answer.addProperty("success", true);
-//
-//        response.setContentType("application/json");
-//        response.setCharacterEncoding("UTF-8");
-//        response.getWriter().write(answer.toString());
-//    }
+    @Autowired
+    private UserService userService;
 
+    @Autowired
+    private SeriesService seriesService;
+
+    @Autowired
+    private SeasonService seasonService;
+
+    @Autowired
+    private EpisodeService episodeService;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @PostMapping("/join")
+    public ResponseEntity join(@RequestBody Map<String, String> requestJson) {
+        if (userService.checkIfEmailAlreadyExists(requestJson.get("email")) || userService.checkIfUserNameAlreadyExists("username")) {
+            JsonObject error = new JsonObject();
+            error.addProperty("error", "already exist");
+            error.addProperty("message", "This username or email already exist");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(error.toString());
+        } else {
+            this.userService.addUser(requestJson.get("username"),
+                    requestJson.get("email"),
+                    bCryptPasswordEncoder.encode(requestJson.get("password")));
+            return new ResponseEntity(HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/{username}")
+    public User getUserDetails(@PathVariable String username, Authentication authentication) {
+        System.out.println("****************************************");
+        System.out.println(authentication.getName());
+        System.out.println(this.userService.findByUsername(authentication.getName()));
+        return this.userService.findByUsername(username);
+    }
+
+    @GetMapping("/{username}/watchlist")
+    public List<Series> getWatchlistForUser(@PathVariable String username) {
+        return userService.getWatchlistForUser(username);
+    }
+
+    @GetMapping("/{username}/favourites")
+    public List<Series> getFavouritesForUser(@PathVariable String username) {
+        return this.userService.getFavouritesForUser(username);
+    }
+
+    @GetMapping("/{username}/already-watched")
+    public WatchListDTO getWatchedEpisodesForUser(@PathVariable String username) {
+        return new WatchListDTO(this.userService.getWatchedEpisodesForUser(username), userService.getWastedTime(username));
+    }
+
+    @PostMapping("/{username}/add-episode-to-watched/episode/{id}")
+    public ResponseEntity addEpisodeToWatched(@PathVariable String username, @PathVariable Long id) {
+        if (!this.userService.getWatchedEpisodesForUser(username).contains(episodeService.getSingleEpisodeBySeasonId(id))) {
+            this.userService.addEpisodeToWatched(username, id);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(userService.getWatchedEpisodesForUser(username));
+        } else {
+            JsonObject error = new JsonObject();
+            error.addProperty("error", "already exist");
+            error.addProperty("message", "This episode already in watched list");
+
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(error.toString());
+        }
+    }
+
+    @PostMapping("/{username}/add-season-to-watched/season/{id}")
+    public ResponseEntity addSeasonToWatched(@PathVariable String username, @PathVariable Long id) {
+        if (!this.userService.getWatchedEpisodesForUser(username).contains(episodeService.getSingleEpisodeBySeasonId(id))) {
+            this.userService.addSeasonToWatched(username, id);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(userService.getWatchedEpisodesForUser(username));
+        } else {
+            JsonObject error = new JsonObject();
+            error.addProperty("error", "already exist");
+            error.addProperty("message", "This season already in watched list");
+
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(error.toString());
+        }
+    }
+
+    @PostMapping("/{username}/add-series-to-watched/series/{id}")
+    public ResponseEntity addSeriesToWatched(@PathVariable String username, @PathVariable Long id) {
+        if (!this.userService.getWatchedEpisodesForUser(username).contains(episodeService.getSingleEpisodeBySeasonId(seasonService.getSeasonBySeriesId(id).getId()))) {
+            this.userService.addSeriesToWatched(username, id);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(userService.getWatchedEpisodesForUser(username));
+        } else {
+            JsonObject error = new JsonObject();
+            error.addProperty("error", "already exist");
+            error.addProperty("message", "This series already in watched list");
+
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(error.toString());
+        }
+    }
+
+    @PostMapping("/{username}/add-series-to-favourites/series/{id}")
+    public ResponseEntity addSeriesToFavourites(@PathVariable String username, @PathVariable Long id) {
+        if (!this.userService.getFavouritesForUser(username).contains(seriesService.getSingleSeriesById(id))) {
+            this.userService.addSeriesToFavourites(username, id);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(userService.getFavouritesForUser(username));
+        } else {
+            JsonObject error = new JsonObject();
+            error.addProperty("error", "already exist");
+            error.addProperty("message", "This series already in favourite list");
+
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(error.toString());
+        }
+    }
+
+    @PostMapping("/{username}/add-series-to-watchlist/series/{id}")
+    public ResponseEntity addSeriesToWatchlist(@PathVariable String username, @PathVariable Long id) {
+        if (!this.userService.getWatchlistForUser(username).contains(seriesService.getSingleSeriesById(id))) {
+            this.userService.addSeriesToWatchlist(username, id);
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(userService.getWatchlistForUser(username));
+        } else {
+            JsonObject error = new JsonObject();
+            error.addProperty("error", "already exist");
+            error.addProperty("message", "This series already in watchlist");
+
+            return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
+                    .body(error);
+        }
+    }
 }
