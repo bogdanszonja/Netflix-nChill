@@ -24,33 +24,39 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  join(username, email, password, confirmPassword, usernameLogin, passwordLogin) {
+  join(username, password, email, confirmPassword) {
     if (password.value !== confirmPassword.value) {
       this.toastr.error('Passwords do not match!', 'Pina');
       return;
     }
-    console.log(username.value, email.value, password.value, confirmPassword.value);
-    this.resetCredentials(username, email, password, confirmPassword, usernameLogin, passwordLogin);
-    this.userService.validateJoin(username.value, email.value, password.value, confirmPassword.value);
+    console.log(username.value, password.value, email.value, confirmPassword.value);
+    this.resetCredentials(username, password, email, confirmPassword);
+    this.userService.validateJoin(username.value, password.value, email.value, confirmPassword.value);
   }
 
-  login(username, email, password, confirmPassword, usernameLogin, passwordLogin) {
-    this.resetCredentials(username, email, password, confirmPassword, usernameLogin, passwordLogin);
-    this.userService.validateLogin(usernameLogin.value, passwordLogin.value);
+  login(username, password) {
+    this.resetCredentials(username, password);
+    this.userService.validateLogin(username.value, password.value);
     this.router.navigate(['/']);
   }
 
-  handleLogin(type: string) {
+  handleLogin(type: string, username, password, email, confirmPassword) {
     this.userService.handleLogin(type);
+    this.resetCredentials(username, password, email, confirmPassword);
   }
 
-  resetCredentials(usernameJoin, passwordJoin, email, confirmPassword, usernameLogin, passwordLogin) {
-    usernameJoin.value = '';
-    passwordJoin.value = '';
-    email.value = '';
-    confirmPassword.value = '';
-    usernameLogin.value = '';
-    passwordLogin.value = '';
+  handleJoin(type: string, username, password) {
+    this.userService.handleLogin(type);
+    this.resetCredentials(username, password);
+  }
+
+  resetCredentials(username, password, email?, confirmPassword?) {
+    username.value = '';
+    password.value = '';
+    if (email && confirmPassword) {
+      email.value = '';
+      confirmPassword.value = '';
+    }
   }
 
 }
