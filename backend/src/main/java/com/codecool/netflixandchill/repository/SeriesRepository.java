@@ -9,7 +9,7 @@ import java.util.List;
 @Transactional
 public interface SeriesRepository extends JpaRepository<Series, Long> {
 
-    List<Series> findByTitleContaining(String substring);
+    List<Series> findByTitleContainingIgnoreCase(String substring);
 
     List<Series> findTop3ByOrderByAirDateDesc();
 
