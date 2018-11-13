@@ -30,13 +30,13 @@ export class LoginComponent implements OnInit {
       return;
     }
     console.log(username.value, password.value, email.value, confirmPassword.value);
-    this.resetCredentials(username, password, email, confirmPassword);
     this.userService.validateJoin(username.value, password.value, email.value, confirmPassword.value);
+    this.resetCredentials(username, password, email, confirmPassword);
   }
 
   login(username, password) {
-    this.resetCredentials(username, password);
     this.userService.validateLogin(username.value, password.value);
+    this.resetCredentials(username, password);
     this.router.navigate(['/']);
   }
 
