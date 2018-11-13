@@ -205,7 +205,6 @@ export class SeriesDetailComponent implements OnInit {
   }
 
   alreadyFavourite(series: Series): boolean {
-    console.log(this.hearted.includes(series.id));
     return this.hearted.includes(series.id);
   }
 
