@@ -17,7 +17,7 @@ export class UserPageComponent implements OnInit {
 
   ngOnInit() {
     console.log('User-page-constructor');
-    this.getUser(this.user.username);
+    this.getUser(localStorage.getItem('username'));
     this.tabNum = 1;
   }
 
