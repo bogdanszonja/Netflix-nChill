@@ -36,7 +36,7 @@ public class SeriesController {
             error.put("message", "This series not in series list");
 
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(error);
+                    .body(error.toString());
         }
         return ResponseEntity.status(HttpStatus.OK)
                 .body(this.seriesService.getSeriesBySubstring(substring));

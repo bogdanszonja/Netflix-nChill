@@ -41,6 +41,7 @@ public class Episode {
     @ManyToMany(mappedBy = "watchedEpisodes")
     @LazyCollection(LazyCollectionOption.TRUE)
     @ToString.Exclude
+    @JsonBackReference
     private Collection<User> users = new ArrayList<>();
 
     @Builder
