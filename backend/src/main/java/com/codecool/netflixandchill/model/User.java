@@ -30,6 +30,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(name = "time_wasted", nullable = false)
+    private int timeWasted;
+
     @ManyToMany(cascade = CascadeType.PERSIST)
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "users_watchlist",
@@ -57,6 +60,7 @@ public class User {
     @Column(name = "registration_date")
     @Temporal(TemporalType.DATE)
     private Date registrationDate;
+
 
     @Builder
     public User(String userName, String emailAddress, String password, Collection<Series> watchlist,
