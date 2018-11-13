@@ -96,10 +96,41 @@ public class UserService {
     }
 
     public void addRunTimeToTimeWasted(String username, Series series) {
-
         for (Episode episode : episodeRepository.findAllBySeasonId((seasonRepository.findFirstBySeriesId(series.getId()).getId()))) {
             findByUsername(username).setTimeWasted(findByUsername(username).getTimeWasted() + episode.getRuntime());
-
         }
+    }
+
+    public void removeEpisodeFromWatched(String username, long id) {
+        User user = this.userRepository.findByUserName(username);
+        user.removeFromWatchedEpisode(episodeRepository.findById(id).get());
+        this.userRepository.save(user);
+
+    }
+
+    public void removeSeasonFromWatched(String username, long id) {
+        User user = this.userRepository.findByUserName(username);
+        seasonRepository.findById(id).get().getEpisodes().forEach(user::removeFromWatchedEpisode);
+        userRepository.save(user);
+    }
+
+    public void removeSeriesFromWatched(String username, long id) {
+        User user = this.userRepository.findByUserName(username);
+        List<Season> seasonToRemove = seriesRepository.findById(id).get().getSeasons();
+        seasonToRemove.forEach(season -> season.getEpisodes()
+                .forEach(user::removeFromWatchedEpisode));
+        userRepository.save(user);
+    }
+
+    public void removeSeriesFromFavourite(String username, long id) {
+        User user = this.userRepository.findByUserName(username);
+        user.removeFromFavouriteList(seriesRepository.findById(id).get());
+        userRepository.save(user);
+    }
+
+    public void removeSeriesFromWatchlist(String username, long id) {
+        User user = this.userRepository.findByUserName(username);
+        user.removeFromWatchList(seriesRepository.findById(id).get());
+        userRepository.save(user);
     }
 }

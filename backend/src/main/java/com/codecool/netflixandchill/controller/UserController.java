@@ -62,7 +62,7 @@ public class UserController {
         return this.userService.findByUsername(username);
     }
 
-    @GetMapping("/{username}/watchlist")
+        @GetMapping("/{username}/watchlist")
     public List<Series> getWatchlistForUser(@PathVariable String username) {
         return userService.getWatchlistForUser(username);
     }
@@ -154,7 +154,35 @@ public class UserController {
             error.addProperty("message", "This series already in watchlist");
 
             return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
-                    .body(error);
+                    .body(error.toString());
         }
     }
+
+    @DeleteMapping("/{username}/remove-episode-from-watched/episode/{id}")
+    public void removeEpisodeFromWatched(@PathVariable String username, @PathVariable Long id) {
+        userService.removeEpisodeFromWatched(username, id);
+    }
+
+    @DeleteMapping("/{username}/remove-season-from-watched/season/{id}")
+    public void removeSeasonFromWatched(@PathVariable String username, @PathVariable Long id) {
+        userService.removeSeasonFromWatched(username, id);
+    }
+
+    @DeleteMapping("/{username}/remove-series-from-watched/series/{id}")
+    public void removeSeriesFromWatched(@PathVariable String username, @PathVariable Long id) {
+        userService.removeSeriesFromWatched(username, id);
+    }
+
+    @DeleteMapping("/{username}/remove-series-from-favourites/series/{id}")
+    public void removeSeriesFromFavourite(@PathVariable String username, @PathVariable Long id) {
+        userService.removeSeriesFromFavourite(username, id);
+    }
+
+    @DeleteMapping("/{username}/remove-series-from-watchlist/series/{id}")
+    public void removeSeriesFromWatchlist(@PathVariable String username, @PathVariable Long id) {
+        userService.removeSeriesFromWatchlist(username, id);
+    }
+
+
+
 }
