@@ -9,26 +9,12 @@ import { Series } from '../../../models/Series';
 export class WatchedComponent implements OnInit {
 
   @Input() watchedEpisodes: Series[];
+  @Input() timeWasted;
 
   constructor() {
   }
 
   ngOnInit() {
-  }
-
-  calculateTimeWasted(): number {
-    let result = 0;
-    if (this.watchedEpisodes != null) {
-      for (let series of this.watchedEpisodes) {
-        for (let season of series.seasons) {
-          for (let episode of season.episodes) {
-            result += episode.runtime;
-          }
-        }
-      }
-    }
-    console.log("time wasted: " + result);
-    return result;
   }
 
 }

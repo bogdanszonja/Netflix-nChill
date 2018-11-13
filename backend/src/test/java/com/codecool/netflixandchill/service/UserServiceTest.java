@@ -1,4 +1,4 @@
-package com.codecool.netflixandchill;
+package com.codecool.netflixandchill.service;
 
 import com.codecool.netflixandchill.model.User;
 import com.codecool.netflixandchill.repository.EpisodeRepository;
@@ -15,10 +15,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 public class UserServiceTest {
@@ -30,7 +32,6 @@ public class UserServiceTest {
         public UserService userService() {
             return new UserService();
         }
-        
     }
 
     @Autowired
@@ -50,9 +51,12 @@ public class UserServiceTest {
 
     @BeforeEach
     public void setUp() {
-        User tivadar = new User("tivadar", "tivadar", "tivadar", null, null, null, new Date());
+        User tivadar = new User("tivadar", "tivadar@tivadar.hu", "tivadar", null, null, null, new Date());
 
         Mockito.when(userRepository.findByUserName(tivadar.getUserName()))
+                .thenReturn(tivadar);
+
+        Mockito.when(userRepository.findUserByEmailAddress(tivadar.getEmailAddress()))
                 .thenReturn(tivadar);
     }
 
@@ -64,5 +68,37 @@ public class UserServiceTest {
 
         assertThat(found.getUserName())
                 .isEqualTo(userName);
+    }
+
+    @Test
+    public void testCheckIfEmailAlreadyExists() {
+        String email = "tivadar@tivadar.hu";
+        boolean emailExists = userService.checkIfEmailAlreadyExists(email);
+
+        assertTrue(emailExists);
+    }
+
+    @Test
+    public void testCheckIfEmailAlreadyExistsWhenEmailDoesNotExist() {
+        String email = "ödön@tivadar.hu";
+        boolean emailExists = userService.checkIfEmailAlreadyExists(email);
+
+        assertFalse(emailExists);
+    }
+
+    @Test
+    public void testCheckIfUserNameAlreadyExists() {
+        String userName = "tivadar";
+        boolean userNameExists = userService.checkIfUserNameAlreadyExists(userName);
+
+        assertTrue(userNameExists);
+    }
+
+    @Test
+    public void testCheckIfUserNameAlreadyExistsWhenUserNameDoesNotExist() {
+        String userName = "ödön";
+        boolean userNameExists = userService.checkIfUserNameAlreadyExists(userName);
+
+        assertFalse(userNameExists);
     }
 }
