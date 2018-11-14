@@ -154,9 +154,9 @@ export class SeriesDetailComponent implements OnInit {
   }
 
   alreadyCheckedSeason(season: Season): boolean {
-    let episodesIds: number[] = [];
+    const episodesIds: number[] = [];
     season.episodes.forEach(episode => episodesIds.push(episode.id));
-    for (let id of episodesIds) {
+    for (const id of episodesIds) {
       if (!this.checkedEpisodes.includes(id)) {
         return false;
       }
@@ -165,9 +165,11 @@ export class SeriesDetailComponent implements OnInit {
   }
 
   handleWatchedSeries(series: Series, checkbox) {
-    series.seasons.forEach(season => season.episodes
-      .forEach(episode => this.toggleEpisode(episode.id)));
-    if (checkbox.classList.contains('checked')) {
+    const checked = checkbox.classList.contains('checked');
+
+    if (checked) {
+      series.seasons.forEach(season => season.episodes
+        .forEach(episode => this.toggleEpisode(episode.id)));
       this.removeWholeSeries(series);
       return;
     }
@@ -176,11 +178,23 @@ export class SeriesDetailComponent implements OnInit {
   }
 
   handleWatchedSeason(season: Season, checkbox) {
-    season.episodes.forEach(episode => this.toggleEpisode(episode.id));
-    if (checkbox.classList.contains('checked')) {
+    const checked = checkbox.classList.contains('checked');
+
+    if (checked) {
+      season.episodes.forEach(episode => {
+        if (this.checkedEpisodes.includes(episode.id)) {
+          this.toggleEpisode(episode.id);
+        }
+      });
       this.removeSingleSeason(season);
       return;
     }
+
+    season.episodes.forEach(episode => {
+      if (!this.checkedEpisodes.includes(episode.id)) {
+        this.toggleEpisode(episode.id);
+      }
+    });
 
     this.addSingleSeason(season);
   }
