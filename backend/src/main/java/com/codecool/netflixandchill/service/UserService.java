@@ -156,10 +156,12 @@ public class UserService {
                     .anyMatch(episode1 -> episode1.equals(episode));
     }
 
-    public boolean isSeriesSeasonInWatchList(Season season, long id) {
-        return seriesRepository.findById(id).get().getSeasons()
-                .stream()
-                .anyMatch(season1 -> season1.equals(season));
+    public boolean isSeriesSeasonInWatchList(Episode episode, long id) {
+//        return seriesRepository.findById(id).get().getSeasons()
+//                .forEach(season -> season.getEpisodes()
+//                        .stream()
+//                        .anyMatch(episode1 -> episode1.equals(episode)));
+        return true;
     }
     public boolean isSeasonNotInWatchlist(String username, long id) {
         if (!getWatchedEpisodesForUser(username).contains(episodeRepository.findFirstBySeasonId(id)));
@@ -172,10 +174,12 @@ public class UserService {
     }
 
     public boolean isSeriesNotInWatchlist(String username, long id) {
+        Episode episode = episodeRepository.findFirstBySeasonId(seasonRepository.findFirstBySeriesId(id).getId());
+
         if (!getWatchlistForUser(username).contains(seriesRepository.findById(id).get()));
         else if (getWatchlistForUser(username).contains(seriesRepository.findById(id).get())
-        && isSeasonEpisodesInWatchlist(episodeRepository.findFirstBySeasonId(seasonRepository.findFirstBySeriesId(id).getId()), seasonRepository.findFirstBySeriesId(id).getId())
-        && isSeriesSeasonInWatchList(seasonRepository.findFirstBySeriesId(id), id));
+        && isSeasonEpisodesInWatchlist(episode, seasonRepository.findFirstBySeriesId(id).getId())
+        && isSeriesSeasonInWatchList(episode, id));
         else {
             return false;
         }
