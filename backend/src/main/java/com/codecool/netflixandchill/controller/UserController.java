@@ -80,6 +80,8 @@ public class UserController {
     public ResponseEntity addEpisodeToWatched(@PathVariable String username, @PathVariable Long id) {
         if (!this.userService.getWatchedEpisodesForUser(username).contains(episodeService.getSingleEpisodeBySeasonId(id))) {
             this.userService.addEpisodeToWatched(username, id);
+            this.userService.addRunTimeToTimeWastedWhenWatchedEpisode(username, episodeService.findEpisodeById(id));
+
             return ResponseEntity.status(HttpStatus.OK)
                     .body(userService.getWatchedEpisodesForUser(username));
         } else {
@@ -94,11 +96,14 @@ public class UserController {
 
     @PutMapping("/{username}/add-season-to-watched/season/{id}")
     public ResponseEntity addSeasonToWatched(@PathVariable String username, @PathVariable Long id) {
-        if (!this.userService.getWatchedEpisodesForUser(username).contains(episodeService.getSingleEpisodeBySeasonId(id))) {
-            this.userService.addSeasonToWatched(username, id);
+        if (userService.isSeasonNotInWatchlist(username, id)) {
+            userService.addSeasonToWatched(username, id);
+            userService.addRunTimeToTimeWastedWhenWatchedSeason(username, seasonService.findSeasonById(id));
+
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(userService.getWatchedEpisodesForUser(username));
-        } else {
+                    .body(getWatchedEpisodesForUser(username));
+        }
+        else {
             JsonObject error = new JsonObject();
             error.addProperty("error", "already exist");
             error.addProperty("message", "This season already in watched list");
@@ -112,6 +117,8 @@ public class UserController {
     public ResponseEntity addSeriesToWatched(@PathVariable String username, @PathVariable Long id) {
         if (!this.userService.getWatchedEpisodesForUser(username).contains(episodeService.getSingleEpisodeBySeasonId(seasonService.getSeasonBySeriesId(id).getId()))) {
             this.userService.addSeriesToWatched(username, id);
+            this.userService.addRunTimeToTimeWastedWhenWatchedSeries(username, seriesService.getSingleSeriesById(id));
+
             return ResponseEntity.status(HttpStatus.OK)
                     .body(userService.getWatchedEpisodesForUser(username));
         } else {
@@ -144,7 +151,6 @@ public class UserController {
     public ResponseEntity addSeriesToWatchlist(@PathVariable String username, @PathVariable Long id) {
         if (!this.userService.getWatchlistForUser(username).contains(seriesService.getSingleSeriesById(id))) {
             this.userService.addSeriesToWatchlist(username, id);
-            this.userService.addRunTimeToTimeWasted(username, seriesService.getSingleSeriesById(id));
             return ResponseEntity.status(HttpStatus.OK)
                     .body(userService.getWatchlistForUser(username));
         } else {
@@ -174,11 +180,7 @@ public class UserController {
 
     @DeleteMapping("/{username}/remove-series-from-favourites/series/{id}")
     public void removeSeriesFromFavourite(@PathVariable String username, @PathVariable Long id) {
-        System.out.println("punci");
-        System.out.println("cunci" + userService.getFavouritesForUser(username).toString());
-
         userService.removeSeriesFromFavourite(username, id);
-
     }
 
     @DeleteMapping("/{username}/remove-series-from-watchlist/series/{id}")

@@ -8,4 +8,6 @@ import javax.transaction.Transactional;
 @Transactional
 public interface SeasonRepository extends JpaRepository<Season, Long> {
     Season findFirstBySeriesId(long id);
+
+    Season findFirstById(long id);
 }
