@@ -7,7 +7,8 @@
     <div class="icons">
       <div class="tooltip">
         <i class="plus fas fa-plus" *ngIf="token"
-           #seriesCheckbox (click)="handleWatchedSeries(series, seriesCheckbox)"></i>
+           #seriesCheckbox (click)="handleWatchedSeries(series, seriesCheckbox)"
+           [ngClass]="alreadyCheckedSeries(series) ? 'already-checked' : ''"></i>
         <span class="tooltip-text">Add to watched</span>
       </div>
       <div class="tooltip">
