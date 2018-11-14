@@ -20,4 +20,4 @@
   {{ episode.releaseDate }}
   {{ episode.runtime }}
 </div>
-<label *ngIf="watchedEpisodes">Time wasted: {{ timeWasted }}</label>
+<label *ngIf="watchedEpisodes">Time wasted: {{ timeWasted | timeConverter }}</label>

@@ -12,7 +12,7 @@ import { AuthService } from '../../services/auth/auth.service';
 })
 export class NavbarComponent implements OnInit {
 
-  isLoggedIn = localStorage.getItem('userId') !== null;
+  isLoggedIn = sessionStorage.getItem('token') !== null;
   searchToggle = false;
 
   constructor(private userService: UserService,
