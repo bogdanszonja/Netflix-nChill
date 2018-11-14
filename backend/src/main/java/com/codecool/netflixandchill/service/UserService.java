@@ -156,10 +156,26 @@ public class UserService {
                     .anyMatch(episode1 -> episode1.equals(episode));
     }
 
+    public boolean isSeriesSeasonInWatchList(Season season, long id) {
+        return seriesRepository.findById(id).get().getSeasons()
+                .stream()
+                .anyMatch(season1 -> season1.equals(season));
+    }
     public boolean isSeasonNotInWatchlist(String username, long id) {
         if (!getWatchedEpisodesForUser(username).contains(episodeRepository.findFirstBySeasonId(id)));
         else if (getWatchedEpisodesForUser(username).contains(episodeRepository.findFirstBySeasonId(id))
                 && isSeasonEpisodesInWatchlist(episodeRepository.findFirstBySeasonId(id), id));
+        else {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isSeriesNotInWatchlist(String username, long id) {
+        if (!getWatchlistForUser(username).contains(seriesRepository.findById(id).get()));
+        else if (getWatchlistForUser(username).contains(seriesRepository.findById(id).get())
+        && isSeasonEpisodesInWatchlist(episodeRepository.findFirstBySeasonId(seasonRepository.findFirstBySeriesId(id).getId()), seasonRepository.findFirstBySeriesId(id).getId())
+        && isSeriesSeasonInWatchList(seasonRepository.findFirstBySeriesId(id), id));
         else {
             return false;
         }

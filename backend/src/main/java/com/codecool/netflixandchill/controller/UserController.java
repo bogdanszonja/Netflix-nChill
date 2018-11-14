@@ -149,7 +149,7 @@ public class UserController {
 
     @PutMapping("/{username}/add-series-to-watchlist/series/{id}")
     public ResponseEntity addSeriesToWatchlist(@PathVariable String username, @PathVariable Long id) {
-        if (!this.userService.getWatchlistForUser(username).contains(seriesService.getSingleSeriesById(id))) {
+        if (!this.userService.isSeriesNotInWatchlist(username, id)) {
             this.userService.addSeriesToWatchlist(username, id);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(userService.getWatchlistForUser(username));
