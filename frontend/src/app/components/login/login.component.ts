@@ -52,10 +52,14 @@ export class LoginComponent implements OnInit {
 
   resetCredentials(username, password, email?, confirmPassword?) {
     username.value = '';
+    username.tabIndex = -1;
     password.value = '';
+    password.tabIndex = -1;
     if (email && confirmPassword) {
       email.value = '';
+      email.tabIndex = -1;
       confirmPassword.value = '';
+      confirmPassword.tabIndex = -1;
     }
   }
 

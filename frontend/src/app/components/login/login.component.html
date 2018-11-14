@@ -1,5 +1,6 @@
 <div class="forms">
-  <div class="join pure-form pure-form-stacked" (click)="handleJoin('join', usernameLogin, passwordLogin)">
+  <div class="join pure-form pure-form-stacked" (mouseover)="handleJoin('join', usernameLogin, passwordLogin)">
+       <!--(keydown)="handleJoin('join', usernameLogin, passwordLogin)"-->
     <fieldset>
       <div [style.opacity]="showPart === 'join'? '1': '0.4'" class="join">
         <label>Username</label>
@@ -16,7 +17,8 @@
     </fieldset>
   </div>
   <div class="login-form pure-form pure-form-stacked"
-       (click)="handleLogin('login', username, password, email, confirmPassword)">
+       (mouseover)="handleLogin('login', username, password, email, confirmPassword)">
+       <!--(keydown)="handleLogin('login', username, password, email, confirmPassword)"-->
     <fieldset>
       <div [style.opacity]="showPart === 'login'? '1': '0.4'" class="login">
         <label>Username</label>
