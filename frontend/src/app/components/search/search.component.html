@@ -7,4 +7,7 @@
   <div class="detail">
     <app-series-detail #seriesDetail></app-series-detail>
   </div>
+  <div class="message" *ngIf="searchResult.length === 0">
+    <label>No series found</label>
+  </div>
 </div>
