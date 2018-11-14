@@ -120,3 +120,7 @@ body {
   display: inline-block;
   width: 95%;
 }
+
+.already-checked {
+  color: green;
+}

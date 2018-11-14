@@ -14,10 +14,32 @@
     <!--</div>-->
   <!--</div>-->
 <!--</div>-->
-<div *ngFor="let episode of watchedEpisodes">
-  {{ episode.title }}
-  {{ episode.episodeNumber }}
-  {{ episode.releaseDate }}
-  {{ episode.runtime }}
+<div *ngIf="watchedEpisodes">
+  <table class="pure-table watched-table">
+    <thead>
+      <tr>
+        <th>Release date</th>
+        <th>Episode number</th>
+        <th>Title</th>
+        <th>Runtime</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let episode of watchedEpisodes">
+        <td>{{ episode.releaseDate }}</td>
+        <td class="text-center">{{ episode.episodeNumber }}</td>
+        <td>{{ episode.title }}</td>
+        <td>{{ episode.runtime }} minute(s)</td>
+      </tr>
+    </tbody>
+  </table>
+  <table class="pure-table">
+    <thead>
+      <tr>
+        <th>
+          Time wasted: {{ timeWasted | timeConverter }}
+        </th>
+      </tr>
+    </thead>
+  </table>
 </div>
-<label *ngIf="watchedEpisodes">Time wasted: {{ timeWasted }}</label>

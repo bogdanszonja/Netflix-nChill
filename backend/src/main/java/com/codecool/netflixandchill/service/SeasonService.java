@@ -18,4 +18,8 @@ public class SeasonService {
     public Season getSeasonBySeriesId(long id) {
         return seasonRepository.findFirstBySeriesId(id);
     }
+
+    public Season findSeasonById(long id) {
+        return seasonRepository.findFirstById(id);
+    }
 }

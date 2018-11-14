@@ -16,6 +16,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthInterceptor } from './interceptors/auth-interceptor';
+import { TimeConverterPipe } from './pipes/time-converter.pipe';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { AuthInterceptor } from './interceptors/auth-interceptor';
     WatchedComponent,
     SearchComponent,
     SeriesDetailComponent,
-    TrendingComponent
+    TrendingComponent,
+    TimeConverterPipe
   ],
   imports: [
     BrowserModule,

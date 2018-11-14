@@ -155,6 +155,10 @@ export class UserService {
     console.error(error);
     console.error(error.error['error']);
     console.error(error.error['message']);
+    if (error.status === 403) {
+      sessionStorage.removeItem('token');
+      localStorage.removeItem('username');
+    }
     return of(result as T);
   }
 

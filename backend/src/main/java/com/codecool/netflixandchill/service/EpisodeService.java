@@ -18,4 +18,8 @@ public class EpisodeService {
     public Episode getSingleEpisodeBySeasonId(long id) {
         return episodeRepository.findFirstBySeasonId(id);
     }
+
+    public Episode findEpisodeById(long id) {
+        return episodeRepository.findById(id).get();
+    }
 }
