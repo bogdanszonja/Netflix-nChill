@@ -16,7 +16,7 @@
 }
 
 .arrow {
-  font-size: 110%;
+  font-size: 120%;
   padding-right: 5%;
 }
 
@@ -58,7 +58,7 @@ body {
   font-size: 125%;
   font-weight: bold;
   margin: 1%;
-  background-color: rgba(154, 154, 154, 0.05);
+  background-color: #191919c9;
 }
 
 .all-episodes {
@@ -99,7 +99,7 @@ body {
 
 .all-episodes {
   font-size: 110%;
-  background: #eeeeee0d;
+  background: #191919c9;
 }
 
 .single-episode {
@@ -109,4 +109,9 @@ body {
 .episode-date, .episode-number, .episode-title {
   display: inline-block;
   padding-right: 5%;
+}
+
+.toggle-title {
+  display: inline-block;
+  width: 95%;
 }

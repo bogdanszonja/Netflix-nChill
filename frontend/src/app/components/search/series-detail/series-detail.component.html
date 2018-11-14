@@ -24,11 +24,14 @@
   <div class="all-seasons">
     <div class="single-season" *ngFor="let season of series.seasons">
       <div class="season-title">
-        <label>Season {{ season.seasonNumber }}</label>
+        <div class="toggle-title" (click)="toggleSeason(season.id)">
+          <label>Season {{ season.seasonNumber }}</label>
+          <i class="arrow"
+             [ngClass]="alreadyOpened(season.id) ? 'fas fa-angle-double-up' : 'fas fa-angle-double-down'"></i>
+        </div>
         <i class="season-check" *ngIf="token"
            #seasonCheckbox (click)="handleWatchedSeason(season, seasonCheckbox)"
            [ngClass]="alreadyCheckedSeason(season) ? 'checked fas fa-check-square' : 'far fa-square'"></i>
-        <i class="arrow fas fa-angle-double-down" *ngIf="token" (click)="toggleSeason(season.id)"></i>
       </div>
       <hr>
       <div class="all-episodes">
