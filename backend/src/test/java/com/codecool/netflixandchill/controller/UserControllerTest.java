@@ -1,6 +1,7 @@
 package com.codecool.netflixandchill.controller;
 
 
+import com.codecool.netflixandchill.model.Episode;
 import com.codecool.netflixandchill.model.Series;
 import com.codecool.netflixandchill.model.Status;
 import com.codecool.netflixandchill.model.User;
@@ -14,12 +15,15 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -48,20 +52,21 @@ public class UserControllerTest {
 
     @Test
     @WithMockUser(username = "tivadar", password = "tivadar", roles = "USER")
-    public void testGetUserDetails() throws java.lang.Exception {
+    void testGetUserDetails() throws Exception {
         User tivadar = new User("tivadar", "tivadar", "tivadar", null, null, null, new Date());
 
         Mockito.when(service.findByUsername(tivadar.getUserName()))
                 .thenReturn(tivadar);
 
-        mvc.perform(get("/users/tivadar"))
-                .andExpect(status().isOk());
+        mvc.perform(get("/users/{username}", tivadar.getUserName()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
     }
 
 
     @Test
     @WithMockUser(username = "tivadar", password = "tivadar", roles = "USER")
-    public void testGetWatchListForUser() throws java.lang.Exception {
+    void testGetWatchListForUser() throws Exception {
         List<Series> watchList = new ArrayList<>();
         Series series = new Series("title", "image.jpg", "trailer", "description", Status.ENDED, new Date(), null);
         watchList.add(series);
@@ -70,9 +75,62 @@ public class UserControllerTest {
         Mockito.when(service.getWatchlistForUser(tivadar.getUserName()))
                 .thenReturn(watchList);
 
-        mvc.perform(get("/users/tivadar/watchlist"))
+        mvc.perform(get("/users/{username}/watchlist", tivadar.getUserName()))
                 .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+
+    @Test
+    @WithMockUser(username = "tivadar", password = "tivadar", roles = "USER")
+    void testGetFavouriteListForUser() throws Exception {
+        List<Series> favouriteList = new ArrayList<>();
+        Series series = new Series("title", "image.jpg", "trailer", "description", Status.ENDED, new Date(), null);
+        favouriteList.add(series);
+        User tivadar = new User("tivadar", "tivadar", "tivadar", null, favouriteList, null, new Date());
+
+        Mockito.when(service.getFavouritesForUser(tivadar.getUserName()))
+                .thenReturn(favouriteList);
+
+        mvc.perform(get("/users/{username}/favourites", tivadar.getUserName()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+
+    @Test
+    @WithMockUser(username = "tivadar", password = "tivadar", roles = "USER")
+    void testGetWatchedEpisodesForUser() throws Exception {
+        List<Episode> watchedEpisodes = new ArrayList<>();
+        Episode epsiodes = new Episode("title", new Date(), 120, 1);
+        watchedEpisodes.add(epsiodes);
+        User tivadar = new User("tivadar", "tivadar", "tivadar", null, null, watchedEpisodes, new Date());
+
+        Mockito.when(service.getWatchedEpisodesForUser(tivadar.getUserName()))
+                .thenReturn(watchedEpisodes);
+
+        mvc.perform(get("/users/{username}/already-watched", tivadar.getUserName()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
+    @WithMockUser(username = "tivadar", password = "tivadar", roles = "USER")
+    void testAddEpisodeToWatched() throws Exception {
+        List<Episode> watchedEpisodes = new ArrayList<>();
+        Episode epsiode = new Episode("title", new Date(), 120, 1);
+        watchedEpisodes.add(epsiode);
+        User tivadar = new User("tivadar", "tivadar", "tivadar", null, null, null, new Date());
+
+        Mockito.when(service.getWatchedEpisodesForUser(tivadar.getUserName()))
+                .thenReturn(watchedEpisodes);
+
+        mvc.perform(put("/{username}/add-episode-to-watched/episode/{id}", tivadar.getUserName(), epsiode.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
     }
 
 }

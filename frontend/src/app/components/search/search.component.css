@@ -22,3 +22,13 @@
   width: 72%;
   overflow: auto;
 }
+
+.message {
+  text-align: center;
+  margin-top: 10%;
+}
+
+.message label {
+  font-size: 160%;
+  letter-spacing: 2px;
+}
