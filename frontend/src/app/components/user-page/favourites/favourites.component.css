@@ -1,0 +1,20 @@
+.favourites {
+  width: 100%;
+  float: left;
+}
+
+.detail {
+  margin: 3%;
+  overflow: auto;
+}
+
+.series-title {
+  font-size: 140%;
+  margin: 20px;
+  padding: 20px;
+  background: #eeeeee0d;
+}
+
+.series-title:hover {
+  color: #919191;
+}

@@ -1,8 +1,16 @@
-<div *ngFor="let show of favourites">
-  {{ show.title }}
-  {{ show.description }}
-  {{ show.status }}
-  <span *ngFor="let genre of show.genres">
-    {{ genre.name }}
-  </span>
+<div class="favourites">
+  <div class="favourite" *ngFor="let show of favourites">
+    <div class="series-title">
+      <label (click)="seriesDetail.selectShow(show.id)">{{ show.title }}</label>
+    </div>
+
+    <!--{{ show.description }}-->
+    <!--{{ show.status }}-->
+    <!--<span *ngFor="let genre of show.genres">-->
+    <!--{{ genre.name }}-->
+    <!--</span>-->
+    <div class="detail">
+      <app-series-detail #seriesDetail></app-series-detail>
+    </div>
+  </div>
 </div>
