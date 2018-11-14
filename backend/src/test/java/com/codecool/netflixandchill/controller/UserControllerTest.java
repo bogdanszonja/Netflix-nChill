@@ -128,7 +128,7 @@ public class UserControllerTest {
         Mockito.when(service.getWatchedEpisodesForUser(tivadar.getUserName()))
                 .thenReturn(watchedEpisodes);
 
-        mvc.perform(put("/{username}/add-episode-to-watched/episode/{id}", tivadar.getUserName(), epsiode.getId()))
+        mvc.perform(put("/users/{username}/add-episode-to-watched/episode/{id}", tivadar.getUserName(), epsiode.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
     }
