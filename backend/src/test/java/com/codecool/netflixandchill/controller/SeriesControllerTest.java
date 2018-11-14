@@ -13,11 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
@@ -45,6 +48,7 @@ public class SeriesControllerTest {
 
 
     @Test
+    @WithMockUser(username = "tivadar", password = "tivadar", roles = "USER")
     void testGetAllSeries() throws Exception {
         Series series = new Series("title", "image.jpg", "trailer", "description", Status.ENDED, new Date(), null);
         List<Series> seriesList = new ArrayList<>();
@@ -54,11 +58,13 @@ public class SeriesControllerTest {
                 .thenReturn(seriesList);
 
         mvc.perform(get("/series"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
     }
 
 
     @Test
+    @WithMockUser(username = "tivadar", password = "tivadar", roles = "USER")
     void testGetSingleSeries() throws Exception {
         Series series = new Series("title", "image.jpg", "trailer", "description", Status.ENDED, new Date(), null);
         List<Series> seriesList = new ArrayList<>();
@@ -67,8 +73,9 @@ public class SeriesControllerTest {
         Mockito.when(service.getSingleSeriesById(series.getId()))
                 .thenReturn(series);
 
-        mvc.perform(get("/{id}", series.getId()))
-                .andExpect(status().isOk());
+        mvc.perform(get("/series/{id}", series.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
     }
 }
 
