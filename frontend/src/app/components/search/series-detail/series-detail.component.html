@@ -5,12 +5,21 @@
   </div>
   <div class="series-summary">
     <div class="icons">
-      <i class="plus fas fa-plus" *ngIf="token"
-         #seriesCheckbox (click)="handleWatchedSeries(series, seriesCheckbox)"></i>
-      <i class="list fas fa-list" *ngIf="token" (click)="addToWatchlist(series)"></i>
-      <i class="heart" *ngIf="token"
+      <div class="tooltip">
+        <i class="plus fas fa-plus" *ngIf="token"
+           #seriesCheckbox (click)="handleWatchedSeries(series, seriesCheckbox)"></i>
+        <span class="tooltip-text">Add to watched</span>
+      </div>
+      <div class="tooltip">
+        <i class="list fas fa-list" *ngIf="token" (click)="addToWatchlist(series)"></i>
+        <span class="tooltip-text">Add to watchlist</span>
+      </div>
+      <div class="tooltip">
+        <i class="heart" *ngIf="token"
          #favouriteCheckbox (click)="handleFavourites(series, favouriteCheckbox)"
          [ngClass]="alreadyFavourite(series) ? 'hearted fas fa-heart' : 'far fa-heart'"></i>
+        <span class="tooltip-text">Add to favourites</span>
+      </div>
     </div>
     <div class="description">
       <label>{{ series.description }}</label>
