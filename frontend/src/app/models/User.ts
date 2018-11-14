@@ -4,7 +4,7 @@ import { Episode } from './Episode';
 export class User {
 
   id: number;
-  username: string;
+  userName: string;
   emailAddress: string;
   registrationDate: Date;
   watchlist: Series[];
