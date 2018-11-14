@@ -33,6 +33,8 @@ export class SeriesDetailComponent implements OnInit {
         console.log(response);
         this.user = response;
         console.log(this.user);
+        this.user.watchedEpisodes.forEach(episode => this.checkedEpisodes.push(episode.id));
+        this.user.favourites.forEach(series => this.hearted.push(series.id));
       // } else {
       //   console.log(response['error']);
       // }
