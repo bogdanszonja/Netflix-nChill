@@ -94,7 +94,8 @@ body {
   font-size: 190%;
   margin: 1%;
   background: #eeeeee0d;
-  width: 14%;
+  width: 16%;
+  text-align: center;
 }
 
 .all-episodes {
@@ -109,6 +110,10 @@ body {
 .episode-date, .episode-number, .episode-title {
   display: inline-block;
   padding-right: 5%;
+}
+
+.tooltip {
+  padding-right: 7%;
 }
 
 .toggle-title {
