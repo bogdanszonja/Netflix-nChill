@@ -1,11 +1,6 @@
 .favourites {
-  width: 100%;
+  width: 25%;
   float: left;
-}
-
-.detail {
-  margin: 3%;
-  overflow: auto;
 }
 
 .series-title {

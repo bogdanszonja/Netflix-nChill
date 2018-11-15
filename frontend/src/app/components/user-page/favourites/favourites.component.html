@@ -1,7 +1,7 @@
 <div class="favourites">
   <div class="favourite" *ngFor="let show of favourites">
     <div class="series-title">
-      <label (click)="seriesDetail.selectShow(show.id)">{{ show.title }}</label>
+      <label> {{ show.title }}</label>
     </div>
 
     <!--{{ show.description }}-->
@@ -9,8 +9,5 @@
     <!--<span *ngFor="let genre of show.genres">-->
     <!--{{ genre.name }}-->
     <!--</span>-->
-    <div class="detail">
-      <app-series-detail #seriesDetail></app-series-detail>
-    </div>
   </div>
 </div>
