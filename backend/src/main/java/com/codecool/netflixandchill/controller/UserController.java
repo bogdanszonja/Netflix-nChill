@@ -1,6 +1,8 @@
 package com.codecool.netflixandchill.controller;
 
+import com.codecool.netflixandchill.dto.WatchListDTO;
 import com.codecool.netflixandchill.model.Episode;
+import com.codecool.netflixandchill.model.Season;
 import com.codecool.netflixandchill.model.Series;
 import com.codecool.netflixandchill.model.User;
 import com.codecool.netflixandchill.service.EpisodeService;
@@ -72,8 +74,11 @@ public class UserController {
     }
 
     @GetMapping("/{username}/already-watched")
-    public List<Episode> getWatchedEpisodesForUser(@PathVariable String username) {
-        return this.userService.getWatchedEpisodesForUser(username);
+    public WatchListDTO getWatchedEpisodesForUser(@PathVariable String username) {
+        List<Episode> episodes = userService.getWatchedEpisodesForUser(username);
+        List<Season> seasons = userService.getWatchedEpisodesSeasons( userService.getWatchedEpisodesForUser(username));
+        List<Series> series = userService.getWatchedEpisodesSeries(userService.getWatchedEpisodesForUser(username));
+        return new WatchListDTO(episodes, seasons, series);
     }
 
     @PutMapping("/{username}/add-episode-to-watched/episode/{id}")
@@ -149,7 +154,7 @@ public class UserController {
 
     @PutMapping("/{username}/add-series-to-watchlist/series/{id}")
     public ResponseEntity addSeriesToWatchlist(@PathVariable String username, @PathVariable Long id) {
-        if (!this.userService.isSeriesNotInWatchlist(username, id)) {
+        if (!getWatchlistForUser(username).contains(seriesService.getSingleSeriesById(id))) {
             this.userService.addSeriesToWatchlist(username, id);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(userService.getWatchlistForUser(username));
@@ -166,16 +171,19 @@ public class UserController {
     @DeleteMapping("/{username}/remove-episode-from-watched/episode/{id}")
     public void removeEpisodeFromWatched(@PathVariable String username, @PathVariable Long id) {
         userService.removeEpisodeFromWatched(username, id);
+        this.userService.subtractRunTimeToTimeWastedWhenRemoveWatchedEpisode(username, episodeService.findEpisodeById(id));
     }
 
     @DeleteMapping("/{username}/remove-season-from-watched/season/{id}")
     public void removeSeasonFromWatched(@PathVariable String username, @PathVariable Long id) {
         userService.removeSeasonFromWatched(username, id);
+        userService.subtractRunTimeToTimeWastedWhenRemoveWatchedSeason(username, seasonService.findSeasonById(id));
     }
 
     @DeleteMapping("/{username}/remove-series-from-watched/series/{id}")
     public void removeSeriesFromWatched(@PathVariable String username, @PathVariable Long id) {
         userService.removeSeriesFromWatched(username, id);
+        this.userService.subtractRunTimeToTimeWastedWhenRemoveWatchedSeries(username, seriesService.getSingleSeriesById(id));
     }
 
     @DeleteMapping("/{username}/remove-series-from-favourites/series/{id}")
