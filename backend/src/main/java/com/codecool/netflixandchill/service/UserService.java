@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -88,6 +89,18 @@ public class UserService {
         this.userRepository.save(user);
     }
 
+    public List<Season> getWatchedEpisodesSeasons(List<Episode> episodes) {
+        return episodes.stream()
+                .map(Episode::getSeason)
+                .collect(Collectors.toList());
+    }
+
+    public List<Series> getWatchedEpisodesSeries(List<Episode> episodes) {
+        return episodes.stream()
+                .map(episode -> episode.getSeason().getSeries())
+                .collect(Collectors.toList());
+    }
+
     public void addSeriesToFavourites(String username, Long id) {
         User user = this.userRepository.findByUserName(username);
         user.addSeriesToFavouriteList(this.seriesRepository.findById(id).get());
@@ -114,7 +127,22 @@ public class UserService {
 
     public void addRunTimeToTimeWastedWhenWatchedEpisode(String username, Episode episode) {
         findByUsername(username).setTimeWasted(findByUsername(username).getTimeWasted() + episode.getRuntime());
+    }
 
+    public void subtractRunTimeToTimeWastedWhenRemoveWatchedSeries(String username, Series series) {
+        for (Episode episode : episodeRepository.findAllBySeasonId((seasonRepository.findFirstBySeriesId(series.getId()).getId()))) {
+            findByUsername(username).setTimeWasted(findByUsername(username).getTimeWasted() - episode.getRuntime());
+        }
+    }
+
+    public void subtractRunTimeToTimeWastedWhenRemoveWatchedSeason(String username, Season season) {
+        for (Episode episode : episodeRepository.findAllBySeasonId(season.getId())) {
+            findByUsername(username).setTimeWasted(findByUsername(username).getTimeWasted() - episode.getRuntime());
+        }
+    }
+
+    public void subtractRunTimeToTimeWastedWhenRemoveWatchedEpisode(String username, Episode episode) {
+        findByUsername(username).setTimeWasted(findByUsername(username).getTimeWasted() - episode.getRuntime());
     }
 
     public void removeEpisodeFromWatched(String username, long id) {
@@ -156,6 +184,14 @@ public class UserService {
                     .anyMatch(episode1 -> episode1.equals(episode));
     }
 
+//    public boolean isSeriesSeasonInWatchList(Episode episode, long id) {
+//        return seriesRepository.findById(id).get().getSeasons()
+//                .forEach(season -> season.getEpisodes()
+//                        .stream()
+//                        .anyMatch(episode1 -> episode1.equals(episode)));
+//        return true;
+//    }
+
     public boolean isSeasonNotInWatchlist(String username, long id) {
         if (!getWatchedEpisodesForUser(username).contains(episodeRepository.findFirstBySeasonId(id)));
         else if (getWatchedEpisodesForUser(username).contains(episodeRepository.findFirstBySeasonId(id))
@@ -165,4 +201,17 @@ public class UserService {
         }
         return true;
     }
+
+//    public boolean isSeriesNotInWatchlist(String username, long id) {
+//        Episode episode = episodeRepository.findFirstBySeasonId(seasonRepository.findFirstBySeriesId(id).getId());
+//
+//        if (!getWatchlistForUser(username).contains(seriesRepository.findById(id).get()));
+//        else if (getWatchlistForUser(username).contains(seriesRepository.findById(id).get())
+//        && isSeasonEpisodesInWatchlist(episode, seasonRepository.findFirstBySeriesId(id).getId())
+//        && isSeriesSeasonInWatchList(episode, id));
+//        else {
+//            return false;
+//        }
+//        return true;
+//    }
 }
