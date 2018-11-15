@@ -11,6 +11,7 @@ import { Season } from '../../models/Season';
 import { Episode } from '../../models/Episode';
 import { User } from '../../models/User';
 import { AuthService } from '../auth/auth.service';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,8 @@ export class UserService {
   user = new Subject<User>();
 
   constructor(private http: HttpClient,
-              private auth: AuthService) { }
+              private auth: AuthService,
+              private router: Router) { }
 
   handleLogin(type: string) {
     console.log(this.loginStatus);
@@ -158,6 +160,7 @@ export class UserService {
     if (error.status === 403) {
       sessionStorage.removeItem('token');
       localStorage.removeItem('username');
+      this.router.navigate(['/']);
     }
     return of(result as T);
   }
