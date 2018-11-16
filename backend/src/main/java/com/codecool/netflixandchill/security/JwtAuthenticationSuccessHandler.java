@@ -1,13 +1,11 @@
 package com.codecool.netflixandchill.security;
 
-import com.google.gson.JsonObject;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @Component
 public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
@@ -15,11 +13,8 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
-                                        Authentication authentication) throws IOException {
-        System.out.println(authentication.getName());
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("username", authentication.getName());
-        response.getWriter().write(jsonObject.toString());
+                                        Authentication authentication) {
+        System.out.println("Authentication succeeded!");
     }
 
 }
