@@ -29,10 +29,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private JwtAuthenticationSuccessHandler successHandler;
 
+    private JwtAuthenticationFailureHandler failureHandler;
+
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager,
-                                   JwtAuthenticationSuccessHandler successHandler) {
+                                   JwtAuthenticationSuccessHandler successHandler,
+                                   JwtAuthenticationFailureHandler failureHandler) {
         this.authenticationManager = authenticationManager;
         this.successHandler = successHandler;
+        this.failureHandler = failureHandler;
     }
 
 
@@ -76,4 +80,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         this.successHandler.onAuthenticationSuccess(request, response, authResult);
     }
 
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request,
+                                              HttpServletResponse response,
+                                              AuthenticationException failed) throws IOException, ServletException {
+        this.failureHandler.onAuthenticationFailure(request, response, failed);
+    }
 }
