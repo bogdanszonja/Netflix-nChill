@@ -59,7 +59,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                 logger.info(user);
 
                 if (((Claims) user).getSubject() != null) {
-                    return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
+                    return new UsernamePasswordAuthenticationToken((
+                            (Claims) user).getSubject(),
+                            null,
+                            new ArrayList<>());
                 }
 
                 return null;
