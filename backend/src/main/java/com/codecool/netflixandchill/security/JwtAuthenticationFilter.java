@@ -31,9 +31,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private JwtAuthenticationFailureHandler failureHandler;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager,
-                                   JwtAuthenticationSuccessHandler successHandler,
-                                   JwtAuthenticationFailureHandler failureHandler) {
+    JwtAuthenticationFilter(AuthenticationManager authenticationManager,
+                            JwtAuthenticationSuccessHandler successHandler,
+                            JwtAuthenticationFailureHandler failureHandler) {
         this.authenticationManager = authenticationManager;
         this.successHandler = successHandler;
         this.failureHandler = failureHandler;
@@ -56,6 +56,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                     new UsernamePasswordAuthenticationToken(username, password, new ArrayList<>())
             );
         } catch (IOException e) {
+            logger.info("Exception during parsing Json!");
             throw new RuntimeException(e);
         }
     }
@@ -65,7 +66,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             HttpServletResponse response,
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
-        logger.info(authResult);
+        logger.info("Successful authentication!");
         Claims claims = Jwts.claims()
                 .setSubject(((User) authResult.getPrincipal()).getUsername());
 
@@ -84,6 +85,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void unsuccessfulAuthentication(HttpServletRequest request,
                                               HttpServletResponse response,
                                               AuthenticationException failed) throws IOException, ServletException {
+        logger.info("Failed authentication!");
         this.failureHandler.onAuthenticationFailure(request, response, failed);
     }
+
 }

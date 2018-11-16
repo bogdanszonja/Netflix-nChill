@@ -22,7 +22,7 @@ import static com.codecool.netflixandchill.security.SecurityConstants.TOKEN_PREF
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager) {
+    JwtAuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
     }
 
@@ -33,15 +33,16 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                                     FilterChain chain) throws IOException, ServletException {
         String header = request.getHeader(HEADER_STRING);
 
-        logger.info(header);
+        logger.info("Authorization header from request: " + header);
         if (header == null || !header.startsWith(TOKEN_PREFIX)) {
-            logger.info("Json Web Token is not present of has wrong prefix!");
+            logger.info("Json Web Token is not present in the header or has wrong prefix!");
             chain.doFilter(request, response);
             return;
         }
 
         UsernamePasswordAuthenticationToken authenticationToken = getAuthentication(request);
 
+        logger.info("Authentication token added to security context");
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         chain.doFilter(request, response);
     }
@@ -56,7 +57,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                         .setSigningKey(SECRET)
                         .parseClaimsJws(token)
                         .getBody();
-                logger.info(user);
+                logger.info("Json Web Token claims: " + user);
 
                 if (((Claims) user).getSubject() != null) {
                     return new UsernamePasswordAuthenticationToken((
