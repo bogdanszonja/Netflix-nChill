@@ -7,6 +7,7 @@ class SecurityConstants {
     static final String TOKEN_PREFIX = "Bearer ";
     static final String HEADER_STRING = "Authorization";
     static final String JOIN_URL = "/users/join";
+    static final String LOGIN_URL = "/users/login";
     static final String[] PUBLIC_URLS = {"/series/**", "/seasons/**", "/episodes/**"};
 
 }
