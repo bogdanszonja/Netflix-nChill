@@ -37,8 +37,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         this.authenticationManager = authenticationManager;
         this.successHandler = successHandler;
         this.failureHandler = failureHandler;
+        this.setFilterProcessesUrl("/users/login");
     }
-
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
