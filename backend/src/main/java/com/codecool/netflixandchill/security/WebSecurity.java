@@ -23,7 +23,7 @@ import static com.codecool.netflixandchill.security.SecurityConstants.PUBLIC_URL
 public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private UserDetailsServiceJwt userDetailsService;
+    private JwtUserDetailsService userDetailsService;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
